@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Actualizar Conductor | SICOMEC{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <section class="col-md-8 offset-md-2 my-5">
+            <h3 class="text-center mb-3">Actualizar Conductor</h3>
+            <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
+                {% csrf_token %}
+                {% crispy form %}
+                <input type="hidden" name="q" value="{{ query }}">
+            </form>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var dniField = document.getElementById("id_dni");
+            if (dniField && {{ form.instance.pk|yesno:"true,false" }}) {
+                dniField.setAttribute("readonly", "readonly");
+                dniField.style.backgroundColor = "#e9ecef";
+                dniField.style.pointerEvents = "none";
+            }
+    
+            var fields = [
+                { id: "id_name", transform: "toUpperCase" },
+                { id: "id_last_name", transform: "toUpperCase" },
+                { id: "id_license", transform: "toUpperCase" },
+            ];
+        
+            function transformInput(event, transform) {
+                if (transform === "toUpperCase") {
+                    event.target.value = event.target.value.toUpperCase();
+                }
+            }
+        
+            fields.forEach(function(field) {
+                var element = document.getElementById(field.id);
+        
+                if (field.transform === "toUpperCase") {
+                    element.addEventListener("input", function(event) {
+                        transformInput(event, field.transform);
+                    });
+                }
+            });
+        });
+        
+    </script> 
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        function toggleJustify() {
+            var available = $('#id_available').is(':checked');
+            var justifyField = $('#id_justify');
+
+            if (available) {
+                justifyField.prop('readonly', true);
+                justifyField.css({
+                    'background-color': '#f0f0f0', 
+                    'cursor': 'not-allowed' 
+                });
+                justifyField.val('');
+            } else {
+                justifyField.prop('readonly', false);
+                justifyField.css({
+                    'background-color': '', 
+                    'cursor': '' 
+                });
+            }
+        }
+
+        
+        toggleJustify();
+
+        
+        $('#id_available').change(function() {
+            toggleJustify();
+        });
+    });
+</script>
+{% endblock  %}

@@ -1,0 +1,136 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg sticky-top" style="background-color: #fafafa;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'sicomec:home' %}">
+            <img src="{% static 'images/logo_sicomec_sm.png' %}" alt="SICOMEC" title="SICOMEC" height="25px" />
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'sicomec:home' %}">
+                        <i class="bi bi-house-door-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Inicio
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Conductor
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:driver_create' %}">
+                                <i class="bi bi-plus-lg"></i>
+                                Nuevo Registro
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:driver_list' %}">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-car-front-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Vehículo
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:vehicle_create' %}">
+                                <i class="bi bi-plus-lg"></i>
+                                Nuevo Registro
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:vehicle_list' %}">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-fuel-pump-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Grifo
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:fueltap_create' %}">
+                                <i class="bi bi-plus-lg"></i>
+                                Nuevo Registro
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:fueltap_list' %}">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Papeleta
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:ballot_create' %}">
+                                <i class="bi bi-plus-lg"></i>
+                                Nuevo Registro
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:ballot_list' %}">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="">
+                        <i class="bi bi-printer-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Reporte
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="bi bi-info-circle-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                    </a>
+                </li>
+            </ul>
+
+        {% if user.is_authenticated %}
+            <div class="d-flex pt-2">
+                <p class="fw-light mx-2">
+                    <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                    {{ user.first_name }}, {{ user.last_name }}
+                </p>
+                <p>
+                    <a href="{% url 'sicomec:logout' %}" class="link-offset-2 link-underline link-underline-opacity-0" style="color: #FF0000;">
+                        <i class="bi bi-power" style="font-size: 1.2rem; color: #FF0000;"></i>
+                        Salir
+                    </a>
+                </p>
+            </div>
+        {% else %}
+            <div class="d-flex pt-2">
+                <p>
+                    <a href="{% url 'sicomec:login' %}" class="link-offset-2 mx-3 link-underline link-underline-opacity-0">
+                        <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        Iniciar Sesión
+                    </a>
+                </p>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</nav>

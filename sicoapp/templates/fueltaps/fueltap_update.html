@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Actualizar Grifo | SICOMEC{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <section class="col-md-8 offset-md-2 my-5">
+            <h3 class="text-center mb-3">Actualizar Grifo</h3>
+            <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
+                {% csrf_token %}
+                {% crispy form %}
+                <input type="hidden" name="q" value="{{ query }}">
+            </form>
+        </section>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var rucField = document.getElementById("id_ruc");
+        if (rucField && {{ form.instance.pk|yesno:"true,false" }}) {
+            rucField.setAttribute("readonly", "readonly");
+            rucField.style.backgroundColor = "#e9ecef";
+            rucField.style.pointerEvents = "none";
+        }
+
+        var fields = [
+            { id: "id_business_name", transform: "toUpperCase" },
+            { id: "id_address", transform: "toUpperCase" },
+        ];
+    
+        function transformInput(event, transform) {
+            if (transform === "toUpperCase") {
+                event.target.value = event.target.value.toUpperCase();
+            }
+        }
+    
+        fields.forEach(function(field) {
+            var element = document.getElementById(field.id);
+    
+            if (field.transform === "toUpperCase") {
+                element.addEventListener("input", function(event) {
+                    transformInput(event, field.transform);
+                });
+            }
+        });
+    });
+    
+</script> 
+{% endblock  %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Registrar Papeleta | SICOMEC{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <section class="col-md-8 offset-md-2 mt-5">
+            <h3 class="text-center mb-3">Registrar Papeleta</h3>
+            <form method="GET" action="" class="d-flex justify-content-between">
+                <div class="input-group mb-3" style="max-width: 48%;">
+                    <input type="search" name="" id="id_driver_dni_search" maxlength="8" value="" class="form-control" placeholder="Buscar DNI" aria-label="Buscar" autofocus>
+                    <button class="btn btn-primary" type="button" id="searchDriverButton" title="Buscar">
+                        <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
+                    </button>
+                </div>
+                <div class="input-group mb-3" style="max-width: 48%;">
+                    <input type="search" name="" id="id_vehicle_plate_search" maxlength="6" value="" class="form-control" placeholder="Buscar Placa/Reg." aria-label="Buscar" autofocus>
+                    <button class="btn btn-primary" type="button" id="searchVehicleButton" title="Buscar">
+                        <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
+                    </button>
+                </div>
+            </form>
+        </section> 
+
+
+        <section class="col-md-8 offset-md-2 mb-5">
+            <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
+                {% csrf_token %}
+                {% crispy form %}
+            </form>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function setFieldReadonly(fieldId) {
+                var field = document.getElementById(fieldId);
+                if (field && {{ form.instance.pk|yesno:"true,false" }}) {
+                    field.setAttribute("readonly", "readonly");
+                    field.style.backgroundColor = "#e9ecef";
+                    field.style.pointerEvents = "none";
+                }
+            }
+        
+            setFieldReadonly("id_driver_name");
+            setFieldReadonly("id_driver_last_name");
+            setFieldReadonly("id_driver_license");
+            setFieldReadonly("id_driver_category");
+            setFieldReadonly("id_vehicle_plate");
+            setFieldReadonly("id_vehicle_name");
+            setFieldReadonly("id_vehicle_brand");
+            
+            
+            var fields = [
+                { id: "id_drive_to", transform: "toUpperCase" },
+                { id: "id_place", transform: "toUpperCase" },
+                { id: "id_reason", transform: "toUpperCase" },
+                { id: "id_driver_dni_search", transform: "toUpperCase" },
+                { id: "id_vehicle_plate_search", transform: "toUpperCase" },
+            ];
+        
+            function transformInput(event, transform) {
+                if (transform === "toUpperCase") {
+                    event.target.value = event.target.value.toUpperCase();
+                }
+            }
+        
+            fields.forEach(function(field) {
+                var element = document.getElementById(field.id);
+        
+                if (field.transform === "toUpperCase") {
+                    element.addEventListener("input", function(event) {
+                        transformInput(event, field.transform);
+                    });
+                }
+            });
+        });
+        
+    </script> 
+
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('#id_driver_dni_search').on('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 8) {
+                this.value = this.value.slice(0, 8);
+            }
+        });
+
+
+
+
+        $('#searchDriverButton').click(function() {
+            var dni = $('#id_driver_dni_search').val();
+            if (dni) {
+                $.ajax({
+                    url: "{% url 'sicomec:search_driver_by_dni' %}",
+                    data: { 'dni': dni },
+                    success: function(data) {
+                        $('#id_driver_name').val(data.name);
+                        $('#id_driver_last_name').val(data.last_name);
+                        $('#id_driver_license').val(data.license);
+                        $('#id_driver_category').val(data.category.name);
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Driver not found");
+                    }
+                });
+            } else {
+                alert("Please enter a DNI");
+            }
+        });
+
+        $('#searchVehicleButton').click(function() {
+            var plate = $('#id_vehicle_plate_search').val();
+            if (plate) {
+                $.ajax({
+                    url: "{% url 'sicomec:search_vehicle_by_plate' %}",
+                    data: { 'plate': plate },
+                    success: function(data) {
+                        $('#id_vehicle_plate').val(data.plate);
+                        $('#id_vehicle_name').val(data.name);
+                        $('#id_vehicle_brand').val(data.brand);
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Vehicle not found");
+                    }
+                });
+            } else {
+                alert("Please enter a vehicle plate");
+            }
+        });
+    });
+</script>
+{% endblock  %}

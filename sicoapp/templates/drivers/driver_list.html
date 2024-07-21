@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Buscar Conductor | SICOMEC{% endblock %}
+
+{% block content %}
+<div class="row">
+    <section class="col-md-6 offset-md-3 mt-5">
+        <h3 class="text-center mb-3" >Buscar Conductor</h3>
+        <form method="GET" action="">
+            <div class="input-group mb-3 ">
+                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por DNI, nombre o apellidos" aria-label="Buscar" autofocus>
+                <button class="btn btn-primary" type="submit" title="Buscar">
+                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
+                </button>
+                
+            </div>
+        </form>
+    </section> 
+
+    <section class="col-md-12 my-3">
+        {% if driver_count > 0 %}
+            <div class="card card-body table-responsive">
+                <table class="table table-hover table_search">
+                    <thead>
+                        <tr>
+                            <th>Acciones</th>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Licencia</th>
+                            <th>Categoría</th>
+                            <th>Expiración</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for driver in drivers %}
+                            <tr>
+                                <td>
+                                    <div class="btn-group">
+                                        <a class="btn btn-outline-primary " href="{% url 'sicomec:driver_update' driver.id %}?q={{ query }}">
+                                            <i class="bi bi-pencil-fill" title="Editar"></i>
+                                        </a>
+                                        <a class="btn btn-outline-danger" href="#" onclick="driverDelete('{{ driver.id }}')" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="align-middle">{{ driver.dni }}</td>
+                                <td class="align-middle">{{ driver.name }}</td>
+                                <td class="align-middle">{{ driver.last_name }}</td>
+                                <td class="align-middle">{{ driver.license }}</td>
+                                <td class="align-middle">{{ driver.category }}</td>
+                                <td class="align-middle">{{ driver.expiration|date:"d/m/Y" }}</td>
+                            </tr>   
+                        
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if search_performed and driver_count == 0 %}
+            <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
+                <i class="bi bi-info-circle-fill"></i>
+                <div class="mx-auto">
+                    {{ message }}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function driverDelete(id){
+            Swal.fire({
+                "title": "¿Está seguro de eliminar?",
+                {% comment %} "text": "esta acción no se puede deshacer", {% endcomment %}
+                "icon": "question",
+                "showCancelButton": true,
+                "confirmButtonText": "Eliminar",
+                "cancelButtonText": "Cancelar",
+                "confirmButtonColor": "#dc3545"
+            })
+            .then(function(result) {
+                if(result.isConfirmed) {
+                    window.location.href = `/sicomec/driver/delete/${id}`
+                }
+            })
+        }
+    </script>
+{% endblock %}
