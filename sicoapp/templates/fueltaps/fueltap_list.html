@@ -12,12 +12,23 @@
                 <button class="btn btn-primary" type="submit" title="Buscar">
                     <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
                 </button>
-                
+                <a class="btn" href="{% url 'sicomec:fueltap_list' %}" title="Recargar" style="background-color: #072e5e;">
+                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
+                </a>
             </div>
         </form>
     </section> 
 
     <section class="col-md-12 my-3">
+        {% if search_performed and ballot_count == 0 %}
+        <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
+            <i class="bi bi-info-circle-fill"></i>
+            <div class="mx-auto">
+                {{ message }}
+            </div>
+        </div>
+        {% endif %}
+
         {% if fueltap_count > 0 %}
             <div class="card card-body table-responsive">
                 <table class="table table-hover table_search">
@@ -49,15 +60,6 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
-        {% endif %}
-
-        {% if search_performed and fueltap_count == 0 %}
-            <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-                <i class="bi bi-info-circle-fill"></i>
-                <div class="mx-auto">
-                    {{ message }}
-                </div>
             </div>
         {% endif %}
     </section>

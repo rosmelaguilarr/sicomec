@@ -28,6 +28,7 @@
                 { id: "id_name", transform: "toUpperCase" },
                 { id: "id_last_name", transform: "toUpperCase" },
                 { id: "id_license", transform: "toUpperCase" },
+                { id: "id_justify", transform: "toUpperCase" },
             ];
         
             function transformInput(event, transform) {
@@ -52,32 +53,26 @@
 
 {% block js %}
 <script>
-    $(document).ready(function() {
+    document.addEventListener("DOMContentLoaded", function() {
         function toggleJustify() {
-            var available = $('#id_available').is(':checked');
-            var justifyField = $('#id_justify');
-
+            var available = document.getElementById('id_available').checked;
+            var justifyField = document.getElementById('id_justify');
+    
             if (available) {
-                justifyField.prop('readonly', true);
-                justifyField.css({
-                    'background-color': '#f0f0f0', 
-                    'cursor': 'not-allowed' 
-                });
-                justifyField.val('');
+                justifyField.readOnly = true;
+                justifyField.style.backgroundColor = '#f0f0f0';
+                justifyField.style.cursor = 'not-allowed';
+                justifyField.value = '';
             } else {
-                justifyField.prop('readonly', false);
-                justifyField.css({
-                    'background-color': '', 
-                    'cursor': '' 
-                });
+                justifyField.readOnly = false;
+                justifyField.style.backgroundColor = '';
+                justifyField.style.cursor = '';
             }
         }
-
-        
+    
         toggleJustify();
-
-        
-        $('#id_available').change(function() {
+    
+        document.getElementById('id_available').addEventListener('change', function() {
             toggleJustify();
         });
     });

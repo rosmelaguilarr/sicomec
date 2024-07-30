@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-around;
+            border: 1px solid blue;
+        }
+        h1 {
+            font-size: 16px;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+        .table-container {
+            width: 345px;
+            position: relative;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            text-align: left;
+            {% comment %} padding: 2px; {% endcomment %}
+        }
+        th {
+            background-color: #f0f0f0;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+        p{
+            padding: 0;
+            margin: 0;
+        }
+        .signature-container{
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        .row   {
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature{
+            width: 150px;
+            margin: 10px 0;
+            padding-top: 15px;
+        }
+        .name{
+            border-top: 1px solid #000;
+            text-align: center;
+        }
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .header-text{
+            text-align: center;
+            font-weight: bold;
+        }
+        img{
+            height: 50px;
+        }
+        .space-vertical{
+            padding-top: 10px;
+        }
+        .bold{
+            font-weight: bold;
+            width: 150px;
+        }
+        .date, .code{
+            position: absolute;
+            top: 100px;
+            font-size: 10px;
+        }
+        .date{
+            right: 0;
+        }
+        .code{
+            left: 0;
+            font-size: 12px;
+        }
+        .watermark{
+            position: absolute;
+            top: 350px;
+            right: 0px;
+            font-size: 14px;
+        }
+        .plate{
+            font-size: 16px;
+            text-align: center;
+            padding-top: 5px;
+            font-weight: bold;
+        }
+        .border{
+            border: 1px solid #707070;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="table-container">
+            <span class="code bold">{{ ballot.code }}</span>
+            <span class="date">{{ date }}</span>
+            <div class="header">
+                <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
+                <div class="header-text">
+                    <p>Dirección Regional de Transportes</p>
+                    <p> y Comunicaciones</p>
+                    <p>Sub Dirección de Equipo Mecánico</p>
+                </div>
+                <img src="{{ base_url }}/sicoapp/static/images/logo_sicomec_lg.png" />
+            </div>
+            <table>
+                <thead>
+                   <tr>
+                    <th colspan="3">
+                        <h1>Papeleta de salida de vehiculo</h1>
+                    </th>
+                   </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 2px solid #707070;">{{ ballot.vehicle_plate }}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="space-vertical bold" colspan="3">Conductor:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">{{ ballot.driver_name }} {{ ballot.driver_last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">N° Licencia:</td>
+                        <td class="bold" colspan="2">Categoría:</td>
+                    </tr>
+                    <tr>
+                        <td>{{ ballot.driver_license }}</td>
+                        <td colspan="2">{{ ballot.driver_category }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Vehiculo:</td>
+                        <td class="bold" colspan="2">Marca:</td>
+                    </tr>
+                    <tr>
+                        <td>{{ ballot.vehicle_name }}</td>
+                        <td colspan="2">{{ ballot.vehicle_brand }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">Sirvase conducir al:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">{{ ballot.drive_to }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">Destino:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">{{ ballot.place }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Motivo:</td>
+                    </tr>
+                    <tr>
+                        <td class="border" colspan="3">{{ ballot.reason }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">F. Salida:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="signature-container">
+                <div class="row">
+                    <div class="signature">
+                        <p class="name">
+                            {{ ballot.driver_name }} {{ ballot.driver_last_name }}
+                        </p>                    
+                    </div>
+                    <div class="signature">
+                        <p class="name">
+                           Jefe de SDEM
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="signature">
+                        <p class="name">
+                           Director de Caminos
+                        </p>
+                    </div>
+                    <div class="signature">
+                        <p class="name">
+                            Director Regional
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="table-container">
+            <span class="code bold">{{ ballot.code }}</span>
+            <span class="date">{{ date }}</span>
+            <div class="header">
+                <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
+                <div class="header-text">
+                    <p>Dirección Regional de Transportes</p>
+                    <p> y Comunicaciones</p>
+                    <p>Sub Dirección de Equipo Mecánico</p>
+                </div>
+                <img src="{{ base_url }}/sicoapp/static/images/logo_sicomec_lg.png" />
+            </div>
+            <table>
+                <thead>
+                   <tr>
+                    <th colspan="3">
+                        <h1>Papeleta de salida de vehiculo</h1>
+                    </th>
+                   </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="plate" colspan="3"><span style="padding: 5px 10px; border: 1px solid #000;">{{ ballot.vehicle_plate }}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="space-vertical bold" colspan="3">Conductor:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">{{ ballot.driver_name }} {{ ballot.driver_last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">N° Licencia:</td>
+                        <td class="bold" colspan="2">Categoría:</td>
+                    </tr>
+                    <tr style="border-bottom: 1px dashed #000;">
+                        <td>{{ ballot.driver_license }}</td>
+                        <td colspan="2" style="padding-bottom: 3px;">{{ ballot.driver_category }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Vehiculo:</td>
+                        <td class="bold" colspan="2">Marca:</td>
+                    </tr>
+                    <tr>
+                        <td>{{ ballot.vehicle_name }}</td>
+                        <td colspan="2">{{ ballot.vehicle_brand }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">Sirvase conducir al:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">{{ ballot.drive_to }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">Destino:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">{{ ballot.place }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Motivo:</td>
+                    </tr>
+                    <tr>
+                        <td class="border" colspan="3">{{ ballot.reason }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">F. Salida:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="signature-container">
+                <div class="row">
+                    <div class="signature">
+                        <p class="name">
+                            {{ ballot.driver_name }} {{ ballot.driver_last_name }}
+                        </p>                    
+                    </div>
+                    <div class="signature">
+                        <p class="name">
+                           Jefe de SDEM
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="signature">
+                        <p class="name">
+                           Director de Caminos
+                        </p>
+                    </div>
+                    <div class="signature">
+                        <p class="name">
+                            Director Regional
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+
+    </div>
+</body>
+</html>

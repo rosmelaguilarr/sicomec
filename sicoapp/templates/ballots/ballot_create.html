@@ -15,7 +15,7 @@
                     </button>
                 </div>
                 <div class="input-group mb-3" style="max-width: 48%;">
-                    <input type="search" name="" id="id_vehicle_plate_search" maxlength="6" value="" class="form-control" placeholder="Buscar Placa/Reg." aria-label="Buscar" autofocus>
+                    <input type="search" name="" id="id_vehicle_plate_search" maxlength="6" value="" class="form-control" placeholder="Buscar Placa" aria-label="Buscar" autofocus>
                     <button class="btn btn-primary" type="button" id="searchVehicleButton" title="Buscar">
                         <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
                     </button>
@@ -27,6 +27,7 @@
         <section class="col-md-8 offset-md-2 mb-5">
             <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
                 {% csrf_token %}
+                <input type="hidden" name="driver_dni" id="hidden_driver_dni">
                 {% crispy form %}
             </form>
         </section>
@@ -85,57 +86,111 @@
 
 {% block js %}
 <script>
-    $(document).ready(function() {
-        $('#id_driver_dni_search').on('input', function() {
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('id_driver_dni_search').addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '');
             if (this.value.length > 8) {
                 this.value = this.value.slice(0, 8);
             }
         });
 
-
-
-
-        $('#searchDriverButton').click(function() {
-            var dni = $('#id_driver_dni_search').val();
+        document.getElementById('searchDriverButton').addEventListener('click', function() {
+            var dni = document.getElementById('id_driver_dni_search').value;
             if (dni) {
-                $.ajax({
-                    url: "{% url 'sicomec:search_driver_by_dni' %}",
-                    data: { 'dni': dni },
-                    success: function(data) {
-                        $('#id_driver_name').val(data.name);
-                        $('#id_driver_last_name').val(data.last_name);
-                        $('#id_driver_license').val(data.license);
-                        $('#id_driver_category').val(data.category.name);
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Driver not found");
+                axios.get("{% url 'sicomec:search_driver_by_dni' %}", {
+                    params: { 'dni': dni }
+                })
+                .then(function(response) {
+                    var data = response.data;
+                    if (data.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title:  data.error,
+                            confirmButtonColor: '#0d6efd',
+                        });
+                    } else {
+                        document.getElementById('id_driver_name').value = data.name;
+                        document.getElementById('id_driver_last_name').value = data.last_name;
+                        document.getElementById('id_driver_license').value = data.license;
+                        document.getElementById('id_driver_category').value = data.category.name;
+                        document.getElementById('hidden_driver_dni').value = dni;
+                    }
+                })
+                .catch(function(error) {
+                    if (error.response && error.response.status === 404) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: error.response.data.error,
+                            confirmButtonColor: '#0d6efd',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: "Error al buscar conductor. Inténtalo de nuevo."
+                        });
                     }
                 });
             } else {
-                alert("Please enter a DNI");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Por favor ingresa DNI',
+                    confirmButtonColor: '#0d6efd',
+                });
             }
         });
 
-        $('#searchVehicleButton').click(function() {
-            var plate = $('#id_vehicle_plate_search').val();
+        document.getElementById('searchVehicleButton').addEventListener('click', function() {
+            var plate = document.getElementById('id_vehicle_plate_search').value;
             if (plate) {
-                $.ajax({
-                    url: "{% url 'sicomec:search_vehicle_by_plate' %}",
-                    data: { 'plate': plate },
-                    success: function(data) {
-                        $('#id_vehicle_plate').val(data.plate);
-                        $('#id_vehicle_name').val(data.name);
-                        $('#id_vehicle_brand').val(data.brand);
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Vehicle not found");
+                axios.get("{% url 'sicomec:search_vehicle_by_plate' %}", {
+                    params: { 'plate': plate }
+                })
+                .then(function(response) {
+                    var data = response.data;
+                    if (data.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title:  data.error,
+                            confirmButtonColor: '#0d6efd',
+                        });
+                    } else {
+                        document.getElementById('id_vehicle_plate').value = data.plate;
+                        document.getElementById('id_vehicle_name').value = data.name;
+                        document.getElementById('id_vehicle_brand').value = data.brand;
+                    }
+                })
+                .catch(function(error) {
+                    if (error.response && error.response.status === 404) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: error.response.data.error,
+                            confirmButtonColor: '#0d6efd',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: "Error al buscar vehículo. Inténtalo de nuevo."
+                        });
                     }
                 });
             } else {
-                alert("Please enter a vehicle plate");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Por favor ingresa placa de vehículo',
+                    confirmButtonColor: '#0d6efd',
+                });
             }
         });
+
+        {% comment %} document.querySelector('form').addEventListener('submit', function(event) {
+            var dni = document.getElementById('id_driver_dni_search').value;
+            document.getElementById('hidden_driver_dni').value = dni;
+        }); {% endcomment %}
+
+
     });
+
 </script>
 {% endblock  %}

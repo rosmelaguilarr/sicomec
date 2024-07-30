@@ -65,12 +65,13 @@ class VehicleForm(ModelForm):
 
     class Meta:     
         model = Vehicle
-        fields = ['plate','type','name','brand','chassis','model','production','fuel','mileage','hourometer','soat','citv']
+        fields = ['plate','type','name','brand','chassis','model','production','fuel','mileage','hourometer','soat','citv', 'available', 'justify']
 
         widgets = {
             'production': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'soat': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'citv': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
+            'justify': forms.Textarea(attrs={'rows': 1}),
         }
     
     def __init__(self, *args, **kwargs):
@@ -87,36 +88,34 @@ class VehicleForm(ModelForm):
         self.helper.form_class = 'card card-body mb-5'
         self.helper.layout = Layout(
             Row(
-                Column('plate', css_class='form-group col-md-6 mb-0'),
-                Column('type', css_class='form-group col-md-6 mb-0'),
+                Column('plate', css_class='form-group col-md-4 mb-0'),
+                Column('type', css_class='form-group col-md-4 mb-0'),
+                Column('name', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('name', css_class='form-group col-md-6 mb-0'),
-                Column('brand', css_class='form-group col-md-6 mb-0'),
+                Column('brand', css_class='form-group col-md-4 mb-0'),
+                Column('model', css_class='form-group col-md-4 mb-0'),
+                Column('chassis', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('model', css_class='form-group col-md-6 mb-0'),
-                Column('chassis', css_class='form-group col-md-6 mb-0'),
+                Column('production', css_class='form-group col-md-4 mb-0'),
+                Column('fuel', css_class='form-group col-md-4 mb-0'),
+                Column('mileage', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('production', css_class='form-group col-md-6 mb-0'),
-                Column('fuel', css_class='form-group col-md-6 mb-0'),
+                Column('hourometer', css_class='form-group col-md-4 mb-0'),
+                Column('soat', css_class='form-group col-md-4 mb-0'),
+                Column('citv', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('mileage', css_class='form-group col-md-6 mb-0'),
-                Column('hourometer', css_class='form-group col-md-6 mb-0'),
+                Column('available', css_class='form-group col-md-4 mb-0'),
+                Column('justify', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
-            Row(
-                Column('soat', css_class='form-group col-md-6 mb-0'),
-                Column('citv', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-
             Submit('submit', 'Guardar', css_class='btn btn-primary')
         )
 
@@ -166,7 +165,7 @@ class BallotForm(ModelForm):
 
     class Meta:     
         model = Ballot
-        fields = ['driver_name','driver_last_name','driver_license','driver_category','drive_to','vehicle_plate', 'vehicle_name','vehicle_brand','place','reason','exit_date','exit_time']
+        fields = ['driver_dni','driver_name','driver_last_name','driver_license','driver_category','drive_to','vehicle_plate', 'vehicle_name','vehicle_brand','place','reason','exit_date','exit_time']
 
         widgets = {
             'driver_name': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -177,9 +176,9 @@ class BallotForm(ModelForm):
             'vehicle_name': forms.TextInput(attrs={'readonly': 'readonly'}),
             'vehicle_brand': forms.TextInput(attrs={'readonly': 'readonly'}),
             'reason': forms.Textarea(attrs={'rows': 1}),
-
             'exit_date': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'exit_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
+            'driver_dni': forms.HiddenInput(),
         }
 
 

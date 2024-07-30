@@ -8,16 +8,27 @@
         <h3 class="text-center mb-3" >Buscar Vehículo</h3>
         <form method="GET" action="">
             <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa, registro o marca" aria-label="Buscar" autofocus>
+                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa, registro o marca" aria-label="Buscar" autofocus id="inputSearchVehicle">
                 <button class="btn btn-primary" type="submit" title="Buscar">
                     <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
                 </button>
-                
+                <a class="btn" href="{% url 'sicomec:vehicle_list' %}" title="Recargar" style="background-color: #072e5e;">
+                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
+                </a>
             </div>
         </form>
     </section> 
 
     <section class="col-md-12 my-3">
+        {% if search_performed and vehicle_count == 0 %}
+        <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
+            <i class="bi bi-info-circle-fill"></i>
+            <div class="mx-auto">
+                {{ message }}
+            </div>
+        </div>
+        {% endif %}
+
         {% if vehicle_count > 0 %}
             <div class="card card-body table-responsive">
                 <table class="table table-hover table_search">
@@ -29,8 +40,9 @@
                             <th>Marca</th>
                             <th>Fabricación</th>
                             <th>Combustible</th>
-                            <th>Emisión SOAT</th>
-                            <th>Emisión CITV</th>
+                            <th>Emi. SOAT</th>
+                            <th>Emi. CITV</th>
+                            <th>Disp.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +65,7 @@
                                 <td class="align-middle">{{ vehicle.fuel }}</td>
                                 <td class="align-middle">{{ vehicle.soat|date:"d/m/Y" }}</td>
                                 <td class="align-middle">{{ vehicle.citv|date:"d/m/Y" }}</td>
+                                <td class="align-middle">{{ vehicle.available|yesno:"Si,No" }}</td>
                             </tr>   
                         
                             
@@ -61,17 +74,35 @@
                 </table>
             </div>
         {% endif %}
-
-        {% if search_performed and vehicle_count == 0 %}
-            <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-                <i class="bi bi-info-circle-fill"></i>
-                <div class="mx-auto">
-                    {{ message }}
-                </div>
-            </div>
-        {% endif %}
     </section>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var fields = [
+            { id: "inputSearchVehicle", transform: "toUpperCase" },
+        ];
+    
+        function transformInput(event, transform) {
+            if (transform === "toUpperCase") {
+                event.target.value = event.target.value.toUpperCase();
+            }
+        }
+    
+        fields.forEach(function(field) {
+            var element = document.getElementById(field.id);
+    
+            if (field.transform === "toUpperCase") {
+                element.addEventListener("input", function(event) {
+                    transformInput(event, field.transform);
+                });
+            }
+        });
+    });
+</script> 
+
+
+
+
 {% endblock %}
 
 {% block js %}

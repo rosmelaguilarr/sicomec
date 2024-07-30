@@ -9,15 +9,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item fw-semibold">
                     <a class="nav-link active" aria-current="page" href="{% url 'sicomec:home' %}">
-                        <i class="bi bi-house-door-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-house-door-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Inicio
                     </a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Conductor
                     </a>
                     <ul class="dropdown-menu">
@@ -35,9 +35,9 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-car-front-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-car-front-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Vehículo
                     </a>
                     <ul class="dropdown-menu">
@@ -55,9 +55,9 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-fuel-pump-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-fuel-pump-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Grifo
                     </a>
                     <ul class="dropdown-menu">
@@ -75,9 +75,9 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Papeleta
                     </a>
                     <ul class="dropdown-menu">
@@ -88,22 +88,34 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:ballot_list' %}">
-                                <i class="bi bi-search"></i>
-                                Buscar
+                            <a class="dropdown-item" href="{% url 'sicomec:ballot_list_scheduled' %}">
+                                <i class="bi bi-clock"></i>
+                                Programadas
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:ballot_list_complete' %}">
+                                <i class="bi bi-check-lg"></i>
+                                Completadas
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:ballot_mark_return' %}">
+                                <i class="bi bi-clock"></i>
+                                Marcar Retorno
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="">
-                        <i class="bi bi-printer-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-printer-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Reporte
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <i class="bi bi-info-circle-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-info-circle-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                     </a>
                 </li>
             </ul>
@@ -111,7 +123,7 @@
         {% if user.is_authenticated %}
             <div class="d-flex pt-2">
                 <p class="fw-light mx-2">
-                    <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                    <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                     {{ user.first_name }}, {{ user.last_name }}
                 </p>
                 <p>
@@ -125,7 +137,7 @@
             <div class="d-flex pt-2">
                 <p>
                     <a href="{% url 'sicomec:login' %}" class="link-offset-2 mx-3 link-underline link-underline-opacity-0">
-                        <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #e04d09;"></i>
+                        <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Iniciar Sesión
                     </a>
                 </p>

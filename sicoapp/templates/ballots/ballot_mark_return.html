@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}Buscar Papeleta | SICOMEC{% endblock %}
+{% block title %}Marcar Retorno | SICOMEC{% endblock %}
 
 {% block content %}
 <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
-        <h3 class="text-center mb-3" >Buscar Papeleta</h3>
+        <h3 class="text-center mb-3" >Marcar Retorno</h3>
         <form method="GET" action="">
             <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por código de papeleta o placa" aria-label="Buscar" autofocus>
+                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa o código de papeleta" aria-label="Buscar" autofocus id="ballot_code_Search">
                 <button class="btn btn-primary" type="submit" title="Buscar">
                     <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
                 </button>
-                
+                <a class="btn" href="{% url 'sicomec:ballot_mark_return' %}" title="Recargar" style="background-color: #072e5e;">
+                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
+                </a>
             </div>
         </form>
     </section> 
@@ -20,17 +22,18 @@
     <section class="col-md-12 my-3">
         {% if ballot_count > 0 %}
             <div class="card card-body table-responsive">
-                <table class="table table-hover table_search">
+                <table class="table table_search">
                     <thead>
                         <tr>
                             <th>Acciones</th>
                             <th>Código</th>
                             <th>Conductor</th>
                             <th>Placa/Reg.</th>
-                            <th>Vehículo</th>
                             <th>Destino</th>
-                            <th>Fecha Salida</th>
-                            <th>Hora Salida</th>
+                            <th>F. Salida</th>
+                            <th>H. Salida</th>
+                            <th>F. Retorno</th>
+                            <th>H. Retorno</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,24 +41,20 @@
                             <tr>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-outline-primary " href="">
-                                            <i class="bi bi-printer-fill" title="Imprimir"></i>
-                                        </a>
-                                        <a class="btn btn-outline-primary " href="{% url 'sicomec:ballot_update' ballot.id %}?q={{ query }}">
-                                            <i class="bi bi-pencil-fill" title="Editar"></i>
-                                        </a>
-                                        <a class="btn btn-outline-danger" href="{% url 'sicomec:ballot_delete' ballot.id %}" onclick="ballotDelete('{{ ballot.id }}')" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
+                                        <a class="btn btn-primary " href="{% url 'sicomec:update_return_datetime' ballot.id %}?q={{ query }}">
+                                            <i class="bi bi-clock-fill" title="Imprimir"></i>
+                                            Marcar
                                         </a>
                                     </div>
                                 </td>
                                 <td class="align-middle">{{ ballot.code }}</td>
                                 <td class="align-middle">{{ ballot.driver_name }} {{ ballot.driver_last_name }}</td>
                                 <td class="align-middle">{{ ballot.vehicle_plate }}</td>
-                                <td class="align-middle">{{ ballot.vehicle_name }}</td>
                                 <td class="align-middle">{{ ballot.place }}</td>
                                 <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
                                 <td class="align-middle">{{ ballot.exit_time }}</td>
+                                <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }}</td>
+                                <td class="align-middle">{{ ballot.return_time|default_if_none:"" }}</td>
                             </tr>   
                         
                             
@@ -75,6 +74,35 @@
         {% endif %}
     </section>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        
+        var fields = [
+            { id: "ballot_code_Search", transform: "toUpperCase" },
+        
+        ];
+    
+        function transformInput(event, transform) {
+            if (transform === "toUpperCase") {
+                event.target.value = event.target.value.toUpperCase();
+            }
+        }
+    
+        fields.forEach(function(field) {
+            var element = document.getElementById(field.id);
+    
+            if (field.transform === "toUpperCase") {
+                element.addEventListener("input", function(event) {
+                    transformInput(event, field.transform);
+                });
+            }
+        });
+    });
+    
+</script> 
+
 {% endblock %}
 
 {% block js %}

@@ -25,8 +25,12 @@ urlpatterns = [
 
     path('ballot/create', views.ballot_create_view, name='ballot_create'),
     path('ballot/update/<str:id>', views.ballot_update_view, name='ballot_update'),
-    path('ballot/list', views.ballot_list_view, name='ballot_list'),
-    path('ballot/delete/<str:id>', views.ballot_delete_view, name='ballot_delete'),
+    path('ballot/list_scheduled', views.ballot_list_scheduled_view, name='ballot_list_scheduled'),
+    path('ballot/list_complete', views.ballot_list_complete_view, name='ballot_list_complete'),
+    path('ballot/mark_return', views.ballot_mark_return_view, name='ballot_mark_return'),
+    path('ballot/mark_return/update/<str:id>', views.update_return_datetime, name='update_return_datetime'),
+    path('ballot/generate_ballot_pdf/<str:id>', views.generate_ballot_pdf, name='generate_ballot_pdf'),
+    path('ballot/delete/<uuid:id>/', views.ballot_delete_view, name='ballot_delete'),
 
     path('search_driver_by_dni/', views.search_driver_by_dni, name='search_driver_by_dni'),
     path('search_vehicle_by_plate/', views.search_vehicle_by_plate, name='search_vehicle_by_plate'),

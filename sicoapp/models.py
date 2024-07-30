@@ -71,6 +71,8 @@ class Driver(models.Model):
             self.last_name = self.last_name.upper()
         if self.license:
             self.license = self.license.upper()
+        if self.justify:
+            self.justify = self.justify.upper()
         super(Driver, self).save(*args, **kwargs)
 
 
@@ -88,9 +90,11 @@ class Vehicle(models.Model):
     production = models.DateField(verbose_name='Fabricación', auto_now=False)
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
     mileage = models.PositiveIntegerField(verbose_name='Kilometraje',default=0, null=True, blank=True)
-    hourometer = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Horómetro', default=0, null=True, blank=True)
+    hourometer = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Horómetro', default=0, null=True, blank=True)
     soat = models.DateField(verbose_name='Emisión SOAT', auto_now=False)
     citv = models.DateField(verbose_name='Emisión CITV', auto_now=False)
+    available = models.BooleanField(default=True, verbose_name='Disponible')
+    justify = models.TextField(verbose_name='Justificación',null=True, blank=True)
     maintenance = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -114,6 +118,8 @@ class Vehicle(models.Model):
             self.chassis = self.chassis.upper()
         if self.model:
             self.model = self.model.upper()
+        if self.justify:
+            self.justify = self.justify.upper()
         super(Vehicle, self).save(*args, **kwargs)
 
 
@@ -155,20 +161,21 @@ class FuelTap(models.Model):
 class Ballot(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=10, unique=True, editable=False)
+    driver_dni = models.CharField(max_length=8)
     driver_name = models.CharField(max_length=20, verbose_name='Nombre')
     driver_last_name = models.CharField(max_length=30, verbose_name='Apellidos')
     driver_license = models.CharField(max_length=9, verbose_name='N° Licencia')
     driver_category = models.CharField(max_length=6, verbose_name='Categoría')
     drive_to = models.CharField(max_length=70, verbose_name='Sírvase conducir', null=False, blank=False)
-    vehicle_plate = models.CharField(max_length=6, verbose_name='Placa/Reg.')
+    vehicle_plate = models.CharField(max_length=6, verbose_name='Placa')
     vehicle_name = models.CharField(max_length=30, verbose_name='Vehículo')
     vehicle_brand = models.CharField(max_length=20, verbose_name='Marca')
     place = models.CharField(max_length=70, verbose_name='Destino', null=False, blank=False)
     reason = models.TextField(verbose_name='Motivo', null=False, blank=False)
     exit_date = models.DateField(verbose_name='Fecha Salida', auto_now=False)
     exit_time = models.TimeField(verbose_name='Hora Salida')
-    return_date = models.DateField(verbose_name='Fecha Retorno', auto_now=False, null=True, blank=True)
-    return_time = models.TimeField(verbose_name='Hora Retorno', null=True, blank=True)
+    return_date = models.DateField(verbose_name='Fecha Retorno', default=None, auto_now=False, null=True, blank=True)
+    return_time = models.TimeField(verbose_name='Hora Retorno', default=None, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 

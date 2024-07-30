@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Papeletas Completadas | SICOMEC{% endblock %}
+
+{% block content %}
+<div class="row">
+    <section class="col-md-6 offset-md-3 mt-5">
+        <h3 class="text-center mb-3" >Papeletas Completadas</h3>
+        <form method="GET" action="">
+            <div class="input-group mb-3 ">
+                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por código de papeleta o placa" aria-label="Buscar" autofocus>
+                <button class="btn btn-primary" type="submit" title="Buscar">
+                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
+                </button>
+                <a class="btn" href="{% url 'sicomec:ballot_list_complete' %}" title="Recargar" style="background-color: #072e5e;">
+                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
+                </a>
+            </div>
+        </form>
+    </section> 
+
+    <section class="col-md-12 my-3">
+        {% if search_performed and ballot_count == 0 %}
+            <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
+                <i class="bi bi-info-circle-fill"></i>
+                <div class="mx-auto">
+                    {{ message }}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if ballot_count > 0 %}
+            <div class="card card-body table-responsive">
+                <table class="table table-hover table_search">
+                    <thead>
+                        <tr>
+                            <th>Acciones</th>
+                            <th>Código</th>
+                            <th>Conductor</th>
+                            <th>Placa/Reg.</th>
+                            <th>Destino</th>
+                            <th>F. Salida</th>
+                            <th>H. Salida</th>
+                            <th>F. Retorno</th>
+                            <th>H. Retorno</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ballot in ballots %}
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="btn-group">
+                                        <a class="btn btn-outline-primary " href="">
+                                            <i class="bi bi-printer-fill" title="Imprimir"></i>
+                                        </a>
+                                        <a class="btn btn-outline-danger" href="#" onclick="ballotDelete('{{ ballot.id }}')" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="align-middle">{{ ballot.code }}</td>
+                                <td class="align-middle">{{ ballot.driver_name }} {{ ballot.driver_last_name }}</td>
+                                <td class="align-middle">{{ ballot.vehicle_plate }}</td>
+                                <td class="align-middle">{{ ballot.place }}</td>
+                                <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
+                                <td class="align-middle">{{ ballot.exit_time }}</td>
+                                <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }}</td>
+                                <td class="align-middle">{{ ballot.return_time|default_if_none:"" }}</td>
+                            </tr>   
+                        
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        function ballotDelete(id){
+            Swal.fire({
+                "title": "¿Está seguro de eliminar?",
+                "icon": "question",
+                "showCancelButton": true,
+                "confirmButtonText": "Eliminar",
+                "cancelButtonText": "Cancelar",
+                "confirmButtonColor": "#dc3545"
+            })
+            .then(function(result) {
+                if(result.isConfirmed) {
+                    window.location.href = `/sicomec/ballot/delete/${id}/?redirect_to=complete`;
+                }
+            })
+        }
+    </script>
+{% endblock %}
