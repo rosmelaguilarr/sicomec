@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}Registrar Vehículo | SICOMEC{% endblock %}
 
@@ -9,94 +10,13 @@
             <h3 class="text-center mb-3">Registrar Vehículo</h3>
             <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
                 {% csrf_token %}
+                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.plate }}">
                 {% crispy form %}
             </form>
         </section>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var fields = [
-                { id: "id_plate", transform: "toUpperCase" },
-                { id: "id_name", transform: "toUpperCase" },
-                { id: "id_brand", transform: "toUpperCase" },
-                { id: "id_model", transform: "toUpperCase" },
-                { id: "id_chassis", transform: "toUpperCase" },
-                { id: "id_justify", transform: "toUpperCase" },
-            ];
-        
-            function transformInput(event, transform) {
-                if (transform === "toUpperCase") {
-                    event.target.value = event.target.value.toUpperCase();
-                }
-            }
-        
-            fields.forEach(function(field) {
-                var element = document.getElementById(field.id);
-        
-                if (field.transform === "toUpperCase") {
-                    element.addEventListener("input", function(event) {
-                        transformInput(event, field.transform);
-                    });
-                }
-            });
-    
-    
-            const typeField = document.getElementById('id_type');
-            const mileageField = document.getElementById('id_mileage');
-            const hourometerField = document.getElementById('id_hourometer');
-    
-            function toggleFields() {
-                const selectedOption = typeField.options[typeField.selectedIndex];
-                const selectedText = selectedOption.text;
-    
-                if (selectedText === 'VEHICULO') {  
-                    mileageField.disabled = false;
-                    hourometerField.disabled = true;
-                    hourometerField.value = '';
-                } else if (selectedText === 'MAQUINARIA') {  
-                    mileageField.disabled = true;
-                    hourometerField.disabled = false;
-                    mileageField.value = '';
-                } else {
-                    mileageField.disabled = false;
-                    hourometerField.disabled = false;
-                }
-            }
-    
-            toggleFields();
-    
-            typeField.addEventListener('change', toggleFields);
-        });
-        
-    </script> 
 {% endblock %}
 
 {% block js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        function toggleJustify() {
-            var available = document.getElementById('id_available').checked;
-            var justifyField = document.getElementById('id_justify');
-    
-            if (available) {
-                justifyField.readOnly = true;
-                justifyField.style.backgroundColor = '#f0f0f0';
-                justifyField.style.cursor = 'not-allowed';
-                justifyField.value = '';
-            } else {
-                justifyField.readOnly = false;
-                justifyField.style.backgroundColor = '';
-                justifyField.style.cursor = '';
-            }
-        }
-    
-        toggleJustify();
-    
-        document.getElementById('id_available').addEventListener('change', function() {
-            toggleJustify();
-        });
-    });
-</script>
-</script>
+<script src="{% static 'js/vehicle_form.js' %}"></script>
 {% endblock  %}

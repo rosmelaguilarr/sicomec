@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}Actualizar Papeleta | SICOMEC{% endblock %}
 
 {% block content %}
     <div class="row">
         <section class="col-md-8 offset-md-2 my-5">
-            <h3 class="text-center mb-3">Actualizar Papeleta</h3>
+            <h3 class="text-center mb-3">
+                <a class="btn btn-sm" href="{% url 'sicomec:ballot_list_scheduled' %}?q={{ query }}" title="Regresar" style="background-color: #072e5e;">
+                    <i class="bi bi-arrow-left mx-1" style="font-size: 1rem; color: #fff;"></i>
+                </a>
+                Actualizar Papeleta
+            </h3>
             <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
                 {% csrf_token %}
+                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.pk }}">
                 {% crispy form %}
                 <input type="hidden" name="q" value="{{ query }}">
             </form>
@@ -17,51 +24,5 @@
 {% endblock %}
 
 {% block js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        function setFieldReadonly(fieldId) {
-            var field = document.getElementById(fieldId);
-            if (field && {{ form.instance.pk|yesno:"true,false" }}) {
-                field.setAttribute("readonly", "readonly");
-                field.style.backgroundColor = "#e9ecef";
-                field.style.pointerEvents = "none";
-            }
-        }
-    
-        setFieldReadonly("id_driver_name");
-        setFieldReadonly("id_driver_last_name");
-        setFieldReadonly("id_driver_license");
-        setFieldReadonly("id_driver_category");
-        setFieldReadonly("id_vehicle_plate");
-        setFieldReadonly("id_vehicle_name");
-        setFieldReadonly("id_vehicle_brand");
-
-        var fields = [
-            { id: "id_drive_to", transform: "toUpperCase" },
-            { id: "id_place", transform: "toUpperCase" },
-            { id: "id_reason", transform: "toUpperCase" },
-            { id: "id_driver_dni_search", transform: "toUpperCase" },
-            { id: "id_vehicle_plate_search", transform: "toUpperCase" },
-        ];
-    
-        function transformInput(event, transform) {
-            if (transform === "toUpperCase") {
-                event.target.value = event.target.value.toUpperCase();
-            }
-        }
-    
-        fields.forEach(function(field) {
-            var element = document.getElementById(field.id);
-    
-            if (field.transform === "toUpperCase") {
-                element.addEventListener("input", function(event) {
-                    transformInput(event, field.transform);
-                });
-            }
-        });
-
-        
-    });
-    
-</script> 
+<script src="{% static 'js/ballot_form.js' %}"></script>
 {% endblock  %} 

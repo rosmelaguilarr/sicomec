@@ -4,8 +4,8 @@
 {% block title %}Inicio | SICOMEC{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="position-absolute top-50 start-50 translate-middle">
+    <div class="row d-flex justify-content-center align-items-center" style="height: 85vh;">
+        <div class="text-center">
             <section class="col-xxl-6 offset-xxl-3 col-sm-8 offset-sm-2">
                 <div class="text-center">
                     <img src="{% static 'images/logo_sicomec_lg.png' %}" alt="SICOMEC" height="230px" />
@@ -15,13 +15,13 @@
                 </h1>
                 {% if user.is_authenticated %}
                     <div class="d-flex justify-content-center my-5">
-                        <a class="btn btn-primary w-50 mx-2" href="">
-                            <i class="bi bi-file-plus-fill mx-1" style="font-size: 1.2rem; color: #fff;"></i>
-                            Nuevo Registro
+                        <a class="btn btn-primary w-50 mx-2" href="{% url 'sicomec:fuel_order_create' %}">
+                            <i class="bi bi-plus-lg mx-1" style="font-size: 1.2rem; color: #fff;"></i>
+                            Nuevo Pedido
                         </a>
-                        <a class="btn btn-primary w-50 mx-2" href="">
-                            <i class="bi bi-search mx-1" style="font-size: 1.2rem; color: #fff;"></i>
-                            Buscar
+                        <a class="btn btn-primary w-50 mx-2" href="{% url 'sicomec:ballot_create' %}">
+                            <i class="bi bi-plus-lg mx-1" style="font-size: 1.2rem; color: #fff;"></i>
+                            Nueva Papeleta
                         </a>
                     </div>
                 {% else %}
@@ -33,5 +33,41 @@
                 {% endif %}
             </section>
         </div>
+
     </div>
 {% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var alertShow = "{{ request.session.alertShow|default:'False' }}";
+        
+        if (alertShow === 'True') {
+            setTimeout(function() {
+                fetch('/sicomec/notification/count')
+                    .then(response => response.json())
+                    .then(data => {
+                        const notificationCount = data.count;
+        
+                        if (notificationCount > 0) {
+                            Swal.fire({
+                                title: 'Expiración de Documentos',
+                                text: `Hay ${notificationCount} documento(s) por revisar.`,
+                                icon: 'warning',
+                                confirmButtonText: 'Revisar',
+                                confirmButtonColor: '#0d6efd',
+                                showCancelButton: true,
+                                cancelButtonText: 'Cancelar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "{% url 'sicomec:notification_list' %}";
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error fetching notification count:', error));
+            }, 2000); // 2 seconds
+        }
+        });
+</script>
+{% endblock  %}

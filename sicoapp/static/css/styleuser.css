@@ -32,9 +32,7 @@ body {
     display: none;
 }
 
-.table_report.table>:not(caption)>*>*{
-    border-bottom-width: 0
-}
 .table>:not(caption)>*>* {
     padding: .3rem .5rem;
+    font-size: 14px;
 }

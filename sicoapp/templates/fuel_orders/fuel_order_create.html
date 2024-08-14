@@ -2,23 +2,21 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-{% block title %}Registrar Conductor | SICOMEC{% endblock %}
+{% block title %}Registrar Pedido de Combustible | SICOMEC{% endblock %}
 
 {% block content %}
     <div class="row">
         <section class="col-md-8 offset-md-2 my-5">
-            <h3 class="text-center mb-3">Registrar Conductor</h3>
+            <h3 class="text-center mb-3">Registrar Pedido de Combustible</h3>
             <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
                 {% csrf_token %}
-                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.dni }}">
+                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.code }}">
                 {% crispy form %}
             </form>
         </section>
     </div>
 {% endblock %}
-
+    
 {% block js %}
-<script src="{% static 'js/driver_form.js' %}"></script>
-{% endblock  %}
-
-
+    <script src="{% static 'js/fuel_order_form.js' %}"></script>
+{% endblock %}

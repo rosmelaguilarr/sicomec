@@ -77,6 +77,52 @@
                 </li>
                 <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-file-check-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                        Orden Compra
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:buy_order_create' %}">
+                                <i class="bi bi-plus-lg"></i>
+                                Nuevo Registro
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:buy_order_list' %}">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown fw-semibold">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-file-check-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                        Cumbustible
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:fuel_order_create' %}">
+                                <i class="bi bi-plus-lg"></i>
+                                Nuevo Pedido
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:control_card' %}">
+                                <i class="bi bi-fuel-pump"></i>
+                                Tarjeta de Control
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'sicomec:fuel_order_list' %}">
+                                <i class="bi bi-search"></i>
+                                Buscar
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown fw-semibold">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Papeleta
                     </a>
@@ -106,12 +152,6 @@
                             </a>
                         </li>
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="">
-                        <i class="bi bi-printer-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                        Reporte
-                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">

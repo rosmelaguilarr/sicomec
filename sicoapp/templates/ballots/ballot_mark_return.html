@@ -28,7 +28,7 @@
                             <th>Acciones</th>
                             <th>Código</th>
                             <th>Conductor</th>
-                            <th>Placa/Reg.</th>
+                            <th>Placa</th>
                             <th>Destino</th>
                             <th>F. Salida</th>
                             <th>H. Salida</th>
@@ -42,21 +42,20 @@
                                 <td>
                                     <div class="btn-group">
                                         <a class="btn btn-primary " href="{% url 'sicomec:update_return_datetime' ballot.id %}?q={{ query }}">
-                                            <i class="bi bi-clock-fill" title="Imprimir"></i>
+                                            <i class="bi bi-clock-fill" title="Marcar"></i>
                                             Marcar
                                         </a>
                                     </div>
                                 </td>
                                 <td class="align-middle">{{ ballot.code }}</td>
-                                <td class="align-middle">{{ ballot.driver_name }} {{ ballot.driver_last_name }}</td>
-                                <td class="align-middle">{{ ballot.vehicle_plate }}</td>
+                                <td class="align-middle">{{ ballot.driver }}</td>
+                                <td class="align-middle">{{ ballot.plate }}</td>
                                 <td class="align-middle">{{ ballot.place }}</td>
                                 <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
                                 <td class="align-middle">{{ ballot.exit_time }}</td>
                                 <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }}</td>
                                 <td class="align-middle">{{ ballot.return_time|default_if_none:"" }}</td>
                             </tr>   
-                        
                             
                         {% endfor %}
                     </tbody>
@@ -74,54 +73,4 @@
         {% endif %}
     </section>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        
-        var fields = [
-            { id: "ballot_code_Search", transform: "toUpperCase" },
-        
-        ];
-    
-        function transformInput(event, transform) {
-            if (transform === "toUpperCase") {
-                event.target.value = event.target.value.toUpperCase();
-            }
-        }
-    
-        fields.forEach(function(field) {
-            var element = document.getElementById(field.id);
-    
-            if (field.transform === "toUpperCase") {
-                element.addEventListener("input", function(event) {
-                    transformInput(event, field.transform);
-                });
-            }
-        });
-    });
-    
-</script> 
-
 {% endblock %}
-
-{% block js %}
-    <script>
-        function vehicleDelete(id){
-            Swal.fire({
-                "title": "¿Está seguro de eliminar?",
-                {% comment %} "text": "esta acción no se puede deshacer", {% endcomment %}
-                "icon": "question",
-                "showCancelButton": true,
-                "confirmButtonText": "Eliminar",
-                "cancelButtonText": "Cancelar",
-                "confirmButtonColor": "#dc3545"
-            })
-            .then(function(result) {
-                if(result.isConfirmed) {
-                    window.location.href = `/sicomec/ballot/delete/${id}`
-                }
-            })
-        }
-    </script>
-{% endblock %} 

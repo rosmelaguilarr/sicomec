@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Papeleta de salida de vehículo</title>
+    <title>Pedido de Combustible</title>
     <style>
         @page {
             size: A4;
@@ -85,7 +85,7 @@
         }
         .bold{
             font-weight: bold;
-            width: 160px;
+            width: 102px;
         }
         .date, .code{
             position: absolute;
@@ -118,14 +118,21 @@
             border: 1px solid #707070;
             background-color: #f0f0f0;
         }
+        .text-truncate {
+            display: inline-block;
+            width: 340px;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="table-container">
-            <span class="code bold">{{ ballot.code }}</span>
+            <span class="code bold">{{ fuel_order.code }}</span>
             <span class="date">{{ date }}</span>
-            <span class="watermark">Conductor</span>
+            <span class="watermark"></span>
             <div class="header">
                 <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
                 <div class="header-text">
@@ -139,61 +146,74 @@
                 <thead>
                    <tr>
                     <th colspan="3">
-                        <h1>Papeleta de salida de vehículo</h1>
+                        <h1>Pedido de Combustible</h1>
                     </th>
                    </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 1px solid #707070;">{{ ballot.plate }}</span></td>
+                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 1px solid #707070;">{{ fuel_order.order }}</span></td>
                     </tr>
                     <tr>
-                        <td class="space-vertical bold" colspan="3">Conductor:</td>
+                        <td class="space-vertical bold" colspan="3">Proveedor:</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="border">{{ ballot.driver }}</td>
+                        <td colspan="3" class="border">{{ fuel_order.fueltap }}</td>
                     </tr>
                     <tr>
-                        <td class="bold">N° Licencia:</td>
-                        <td class="bold" colspan="2">Categoría:</td>
+                        <td class="bold" colspan="3">Conductor:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.driver_license }}</td>
-                        <td colspan="2">{{ ballot.driver_category }}</td>
+                        <td colspan="3" class="border">{{ fuel_order.driver }}</td>
                     </tr>
                     <tr>
+                        <td class="bold">Placa:</td>
                         <td class="bold">Vehículo:</td>
-                        <td class="bold" colspan="2">Marca:</td>
+                        <td class="bold">Marca:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.vehicle_name }}</td>
-                        <td colspan="2">{{ ballot.vehicle_brand }}</td>
+                        <td>{{ fuel_order.plate }}</td>
+                        <td>{{ fuel_order.vehicle }}</td>
+                        <td>{{ fuel_order.brand }}</td>
                     </tr>
                     <tr>
-                        <td class="bold" colspan="3">Sírvase conducir al:</td>
+                        
+                        <td class="bold">Combustible:</td>
+                        <td class="bold">Cantidad:</td>
+                        <td class="bold">N° Vale:</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="border">{{ ballot.drive_to }}</td>
+                        <td>{{ fuel_order.fuel }}</td>
+                        <td>{{ fuel_order.quantity }}</td>
+                        <td>{{ fuel_order.voucher }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">Área Usuaria:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">
+                            <span class="text-truncate">
+                                {{ fuel_order.user_area }} 
+                            </span>
+                        </td>
                     </tr>
                     <tr>
                         <td class="bold" colspan="3">Destino:</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="border">{{ ballot.place }}</td>
+                        <td colspan="3" class="border">{{ fuel_order.place }}</td>
                     </tr>
                     <tr>
                         <td class="bold">Motivo:</td>
                     </tr>
                     <tr>
-                        <td class="border" colspan="3">{{ ballot.reason }}</td>
+                        <td class="border" colspan="3">{{ fuel_order.reason }}</td>
                     </tr>
                     <tr>
-                        <td class="bold">F. Salida:</td>
-                        <td class="bold">F. Retorno:</td>
+                        <td class="bold" colspan="3">Fecha Retiro:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
-                        <td>{{ ballot.return_date|default_if_none:"" }} {{ ballot.return_time|default_if_none:"" }}</td>
+                        <td colspan="3">{{ fuel_order.date }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -201,24 +221,19 @@
                 <div class="row">
                     <div class="signature">
                         <p class="name">
-                            {{ ballot.driver }}
+                            Área Usuaria
                         </p>                    
                     </div>
                     <div class="signature">
                         <p class="name">
-                           Jefe de SDEM
+                            Resp. Combustible
                         </p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="signature">
                         <p class="name">
-                           Director de Caminos
-                        </p>
-                    </div>
-                    <div class="signature">
-                        <p class="name">
-                            Director Regional
+                            Conductor
                         </p>
                     </div>
                 </div>
@@ -227,9 +242,9 @@
 
 
         <div class="table-container">
-            <span class="code bold">{{ ballot.code }}</span>
+            <span class="code bold">{{ fuel_order.code }}</span>
             <span class="date">{{ date }}</span>
-            <span class="watermark">SDEM</span>
+            <span class="watermark">Almacén</span>
             <div class="header">
                 <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
                 <div class="header-text">
@@ -243,61 +258,74 @@
                 <thead>
                    <tr>
                     <th colspan="3">
-                        <h1>Papeleta de salida de vehículo</h1>
+                        <h1>Pedido de Combustible</h1>
                     </th>
                    </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 1px solid #707070;">{{ ballot.plate }}</span></td>
+                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 1px solid #707070;">{{ fuel_order.order }}</span></td>
                     </tr>
                     <tr>
-                        <td class="space-vertical bold" colspan="3">Conductor:</td>
+                        <td class="space-vertical bold" colspan="3">Proveedor:</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="border">{{ ballot.driver }}</td>
+                        <td colspan="3" class="border">{{ fuel_order.fueltap }}</td>
                     </tr>
                     <tr>
-                        <td class="bold">N° Licencia:</td>
-                        <td class="bold" colspan="2">Categoría:</td>
+                        <td class="bold" colspan="3">Conductor:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.driver_license }}</td>
-                        <td colspan="2">{{ ballot.driver_category }}</td>
+                        <td colspan="3" class="border">{{ fuel_order.driver }}</td>
                     </tr>
                     <tr>
+                        <td class="bold">Placa:</td>
                         <td class="bold">Vehículo:</td>
-                        <td class="bold" colspan="2">Marca:</td>
+                        <td class="bold">Marca:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.vehicle_name }}</td>
-                        <td colspan="2">{{ ballot.vehicle_brand }}</td>
+                        <td>{{ fuel_order.plate }}</td>
+                        <td>{{ fuel_order.vehicle }}</td>
+                        <td>{{ fuel_order.brand }}</td>
                     </tr>
                     <tr>
-                        <td class="bold" colspan="3">Sírvase conducir al:</td>
+                        
+                        <td class="bold">Combustible:</td>
+                        <td class="bold">Cantidad:</td>
+                        <td class="bold">N° Vale:</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="border">{{ ballot.drive_to }}</td>
+                        <td>{{ fuel_order.fuel }}</td>
+                        <td>{{ fuel_order.quantity }}</td>
+                        <td>{{ fuel_order.voucher }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bold" colspan="3">Área Usuaria:</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="border">
+                            <span class="text-truncate">
+                                {{ fuel_order.user_area }} 
+                            </span>
+                        </td>
                     </tr>
                     <tr>
                         <td class="bold" colspan="3">Destino:</td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="border">{{ ballot.place }}</td>
+                        <td colspan="3" class="border">{{ fuel_order.place }}</td>
                     </tr>
                     <tr>
                         <td class="bold">Motivo:</td>
                     </tr>
                     <tr>
-                        <td class="border" colspan="3">{{ ballot.reason }}</td>
+                        <td class="border" colspan="3">{{ fuel_order.reason }}</td>
                     </tr>
                     <tr>
-                        <td class="bold">F. Salida:</td>
-                        <td class="bold">F. Retorno:</td>
+                        <td class="bold" colspan="3">Fecha Retiro:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
-                        <td>{{ ballot.return_date|default_if_none:"" }} {{ ballot.return_time|default_if_none:"" }}</td>
+                        <td colspan="3">{{ fuel_order.date }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -305,24 +333,19 @@
                 <div class="row">
                     <div class="signature">
                         <p class="name">
-                            {{ ballot.driver }}
+                            Área Usuaria
                         </p>                    
                     </div>
                     <div class="signature">
                         <p class="name">
-                           Jefe de SDEM
+                            Resp. Combustible
                         </p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="signature">
                         <p class="name">
-                           Director de Caminos
-                        </p>
-                    </div>
-                    <div class="signature">
-                        <p class="name">
-                            Director Regional
+                            Conductor
                         </p>
                     </div>
                 </div>

@@ -8,7 +8,7 @@
         <h3 class="text-center mb-3" >Buscar Vehículo</h3>
         <form method="GET" action="">
             <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa, registro o marca" aria-label="Buscar" autofocus id="inputSearchVehicle">
+                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa o marca" aria-label="Buscar" autofocus id="inputSearchVehicle">
                 <button class="btn btn-primary" type="submit" title="Buscar">
                     <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
                 </button>
@@ -50,10 +50,10 @@
                             <tr>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-outline-primary " href="{% url 'sicomec:vehicle_update' vehicle.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_update' vehicle.id %}?q={{ query }}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
-                                        <a class="btn btn-outline-danger" href="#" onclick="vehicleDelete('{{ vehicle.id }}')" title="Eliminar">
+                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/vehicle/delete', '{{ vehicle.id }}', '', 'delete')" title="Eliminar">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>
@@ -61,11 +61,17 @@
                                 <td class="align-middle">{{ vehicle.plate }}</td>
                                 <td class="align-middle">{{ vehicle.type }}</td>
                                 <td class="align-middle">{{ vehicle.brand }}</td>
-                                <td class="align-middle">{{ vehicle.production|date:"d/m/Y" }}</td>
+                                <td class="align-middle">{{ vehicle.production }}</td>
                                 <td class="align-middle">{{ vehicle.fuel }}</td>
                                 <td class="align-middle">{{ vehicle.soat|date:"d/m/Y" }}</td>
                                 <td class="align-middle">{{ vehicle.citv|date:"d/m/Y" }}</td>
-                                <td class="align-middle">{{ vehicle.available|yesno:"Si,No" }}</td>
+                                <td class="align-middle">
+                                    {% if vehicle.available %}
+                                        <i class="bi bi-check-circle text-success"></i>
+                                    {% else %}
+                                        <i class="bi bi-x-circle text-danger"></i>
+                                    {% endif %}
+                                </td>
                             </tr>   
                         
                             
@@ -100,28 +106,4 @@
     });
 </script> 
 
-
-
-
-{% endblock %}
-
-{% block js %}
-    <script>
-        function vehicleDelete(id){
-            Swal.fire({
-                "title": "¿Está seguro de eliminar?",
-                {% comment %} "text": "esta acción no se puede deshacer", {% endcomment %}
-                "icon": "question",
-                "showCancelButton": true,
-                "confirmButtonText": "Eliminar",
-                "cancelButtonText": "Cancelar",
-                "confirmButtonColor": "#dc3545"
-            })
-            .then(function(result) {
-                if(result.isConfirmed) {
-                    window.location.href = `/sicomec/vehicle/delete/${id}`
-                }
-            })
-        }
-    </script>
 {% endblock %}

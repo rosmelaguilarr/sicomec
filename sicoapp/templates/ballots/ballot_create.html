@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}Registrar Papeleta | SICOMEC{% endblock %}
 
@@ -7,190 +8,18 @@
     <div class="row">
         <section class="col-md-8 offset-md-2 mt-5">
             <h3 class="text-center mb-3">Registrar Papeleta</h3>
-            <form method="GET" action="" class="d-flex justify-content-between">
-                <div class="input-group mb-3" style="max-width: 48%;">
-                    <input type="search" name="" id="id_driver_dni_search" maxlength="8" value="" class="form-control" placeholder="Buscar DNI" aria-label="Buscar" autofocus>
-                    <button class="btn btn-primary" type="button" id="searchDriverButton" title="Buscar">
-                        <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                    </button>
-                </div>
-                <div class="input-group mb-3" style="max-width: 48%;">
-                    <input type="search" name="" id="id_vehicle_plate_search" maxlength="6" value="" class="form-control" placeholder="Buscar Placa" aria-label="Buscar" autofocus>
-                    <button class="btn btn-primary" type="button" id="searchVehicleButton" title="Buscar">
-                        <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                    </button>
-                </div>
-            </form>
         </section> 
-
 
         <section class="col-md-8 offset-md-2 mb-5">
             <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
                 {% csrf_token %}
-                <input type="hidden" name="driver_dni" id="hidden_driver_dni">
+                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.pk }}">
                 {% crispy form %}
             </form>
         </section>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            function setFieldReadonly(fieldId) {
-                var field = document.getElementById(fieldId);
-                if (field && {{ form.instance.pk|yesno:"true,false" }}) {
-                    field.setAttribute("readonly", "readonly");
-                    field.style.backgroundColor = "#e9ecef";
-                    field.style.pointerEvents = "none";
-                }
-            }
-        
-            setFieldReadonly("id_driver_name");
-            setFieldReadonly("id_driver_last_name");
-            setFieldReadonly("id_driver_license");
-            setFieldReadonly("id_driver_category");
-            setFieldReadonly("id_vehicle_plate");
-            setFieldReadonly("id_vehicle_name");
-            setFieldReadonly("id_vehicle_brand");
-            
-            
-            var fields = [
-                { id: "id_drive_to", transform: "toUpperCase" },
-                { id: "id_place", transform: "toUpperCase" },
-                { id: "id_reason", transform: "toUpperCase" },
-                { id: "id_driver_dni_search", transform: "toUpperCase" },
-                { id: "id_vehicle_plate_search", transform: "toUpperCase" },
-            ];
-        
-            function transformInput(event, transform) {
-                if (transform === "toUpperCase") {
-                    event.target.value = event.target.value.toUpperCase();
-                }
-            }
-        
-            fields.forEach(function(field) {
-                var element = document.getElementById(field.id);
-        
-                if (field.transform === "toUpperCase") {
-                    element.addEventListener("input", function(event) {
-                        transformInput(event, field.transform);
-                    });
-                }
-            });
-        });
-        
-    </script> 
-
-
-
 {% endblock %}
 
 {% block js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('id_driver_dni_search').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-            if (this.value.length > 8) {
-                this.value = this.value.slice(0, 8);
-            }
-        });
-
-        document.getElementById('searchDriverButton').addEventListener('click', function() {
-            var dni = document.getElementById('id_driver_dni_search').value;
-            if (dni) {
-                axios.get("{% url 'sicomec:search_driver_by_dni' %}", {
-                    params: { 'dni': dni }
-                })
-                .then(function(response) {
-                    var data = response.data;
-                    if (data.error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title:  data.error,
-                            confirmButtonColor: '#0d6efd',
-                        });
-                    } else {
-                        document.getElementById('id_driver_name').value = data.name;
-                        document.getElementById('id_driver_last_name').value = data.last_name;
-                        document.getElementById('id_driver_license').value = data.license;
-                        document.getElementById('id_driver_category').value = data.category.name;
-                        document.getElementById('hidden_driver_dni').value = dni;
-                    }
-                })
-                .catch(function(error) {
-                    if (error.response && error.response.status === 404) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: error.response.data.error,
-                            confirmButtonColor: '#0d6efd',
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: "Error al buscar conductor. Inténtalo de nuevo."
-                        });
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Por favor ingresa DNI',
-                    confirmButtonColor: '#0d6efd',
-                });
-            }
-        });
-
-        document.getElementById('searchVehicleButton').addEventListener('click', function() {
-            var plate = document.getElementById('id_vehicle_plate_search').value;
-            if (plate) {
-                axios.get("{% url 'sicomec:search_vehicle_by_plate' %}", {
-                    params: { 'plate': plate }
-                })
-                .then(function(response) {
-                    var data = response.data;
-                    if (data.error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title:  data.error,
-                            confirmButtonColor: '#0d6efd',
-                        });
-                    } else {
-                        document.getElementById('id_vehicle_plate').value = data.plate;
-                        document.getElementById('id_vehicle_name').value = data.name;
-                        document.getElementById('id_vehicle_brand').value = data.brand;
-                    }
-                })
-                .catch(function(error) {
-                    if (error.response && error.response.status === 404) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: error.response.data.error,
-                            confirmButtonColor: '#0d6efd',
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: "Error al buscar vehículo. Inténtalo de nuevo."
-                        });
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Por favor ingresa placa de vehículo',
-                    confirmButtonColor: '#0d6efd',
-                });
-            }
-        });
-
-        {% comment %} document.querySelector('form').addEventListener('submit', function(event) {
-            var dni = document.getElementById('id_driver_dni_search').value;
-            document.getElementById('hidden_driver_dni').value = dni;
-        }); {% endcomment %}
-
-
-    });
-
-</script>
+<script src="{% static 'js/ballot_form.js' %}"></script>
 {% endblock  %}

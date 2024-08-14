@@ -37,7 +37,7 @@
                         <th>Acciones</th>
                         <th>Código</th>
                         <th>Conductor</th>
-                        <th>Placa/Reg.</th>
+                        <th>Placa</th>
                         <th>Destino</th>
                         <th>F. Salida</th>
                         <th>H. Salida</th>
@@ -50,20 +50,20 @@
                         <tr>
                             <td class="align-middle">
                                 <div class="btn-group">
-                                    <a class="btn btn-outline-primary" href="{% url 'sicomec:generate_ballot_pdf' ballot.id %}" target="_blank">
+                                    <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_ballot_pdf' ballot.id %}" target="_blank">
                                         <i class="bi bi-printer-fill" title="Imprimir"></i>
                                     </a>
-                                    <a class="btn btn-outline-primary" href="{% url 'sicomec:ballot_update' ballot.id %}?q={{ query }}">
+                                    <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:ballot_update' ballot.id %}?q={{ query }}">
                                         <i class="bi bi-pencil-fill" title="Editar"></i>
                                     </a>
-                                    <a class="btn btn-outline-danger" href="#" onclick="ballotDelete('{{ ballot.id }}')" title="Eliminar">
+                                    <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/ballot/delete', '{{ ballot.id }}', 'redirect_to=scheduled', 'delete')" title="Eliminar">
                                         <i class="bi bi-trash-fill"></i>
                                     </a>
                                 </div>
                             </td>
                             <td class="align-middle">{{ ballot.code }}</td>
-                            <td class="align-middle">{{ ballot.driver_name }} {{ ballot.driver_last_name }}</td>
-                            <td class="align-middle">{{ ballot.vehicle_plate }}</td>
+                            <td class="align-middle">{{ ballot.driver }}</td>
+                            <td class="align-middle">{{ ballot.plate }}</td>
                             <td class="align-middle">{{ ballot.place }}</td>
                             <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
                             <td class="align-middle">{{ ballot.exit_time }}</td>
@@ -77,24 +77,4 @@
         {% endif %}
     </section>
 </div>
-{% endblock %}
-
-{% block js %}
-    <script>
-        function ballotDelete(id){
-            Swal.fire({
-                "title": "¿Está seguro de eliminar?",
-                "icon": "question",
-                "showCancelButton": true,
-                "confirmButtonText": "Eliminar",
-                "cancelButtonText": "Cancelar",
-                "confirmButtonColor": "#dc3545"
-            })
-            .then(function(result) {
-                if(result.isConfirmed) {
-                    window.location.href = `/sicomec/ballot/delete/${id}/?redirect_to=scheduled`;
-                }
-            })
-        }
-    </script>
 {% endblock %}

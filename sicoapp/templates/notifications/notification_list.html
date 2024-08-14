@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}Notificaciones | SICOMEC{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <section class="col-md-6 offset-md-3 mt-5">
+        <h3 class="text-center mb-3" >Expiración de Documentos</h3>
+    </section> 
+
+    <section class="col-md-12 my-3">
+            {% comment %} LICENSE {% endcomment %}
+            {% if count_drivers > 0 %}
+                <div class="card card-body table-responsive mb-3">
+                    <table class="table">
+                        <thead>
+                            <tr><th colspan="5" class="text-center"><h6>LICENCIA</h6></th></tr>
+                            <tr>
+                                <th>Acciones</th>
+                                <th>Licencia</th>
+                                <th>Conductor</th>
+                                <th>F. Expiración</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for driver in drivers %}
+                                <tr>
+                                    <td class="align-middle">
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_list' %}">
+                                                <i class="bi bi-pencil-fill" title="Editar"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-outline-danger" href="{% url 'sicomec:notification_delete' driver.id %}" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">{{ driver.license }}</td>
+                                    <td class="align-middle">{{ driver.driver }}</td>
+                                    <td class="align-middle">{{ driver.get_formatted_expiration }}</td>
+                                </tr>   
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% comment %} SOAT {% endcomment %}
+            {% if count_vehicle_soats > 0 %}
+                <div class="card card-body table-responsive mb-3">
+                    <table class="table">
+                        <thead>
+                            <tr><th colspan="5" class="text-center"><h6>SOAT</h6></th></tr>
+                            <tr>
+                                <th>Acciones</th>
+                                <th>Placa</th>
+                                <th>Vehículo</th>
+                                <th>Marca</th>
+                                <th>F. Emisión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vehicle_soat in vehicle_soats %}
+                                <tr>
+                                    <td class="align-middle">
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_list' %}">
+                                                <i class="bi bi-eye-fill" title="Editar"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-outline-danger" href="{% url 'sicomec:notification_delete' vehicle_soat.id %}" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">{{ vehicle_soat.plate }}</td>
+                                    <td class="align-middle">{{ vehicle_soat.name }}</td>
+                                    <td class="align-middle">{{ vehicle_soat.brand }}</td>
+                                    <td class="align-middle">{{ vehicle_soat.get_formatted_soat }}</td>
+                                </tr>   
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% comment %} CITV {% endcomment %}
+            {% if count_vehicle_citvs > 0 %}
+                <div class="card card-body table-responsive mb-3">
+                    <table class="table">
+                        <thead>
+                            <tr><th colspan="5" class="text-center"><h6>CITV</h6></th></tr>
+                            <tr>
+                                <th>Acciones</th>
+                                <th>Placa</th>
+                                <th>Vehículo</th>
+                                <th>Marca</th>
+                                <th>F. Emisión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vehicle_citv in vehicle_citvs %}
+                                <tr>
+                                    <td class="align-middle">
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_list' %}">
+                                                <i class="bi bi-eye-fill" title="Editar"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-outline-danger" href="{% url 'sicomec:notification_delete' vehicle_citv.id %}" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">{{ vehicle_citv.plate }}</td>
+                                    <td class="align-middle">{{ vehicle_citv.name }}</td>
+                                    <td class="align-middle">{{ vehicle_citv.brand }}</td>
+                                    <td class="align-middle">{{ vehicle_citv.get_formatted_citv }}</td>
+                                </tr>   
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+    </section>
+</div>
+{% endblock %}

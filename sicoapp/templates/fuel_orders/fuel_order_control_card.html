@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tarjeta de Control | SICOMEC{% endblock %}
+
+{% block content %}
+<div class="row">
+    <section class="col-md-12 mt-5">
+        <h3 class="text-center mb-3" >Tarjeta de Control</h3>
+        <form method="GET" action="" class="d-flex flex-row flex-wrap justify-content-between align-items-center">
+            <div class="mb-3">
+                <label for="buy_order">Orden Compra</label>
+                <select name="buy_order" class="select form-select" id="id_buy_order">
+                    <option value="">Escoge orden ...</option>
+                    {% for buy_order in buy_orders %}
+                        <option value="{{ buy_order.pk }}">
+                            {{ buy_order.order }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="user_area">Área Usuaria</label> 
+                <textarea name="user_area" cols="60" rows="1" readonly="readonly" style="background-color: rgb(233, 236, 239); max-width: 250px;" class="textarea form-control" id="id_user_area"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="fueltap">Proveedor</label>
+                <input type="text" name="fueltap" id="id_fueltap" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none;" class="form-control" value="" >
+            </div>
+            <div class="mb-3">
+                <label for="fuel">Combustible</label>
+                <input type="text" name="fuel" id="id_fuel" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none; max-width: 150px;" class="form-control" value="" >
+            </div>
+            <div class="mb-3">
+                <label for="stock">Entrada</label>
+                <input type="text" name="stock" id="id_stock" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none; max-width: 150px;" class="form-control" value="" >
+            </div>
+            <div class="mb-3">
+                <label for="residue">Saldo</label>
+                <input type="text" name="residue" id="id_residue" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none; max-width: 150px;" class="form-control" value="" >
+            </div>
+        </form>
+    </section> 
+
+    <section class="col-md-12 my-3">
+            <div class="card card-body table-responsive">
+                <table class="table table_search">
+                    <thead>
+                        <tr>
+                            <th style="user-select: none;">Fecha</th>
+                            <th style="user-select: none;">Salida</th>
+                            <th style="user-select: none;">Saldo</th>
+                            <th style="user-select: none;">Placa</th>
+                            <th style="user-select: none;">Vehículo</th>
+                            <th style="user-select: none;">Marca</th>
+                            <th style="user-select: none;">Conductor</th>
+                            <th style="user-select: none;">N° Vale</th>
+                            <th style="user-select: none;">Código</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/fuel_order_control_table.js' %}"></script>
+{% endblock %}

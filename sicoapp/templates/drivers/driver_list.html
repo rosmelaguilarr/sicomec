@@ -5,7 +5,7 @@
 {% block content %}
 <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
-        <h3 class="text-center mb-3" >Buscar Conductor</h3>
+        <h3 class="text-center mb-3">Buscar Conductor</h3>
         <form method="GET" action="">
             <div class="input-group mb-3 ">
                 <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por DNI, nombre o apellidos" aria-label="Buscar" autofocus id="inputSearchDriver">
@@ -48,10 +48,10 @@
                             <tr>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-outline-primary " href="{% url 'sicomec:driver_update' driver.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_update' driver.id %}?q={{ query }}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
-                                        <a class="btn btn-outline-danger" href="#" onclick="driverDelete('{{ driver.id }}')" title="Eliminar">
+                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/driver/delete', '{{ driver.id }}', '', 'delete')" title="Eliminar">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>
@@ -62,10 +62,14 @@
                                 <td class="align-middle">{{ driver.license }}</td>
                                 <td class="align-middle">{{ driver.category }}</td>
                                 <td class="align-middle">{{ driver.expiration|date:"d/m/Y" }}</td>
-                                <td class="align-middle">{{ driver.available|yesno:"Si,No" }}</td>
+                                <td class="align-middle">
+                                    {% if driver.available %}
+                                        <i class="bi bi-check-circle text-success"></i>
+                                    {% else %}
+                                        <i class="bi bi-x-circle text-danger"></i>
+                                    {% endif %}
+                                </td>
                             </tr>   
-                        
-                            
                         {% endfor %}
                     </tbody>
                 </table>
@@ -102,23 +106,4 @@
 
 {% endblock %}
 
-{% block js %}
-    <script>
-        function driverDelete(id){
-            Swal.fire({
-                "title": "¿Está seguro de eliminar?",
-                {% comment %} "text": "esta acción no se puede deshacer", {% endcomment %}
-                "icon": "question",
-                "showCancelButton": true,
-                "confirmButtonText": "Eliminar",
-                "cancelButtonText": "Cancelar",
-                "confirmButtonColor": "#dc3545"
-            })
-            .then(function(result) {
-                if(result.isConfirmed) {
-                    window.location.href = `/sicomec/driver/delete/${id}`
-                }
-            })
-        }
-    </script>
-{% endblock %}
+

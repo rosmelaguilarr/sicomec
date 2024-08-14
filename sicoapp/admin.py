@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Driver, Vehicle, FuelTap, Ballot
+from .models import Driver, Vehicle, FuelTap, Ballot, Notification, BuyOrder
 
 admin.site.site_header = "Sistema Integral | SICOMEC"
 admin.site.site_title = "SICOMEC"
@@ -13,11 +13,19 @@ class VehicleAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
 
 class FuelTapAdmin(admin.ModelAdmin):
-    list_display = ["ruc","business_name","address","user", "created"]
+    list_display = ["ruc","business_name","address","email","phone","user", "created"]
     readonly_fields = ('created',)
 
 class BallotAdmin(admin.ModelAdmin):
-    list_display = ["code","driver_name","driver_last_name","drive_to", "vehicle_plate", "vehicle_name","place","reason", "exit_date","return_date","user","created"]
+    list_display = ["code","driver","drive_to", "plate", "vehicle_name","place","reason", "exit_date","return_date","user","created"]
+    readonly_fields = ('created',)
+
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ["id","license","driver","expiration","plate","name","brand","soat","citv","created"]
+    readonly_fields = ('created',)
+    
+class BuyOrderAdmin(admin.ModelAdmin):
+    list_display = ["id","order","user_area","fueltap","fuel","stock","date","user","created"]
     readonly_fields = ('created',)
 
 
@@ -25,4 +33,6 @@ admin.site.register(Driver, DriverAdmin)
 admin.site.register(Vehicle, VehicleAdmin)
 admin.site.register(FuelTap, FuelTapAdmin)
 admin.site.register(Ballot, BallotAdmin)
+admin.site.register(Notification, NotificationAdmin)
+admin.site.register(BuyOrder, BuyOrderAdmin)
 

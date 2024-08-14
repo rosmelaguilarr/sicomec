@@ -38,6 +38,8 @@
                             <th>RUC</th>
                             <th>Raz. Social</th>
                             <th>Dirección</th>
+                            <th>Email</th>
+                            <th>Celular</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,10 +47,10 @@
                             <tr>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-outline-primary " href="{% url 'sicomec:fueltap_update' fueltap.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fueltap_update' fueltap.id %}?q={{ query }}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
-                                        <a class="btn btn-outline-danger" href="#" onclick="fueltapDelete('{{ fueltap.id }}')" title="Eliminar">
+                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fueltap/delete', '{{ fueltap.id }}', '', 'delete')" title="Eliminar">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>
@@ -56,6 +58,8 @@
                                 <td class="align-middle">{{ fueltap.ruc }}</td>
                                 <td class="align-middle">{{ fueltap.business_name }}</td>
                                 <td class="align-middle">{{ fueltap.address }}</td>
+                                <td class="align-middle">{{ fueltap.email|default_if_none:"" }}</td>
+                                <td class="align-middle">{{ fueltap.phone|default_if_none:"" }}</td>
                             </tr>   
                         {% endfor %}
                     </tbody>
@@ -64,25 +68,4 @@
         {% endif %}
     </section>
 </div>
-{% endblock %}
-
-{% block js %}
-    <script>
-        function fueltapDelete(id){
-            Swal.fire({
-                "title": "¿Está seguro de eliminar?",
-                {% comment %} "text": "esta acción no se puede deshacer", {% endcomment %}
-                "icon": "question",
-                "showCancelButton": true,
-                "confirmButtonText": "Eliminar",
-                "cancelButtonText": "Cancelar",
-                "confirmButtonColor": "#dc3545"
-            })
-            .then(function(result) {
-                if(result.isConfirmed) {
-                    window.location.href = `/sicomec/fueltap/delete/${id}`
-                }
-            })
-        }
-    </script>
 {% endblock %}
