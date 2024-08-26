@@ -32,6 +32,7 @@ urlpatterns = [
     # path('fuel_order/update/<str:id>', views.fuel_order_update_view, name='fuel_order_update'),
     path('fuel_order/list', views.fuel_order_list_view, name='fuel_order_list'),
     path('fuel_order/generate_fuel_order_pdf/<str:id>', views.generate_fuel_order_pdf, name='generate_fuel_order_pdf'),
+    path('fuel_order/generate_control_card_pdf/<uuid:order_id>', views.generate_control_card_pdf, name='generate_control_card_pdf'),
     path('fuel_order/delete/<str:id>', views.fuel_order_delete_view, name='fuel_order_delete'),
     path('fuel_order/control_card', views.control_card_view, name='control_card'),
 
@@ -43,10 +44,10 @@ urlpatterns = [
     path('ballot/mark_return/update/<str:id>', views.update_return_datetime, name='update_return_datetime'),
     path('ballot/generate_ballot_pdf/<str:id>', views.generate_ballot_pdf, name='generate_ballot_pdf'),
     path('ballot/delete/<uuid:id>/', views.ballot_delete_view, name='ballot_delete'),
+    path('ballot/report/', views.ballot_report_view, name='ballot_report'),
     
     path('notification/list', views.notification_list_view, name='notification_list'),
     path('notification/count', views.notification_count_view, name='notification_count'),
-    path('notification/delete/<int:id>', views.notification_delete_view, name='notification_delete'),
 
     path('get_vehicle_details/<str:id>', views.get_vehicle_details_view, name='get_vehicle_details'),
     path('get_buy_order_details/<uuid:id_buy_order>', views.get_buy_order_details_view, name='get_buy_order_details'),

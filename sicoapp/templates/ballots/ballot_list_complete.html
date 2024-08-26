@@ -34,7 +34,9 @@
                 <table class="table table-hover table_search">
                     <thead>
                         <tr>
+                            {% if not is_pregistrator %}
                             <th>Acciones</th>
+                            {% endif %}
                             <th>Código</th>
                             <th>Conductor</th>
                             <th>Placa</th>
@@ -48,16 +50,18 @@
                     <tbody>
                         {% for ballot in ballots %}
                             <tr>
+                                {% if not is_pregistrator %}
                                 <td class="align-middle">
                                     <div class="btn-group">
                                         <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:generate_ballot_pdf' ballot.id %}" target="_blank">
                                             <i class="bi bi-printer-fill" title="Imprimir"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/ballot/delete', '{{ ballot.id }}', 'redirect_to=completed', 'delete')" title="Eliminar">
+                                        {% comment %} <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/ballot/delete', '{{ ballot.id }}', 'redirect_to=completed', 'delete')" title="Eliminar">
                                             <i class="bi bi-trash-fill"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                            </a> {% endcomment %}
+                                        </div>
+                                    </td>
+                                {% endif %}
                                 <td class="align-middle">{{ ballot.code }}</td>
                                 <td class="align-middle">{{ ballot.driver }}</td>
                                 <td class="align-middle">{{ ballot.plate }}</td>

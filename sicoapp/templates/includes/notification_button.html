@@ -1,0 +1,11 @@
+{% if request.user.is_authenticated %}
+    <div class="notification-button-container" id="notificationButtonContainer" style="display: none;">
+        <a class="btn btn-primary position-relative" href="{% url 'sicomec:notification_list' %}" id="notificationButton">
+            <i class="bi bi-bell-fill"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge">
+            0
+            <span class="visually-hidden">unread messages</span>
+            </span>
+        </a>
+    </div>
+{% endif %}

@@ -89,29 +89,38 @@
         }
         .date, .code{
             position: absolute;
-            top: 100px;
+            top: 95px;
             font-size: 10px;
         }
         .date{
-            top: 95px;
             right: 0;
         }
         .code{
             left: 0;
             font-size: 12px;
         }
+        .code_name{
+            left: 0;
+        }
         .watermark{
             position: absolute;
-            top: 105px;
+            top: 108px;
             right: 0px;
             font-size: 10px;
             font-weight: bold;
             opacity: .5;
         }
+        .plate_name{
+            left: 0;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
         .plate{
             font-size: 16px;
             text-align: center;
-            padding-top: 5px;
+            padding-top: 2px;
             font-weight: bold;
         }
         .border{
@@ -123,9 +132,17 @@
 <body>
     <div class="container">
         <div class="table-container">
-            <span class="code bold">{{ ballot.code }}</span>
+            <span class="code">{{ ballot.code }}</span>
             <span class="date">{{ date }}</span>
             <span class="watermark">Conductor</span>
+            <span class="watermark plate_name">
+                {% if typeVehicle == "MAQUINARIA" %}
+                    Registro
+                {% else %}
+                    Placa
+                {% endif %}
+            </span>
+            <span class="watermark code_name">Codigo</span>
             <div class="header">
                 <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
                 <div class="header-text">
@@ -139,13 +156,13 @@
                 <thead>
                    <tr>
                     <th colspan="3">
-                        <h1>Papeleta de salida de vehículo</h1>
+                        <h1>Papeleta de salida de {{ typeVehicle }}</h1>
                     </th>
                    </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 1px solid #707070;">{{ ballot.plate }}</span></td>
+                        <td class="plate" colspan="3"><span>{{ ballot.plate }}</span></td>
                     </tr>
                     <tr>
                         <td class="space-vertical bold" colspan="3">Conductor:</td>
@@ -162,19 +179,21 @@
                         <td colspan="2">{{ ballot.driver_category }}</td>
                     </tr>
                     <tr>
-                        <td class="bold">Vehículo:</td>
+                        <td class="bold">Tipo:</td>
                         <td class="bold" colspan="2">Marca:</td>
                     </tr>
                     <tr>
                         <td>{{ ballot.vehicle_name }}</td>
                         <td colspan="2">{{ ballot.vehicle_brand }}</td>
                     </tr>
-                    <tr>
-                        <td class="bold" colspan="3">Sírvase conducir al:</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="border">{{ ballot.drive_to }}</td>
-                    </tr>
+                    {% if ballot.drive_to %}
+                        <tr>
+                            <td class="bold" colspan="3">Sírvase conducir al:</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="border">{{ ballot.drive_to }}</td>
+                        </tr>
+                    {% endif %}
                     <tr>
                         <td class="bold" colspan="3">Destino:</td>
                     </tr>
@@ -227,9 +246,17 @@
 
 
         <div class="table-container">
-            <span class="code bold">{{ ballot.code }}</span>
+            <span class="code">{{ ballot.code }}</span>
             <span class="date">{{ date }}</span>
             <span class="watermark">SDEM</span>
+            <span class="watermark plate_name">
+                {% if typeVehicle == "MAQUINARIA" %}
+                    Registro
+                {% else %}
+                    Placa
+                {% endif %}
+            </span>
+            <span class="watermark code_name">Codigo</span>
             <div class="header">
                 <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
                 <div class="header-text">
@@ -243,13 +270,13 @@
                 <thead>
                    <tr>
                     <th colspan="3">
-                        <h1>Papeleta de salida de vehículo</h1>
+                        <h1>Papeleta de salida de {{ typeVehicle }}</h1>
                     </th>
                    </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="plate" colspan="3"><span style="padding: 3px 10px; border-bottom: 1px solid #707070;">{{ ballot.plate }}</span></td>
+                        <td class="plate" colspan="3"><span>{{ ballot.plate }}</span></td>
                     </tr>
                     <tr>
                         <td class="space-vertical bold" colspan="3">Conductor:</td>
@@ -266,19 +293,21 @@
                         <td colspan="2">{{ ballot.driver_category }}</td>
                     </tr>
                     <tr>
-                        <td class="bold">Vehículo:</td>
+                        <td class="bold">Tipo:</td>
                         <td class="bold" colspan="2">Marca:</td>
                     </tr>
                     <tr>
                         <td>{{ ballot.vehicle_name }}</td>
                         <td colspan="2">{{ ballot.vehicle_brand }}</td>
                     </tr>
-                    <tr>
-                        <td class="bold" colspan="3">Sírvase conducir al:</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="border">{{ ballot.drive_to }}</td>
-                    </tr>
+                    {% if ballot.drive_to %}
+                        <tr>
+                            <td class="bold" colspan="3">Sírvase conducir al:</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="border">{{ ballot.drive_to }}</td>
+                        </tr>
+                    {% endif %}
                     <tr>
                         <td class="bold" colspan="3">Destino:</td>
                     </tr>

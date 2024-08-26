@@ -34,7 +34,9 @@
                 <table class="table table-hover table_search">
                     <thead>
                         <tr>
-                            <th>Acciones</th>
+                            {% if not is_coperator  %}
+                                <th>Acciones</th>
+                            {% endif %}
                             <th>RUC</th>
                             <th>Raz. Social</th>
                             <th>Dirección</th>
@@ -45,16 +47,20 @@
                     <tbody>
                         {% for fueltap in fueltaps %}
                             <tr>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fueltap_update' fueltap.id %}?q={{ query }}">
-                                            <i class="bi bi-pencil-fill" title="Editar"></i>
-                                        </a>
-                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fueltap/delete', '{{ fueltap.id }}', '', 'delete')" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                {% if not is_coperator  %}
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fueltap_update' fueltap.id %}?q={{ query }}">
+                                                <i class="bi bi-pencil-fill" title="Editar"></i>
+                                            </a>
+                                            {% if is_super_admin  %}
+                                                <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fueltap/delete', '{{ fueltap.id }}', '', 'delete')" title="Eliminar">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                {% endif %}
                                 <td class="align-middle">{{ fueltap.ruc }}</td>
                                 <td class="align-middle">{{ fueltap.business_name }}</td>
                                 <td class="align-middle">{{ fueltap.address }}</td>

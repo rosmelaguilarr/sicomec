@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Buscar Conductor | SICOMEC{% endblock %}
 
@@ -30,10 +31,12 @@
         {% endif %}
         {% if driver_count > 0 %}
             <div class="card card-body table-responsive">
-                <table class="table table-hover table_search">
+                <table class="datatable display">
                     <thead>
                         <tr>
-                            <th>Acciones</th>
+                            {% if is_super_admin %}
+                                <th>Acciones</th>
+                            {% endif %}
                             <th>DNI</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
@@ -46,16 +49,18 @@
                     <tbody>
                         {% for driver in drivers %}
                             <tr>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_update' driver.id %}?q={{ query }}">
-                                            <i class="bi bi-pencil-fill" title="Editar"></i>
-                                        </a>
-                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/driver/delete', '{{ driver.id }}', '', 'delete')" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                {% if is_super_admin %}
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_update' driver.id %}?q={{ query }}">
+                                                <i class="bi bi-pencil-fill" title="Editar"></i>
+                                            </a>
+                                            <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/driver/delete', '{{ driver.id }}', '', 'delete')" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                {% endif %}
                                 <td class="align-middle">{{ driver.dni }}</td>
                                 <td class="align-middle">{{ driver.name }}</td>
                                 <td class="align-middle">{{ driver.last_name }}</td>
@@ -102,8 +107,10 @@
         });
     });
 </script> 
-
-
 {% endblock %}
+
+{% block js %}
+<script src="{% static 'js/datatables.js' %}"></script>
+{% endblock  %}
 
 

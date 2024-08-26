@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Driver, Vehicle, FuelTap, Ballot, Notification, BuyOrder, FuelOrder
 from .forms import DriverForm, VehicleForm, FuelTapForm, BallotForm, BuyOrderForm, FuelOrderForm
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 import pytz
@@ -16,6 +16,7 @@ from weasyprint import HTML
 from babel.dates import format_datetime
 from django.http import JsonResponse
 from django.utils.dateformat import format
+from django.core.exceptions import ValidationError
 
 
 
@@ -38,7 +39,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                request.session['alertShow'] = True  # Set alertShow to True
+                # request.session['alertShow'] = True  # Set alertShow to True
                 return redirect('sicomec:home')
             else:
                 form.add_error(None, 'Usuario o contraseña incorrecto')
@@ -51,7 +52,7 @@ def login_view(request):
 # LOGOUT --------------------------------------------------------------->
 @login_required
 def logout_view(request):
-    request.session['alertShow'] = False  # Set alertShow to False
+    # request.session['alertShow'] = False  # Set alertShow to False
     logout(request)
     return redirect('sicomec:home')
 
@@ -61,6 +62,7 @@ def logout_view(request):
 
 # CREATE --------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.add_driver', raise_exception=True)
 def driver_create_view(request):
     if request.method == 'POST':
         form = DriverForm(request.POST)
@@ -76,6 +78,7 @@ def driver_create_view(request):
 
 # UPDATE ----------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_driver', raise_exception=True)
 def driver_update_view(request, id):
     driver = get_object_or_404(Driver, pk=id)
     query = request.GET.get('q', '')
@@ -94,6 +97,7 @@ def driver_update_view(request, id):
 
 # LIST ------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_driver', raise_exception=True)
 def driver_list_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -127,6 +131,7 @@ def driver_list_view(request):
 
 # DELETE ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.delete_driver', raise_exception=True)
 def driver_delete_view(request, id):
     driver = get_object_or_404(Driver, pk=id)
 
@@ -149,6 +154,7 @@ def driver_delete_view(request, id):
 
 # CREATE --------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.add_vehicle', raise_exception=True)
 def vehicle_create_view(request):
     if request.method == 'POST':
         form = VehicleForm(request.POST)
@@ -164,6 +170,7 @@ def vehicle_create_view(request):
 
 # UPDATE ----------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_vehicle', raise_exception=True)
 def vehicle_update_view(request, id):
     vehicle = get_object_or_404(Vehicle, pk=id)
     query = request.GET.get('q', '')
@@ -176,17 +183,15 @@ def vehicle_update_view(request, id):
             return redirect(f"{reverse('sicomec:vehicle_list')}?q={query}")
     else:
         form = VehicleForm(instance=vehicle, initial={
-                            # 'production': vehicle.production.strftime('%Y-%m-%d'),
                             'soat': vehicle.soat.strftime('%Y-%m-%d'),
                             'citv': vehicle.citv.strftime('%Y-%m-%d'),
                             })
 
     return render(request, 'vehicles/vehicle_update.html', {'form': form, 'query': query,})
 
-
-
 # LIST ------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_vehicle', raise_exception=True)
 def vehicle_list_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -207,18 +212,20 @@ def vehicle_list_view(request):
     else:
         results = Vehicle.objects.all()
         vehicle_count = results.count()
+    
+    context = {
+        'vehicles': results,
+        'query': query,
+        'search_performed':search_performed,
+        'vehicle_count': vehicle_count,
+        'message': message,
+    }
 
-    return render(request, 'vehicles/vehicle_list.html', 
-                {
-                    'vehicles': results,
-                    'query': query,
-                    'search_performed':search_performed,
-                    'vehicle_count': vehicle_count,
-                    'message': message,
-                })
+    return render(request, 'vehicles/vehicle_list.html', context)
 
 # DELETE ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.delete_vehicle', raise_exception=True)
 def vehicle_delete_view(request, id):
     vehicle = get_object_or_404(Vehicle, pk=id)
 
@@ -241,6 +248,7 @@ def vehicle_delete_view(request, id):
 
 # CREATE --------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.add_fueltap', raise_exception=True)
 def fueltap_create_view(request):
     if request.method == 'POST':
         form = FuelTapForm(request.POST)
@@ -256,6 +264,7 @@ def fueltap_create_view(request):
 
 # UPDATE ----------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_fueltap', raise_exception=True)
 def fueltap_update_view(request, id):
     fueltap = get_object_or_404(FuelTap, pk=id)
     query = request.GET.get('q', '')
@@ -273,6 +282,7 @@ def fueltap_update_view(request, id):
 
 # LIST ------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_fueltap', raise_exception=True)
 def fueltap_list_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -305,6 +315,7 @@ def fueltap_list_view(request):
 
 # DELETE ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.delete_fueltap', raise_exception=True)
 def fueltap_delete_view(request, id):
     fueltap = get_object_or_404(FuelTap, pk=id)
 
@@ -323,6 +334,7 @@ def fueltap_delete_view(request, id):
 
 # CREATE --------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.add_buyorder', raise_exception=True)
 def buy_order_create_view(request):
     if request.method == 'POST':
         form = BuyOrderForm(request.POST)
@@ -343,6 +355,7 @@ def buy_order_create_view(request):
 
 # UPDATE ----------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_buyorder', raise_exception=True)
 def buy_order_update_view(request, id):
     buy_order = get_object_or_404(BuyOrder, pk=id)
     query = request.GET.get('q', '')
@@ -351,12 +364,6 @@ def buy_order_update_view(request, id):
         form = BuyOrderForm(request.POST, instance=buy_order)
         if form.is_valid():
             form.save()
-            # stock_value = form.cleaned_data['stock']
-            # buy_order_instance = form.save(commit=False)
-            # buy_order_instance.residue = stock_value
-            # buy_order_instance.user = request.user
-            # buy_order_instance.save()
-
             messages.success(request, '¡Actualización exitosa!')
             return redirect(f"{reverse('sicomec:buy_order_list')}?q={query}")
     else:
@@ -367,6 +374,7 @@ def buy_order_update_view(request, id):
 
 # LIST ------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_buyorder', raise_exception=True)
 def buy_order_list_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -399,6 +407,7 @@ def buy_order_list_view(request):
 
 # DELETE ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.delete_buyorder', raise_exception=True)
 def buy_order_delete_view(request, id):
     buy_order = get_object_or_404(BuyOrder, pk=id)
 
@@ -417,31 +426,47 @@ def buy_order_delete_view(request, id):
 
 # CREATE --------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.add_fuelorder', raise_exception=True)
 def fuel_order_create_view(request):
-
     if request.method == 'POST':
         form = FuelOrderForm(request.POST)
         if form.is_valid():
             fuel_order = form.save(commit=False)
             form.instance.user = request.user
 
-            buy_order = BuyOrder.objects.get(id=fuel_order.order.id)
+            try:
+                buy_order = BuyOrder.objects.get(id=fuel_order.order.id)
+            except BuyOrder.DoesNotExist:
+                messages.error(request, 'Orden de compra no encontrada')
+                return redirect('sicomec:fuel_order_list')
+
+            if fuel_order.fuel_loan and fuel_order.fuel_return:
+                messages.warning(request, 'No puedes marcar ambos, lluqsin y kutimun')
+                return redirect('sicomec:fuel_order_list')
+
+            total_loan = FuelOrder.objects.filter(order=buy_order, fuel_loan=True).aggregate(Sum('quantity'))['quantity__sum'] or 0
+            total_return = FuelOrder.objects.filter(order=buy_order, fuel_return=True).aggregate(Sum('quantity'))['quantity__sum'] or 0
 
             if fuel_order.fuel_return:
+                if fuel_order.quantity + total_return > total_loan:
+                    messages.warning(request, f'Kutimun ({fuel_order.quantity}) excede a Lluqsin ({total_loan})')
+                    return redirect('sicomec:fuel_order_list')
                 new_residue = buy_order.residue + fuel_order.quantity
-                buy_order.residue = new_residue
-                fuel_order.residue = new_residue
-
-            else:
+            else:  
                 new_residue = buy_order.residue - fuel_order.quantity
-                buy_order.residue = new_residue
-                fuel_order.residue = new_residue
 
+            if new_residue < 0:
+                messages.warning(request, '¡Saldo insuficiente!')
+                return redirect('sicomec:fuel_order_list')
+
+            buy_order.residue = new_residue
             buy_order.save()
+            fuel_order.residue = new_residue
             fuel_order.save()
 
             messages.success(request, '¡Registro exitoso!')
             return redirect('sicomec:fuel_order_list')
+
     else:
         form = FuelOrderForm()
 
@@ -467,6 +492,7 @@ def fuel_order_create_view(request):
 
 # LIST ------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_fuelorder', raise_exception=True)
 def fuel_order_list_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -477,7 +503,7 @@ def fuel_order_list_view(request):
     if query:
         search_performed = True
         results = FuelOrder.objects.filter(
-            Q(fueltap__business_name__icontains=query) |
+            Q(fueltap__icontains=query) |
             Q(driver__name__icontains=query)|
             Q(driver__last_name__icontains=query)
         )
@@ -502,6 +528,7 @@ def fuel_order_list_view(request):
                 })
 
 # GENEREATE PDF ------------------------------------------------------------------>
+@login_required
 def generate_fuel_order_pdf(request, id):
     fuel_order = get_object_or_404(FuelOrder, pk=id)
 
@@ -528,6 +555,7 @@ def generate_fuel_order_pdf(request, id):
 
 # DELETE ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.delete_fuelorder', raise_exception=True)
 def fuel_order_delete_view(request, id):
 
     fuel_order = get_object_or_404(FuelOrder, pk=id)
@@ -554,12 +582,42 @@ def control_card_view(request):
                     'buy_orders': buy_orders,
                 })
 
+# CONTROL CARD PDF ------------------------------------------------------------------>
+@login_required
+def generate_control_card_pdf(request, order_id):
+    orders = FuelOrder.objects.filter(order=order_id)
+    buy_order = get_object_or_404(BuyOrder, id=order_id)
 
+    formatted_stock = "{:,}".format(buy_order.stock)
+    formatted_residue = "{:,}".format(buy_order.residue)
+
+    base_url = 'file:///C:/sicomec/'
+    current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
+    date_print = format_datetime(current_date, format="d'/'MM'/'yyyy HH:mm", locale='es')
+
+    data = {
+        'date': date_print,
+        'base_url':base_url,
+        'orders': orders,
+        'buy_order': buy_order,
+        'current_date': current_date,
+        'stock': formatted_stock,
+        'residue': formatted_residue,
+    }
+
+    html_string = render_to_string('fuel_orders/fuel_order_control_card_template_pdf.html', data)
+
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=Orde de compra_{buy_order.order}'
+    return response
 
 # ************************************ BALLOT VIEWS ************************************
 
 # CREATE --------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.add_ballot', raise_exception=True)
 def ballot_create_view(request):
     if request.method == 'POST':
         form = BallotForm(request.POST)
@@ -575,6 +633,7 @@ def ballot_create_view(request):
 
 # UPDATE ----------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_ballot', raise_exception=True)
 def ballot_update_view(request, id):
     ballot = get_object_or_404(Ballot, pk=id)
     query = request.GET.get('q', '')
@@ -596,6 +655,7 @@ def ballot_update_view(request, id):
 
 # LIST SCHEDULED------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_ballot', raise_exception=True)
 def ballot_list_scheduled_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -633,6 +693,7 @@ def ballot_list_scheduled_view(request):
 
 # LIST COMPLETE------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.view_ballot', raise_exception=True)
 def ballot_list_complete_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -670,6 +731,7 @@ def ballot_list_complete_view(request):
 
 # MARK RETURN------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_ballot', raise_exception=True)
 def ballot_mark_return_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
@@ -701,6 +763,7 @@ def ballot_mark_return_view(request):
 
 # UPDATE RETURN_DATE AND RETURN_TIME------------------------------------------------------------------->
 @login_required
+@permission_required('sicoapp.change_ballot', raise_exception=True)
 def update_return_datetime(request, id):
     ballot = get_object_or_404(Ballot, pk=id)
 
@@ -714,8 +777,12 @@ def update_return_datetime(request, id):
     return redirect(f"{reverse('sicomec:ballot_mark_return')}")
 
 # GENEREATE PDF ------------------------------------------------------------------>
+@login_required
 def generate_ballot_pdf(request, id):
     ballot = get_object_or_404(Ballot, pk=id)
+    vehicle = get_object_or_404(Vehicle, plate=ballot.plate)
+    typeVehicle = vehicle.type.name
+
 
     base_url = 'file:///C:/sicomec/'
     current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
@@ -726,6 +793,7 @@ def generate_ballot_pdf(request, id):
         'base_url':base_url,
         'ballot': ballot,
         'current_date': current_date,
+        'typeVehicle': typeVehicle,
     }
 
     html_string = render_to_string('ballots/ballot_template_pdf.html', data)
@@ -740,6 +808,7 @@ def generate_ballot_pdf(request, id):
 
 # DELETE ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.delete_ballot', raise_exception=True)
 def ballot_delete_view(request, id):
     ballot = get_object_or_404(Ballot, pk=id)
 
@@ -752,13 +821,55 @@ def ballot_delete_view(request, id):
     else:
         return redirect('sicomec:ballot_list_scheduled')
 
+# REPORT ------------------------------------------------------------------>
+@login_required
+def ballot_report_view(request):
+    ballots = Ballot.objects.all()
+    ballot_scheduled = request.GET.get('ballot_scheduled')
+    ballot_complete = request.GET.get('ballot_complete')
+
+    if ballot_scheduled and ballot_complete:
+        filtered_ballots = ballots
+    elif ballot_scheduled:
+        filtered_ballots = ballots.filter(return_date__isnull=True, return_time__isnull=True)
+    elif ballot_complete:
+        filtered_ballots = ballots.filter(return_date__isnull=False, return_time__isnull=False)
+    else:
+        filtered_ballots = ballots.none()
+
+    # Si se solicita la generación de PDF
+    if 'generate_pdf' in request.GET:
+        base_url = 'file:///C:/sicomec/'
+        current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
+        date_print = format_datetime(current_date, format="d'/'MM'/'yyyy HH:mm", locale='es')
+
+        data = {
+            'date': date_print,
+            'base_url': base_url,
+            'ballots': filtered_ballots,
+        }
+
+        html_string = render_to_string('ballots/ballot_report_template_pdf.html', data)
+        html = HTML(string=html_string)
+        pdf = html.write_pdf()
+
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="reporte_papeletas.pdf"'
+        return response
+
+    return render(request, 'ballots/ballot_report.html')
+    
 
 
-# NOTIFICATION------------------------------------------------------------------->
+# NOTIFICATION ------------------------------------------------------------------->
 
 # LIST ------------------------------------------------------------------>
 @login_required
+@permission_required('sicoapp.view_notification', raise_exception=True)
 def notification_list_view(request):
+    current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
+    date_print = format_datetime(current_date, format="d'-'MM'-'yyyy HH:mm", locale='es')
+
     drivers = Notification.objects.filter(
         ~Q(license__isnull=True), 
         ~Q(license='')           
@@ -783,11 +894,13 @@ def notification_list_view(request):
         'count_drivers': count_drivers,
         'count_vehicle_soats': count_vehicle_soats,
         'count_vehicle_citvs': count_vehicle_citvs,
+        'date_print': date_print,
     }
 
     return render(request, 'notifications/notification_list.html', data)
 
 # COUNT ------------------------------------------------------------------>
+@login_required
 def notification_count_view(request):
     drivers = Notification.objects.filter(
         ~Q(license__isnull=True), 
@@ -806,18 +919,12 @@ def notification_count_view(request):
 
     return JsonResponse({'count': total_count})
 
-# DELETE ------------------------------------------------------------------>
-def notification_delete_view(request, id):
-    notification = get_object_or_404(Notification, pk=id)
 
-    notification.delete()
-    messages.success(request, '¡Registro eliminado!')
-
-    return redirect('sicomec:notification_list')  
 
 # ************************************ GETTERS VIEWS ************************************
 
 # GET DRIVER DETAILS ------------------------------------------------------------------>
+@login_required
 def get_driver_details_view(request, id):
     try:
         driver = get_object_or_404(Driver.objects.select_related('category'), pk=id)
@@ -833,12 +940,14 @@ def get_driver_details_view(request, id):
         return JsonResponse({'error': str(e)}, status=500)
 
 # GET VEHICLE DETAILS ------------------------------------------------------------------>
+@login_required
 def get_vehicle_details_view(request, id):
     try:
-        vehicle = get_object_or_404(Vehicle.objects.only('brand', 'name'), pk=id) 
+        vehicle = get_object_or_404(Vehicle.objects.only('brand', 'name', 'type'), pk=id) 
         data = {
             'brand': vehicle.brand,
-            'vehicle': vehicle.name
+            'vehicle': vehicle.name,
+            'type':vehicle.type.name,
         }
 
         return JsonResponse(data)
@@ -848,6 +957,7 @@ def get_vehicle_details_view(request, id):
         return JsonResponse({'error': str(e)}, status=500)
 
 # GET BUY ORDER DETAILS ------------------------------------------------------------------>
+@login_required
 def get_buy_order_details_view(request, id_buy_order):
     try:
         buy_order = get_object_or_404(BuyOrder.objects.select_related('fueltap', 'fuel'), pk=id_buy_order)
@@ -868,6 +978,7 @@ def get_buy_order_details_view(request, id_buy_order):
         return JsonResponse({'error': str(e)}, status=500)
 
 # GET FUEL ORDERS ------------------------------------------------------------------>
+@login_required
 def get_fuel_orders_view(request, id_buy_order):
     try:
         fuel_orders = FuelOrder.objects.filter(order=id_buy_order).select_related('vehicle', 'driver')
@@ -902,9 +1013,10 @@ def get_fuel_orders_view(request, id_buy_order):
 
 
 # ************************************ ERROR VIEWS ************************************
-
+@login_required
 def error_404(request, exception):
     return render(request, '404.html', {})
 
+@login_required
 def error_403(request, exception):
     return render(request, '403.html', status=403)

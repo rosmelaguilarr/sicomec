@@ -63,7 +63,7 @@ class Driver(models.Model):
     last_name = models.CharField(max_length=30, verbose_name='Apellidos', null=False, blank=False)
     license = models.CharField(max_length=9, verbose_name='N° Licencia', unique=True, validators=[license_validator])
     category = models.ForeignKey(LicenseCategory, on_delete=models.PROTECT, verbose_name='Categoría')
-    expiration = models.DateField(verbose_name='Venc. Licencia', auto_now=False)
+    expiration = models.DateField(verbose_name='Vencimiento Licencia', auto_now=False)
     validity = models.BooleanField(default=True)
     available = models.BooleanField(default=True, verbose_name='Disponible')
     justify = models.TextField(verbose_name='Justificación',null=True, blank=True)
@@ -96,8 +96,8 @@ class Driver(models.Model):
 class Vehicle(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plate = models.CharField(max_length=6, verbose_name='Placa', null=False, blank=False)
-    type = models.ForeignKey(TypeVehicle, on_delete=models.PROTECT, verbose_name='Tipo')
-    name = models.CharField(max_length=30, verbose_name='Vehículo', null=False, blank=False)
+    type = models.ForeignKey(TypeVehicle, on_delete=models.PROTECT, verbose_name='Clase')
+    name = models.CharField(max_length=30, verbose_name='Tipo', null=False, blank=False)
     brand = models.CharField(max_length=20, verbose_name='Marca', null=False, blank=False)
     chassis = models.CharField(max_length=17, verbose_name='Chasis', null=False, blank=False)
     model = models.CharField(max_length=20, verbose_name='Modelo', null=False, blank=False)
@@ -105,8 +105,8 @@ class Vehicle(models.Model):
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
     mileage = models.PositiveIntegerField(verbose_name='Kilometraje',default=0, null=True, blank=True)
     hourometer = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Horómetro', default=0, null=True, blank=True)
-    soat = models.DateField(verbose_name='Emisión SOAT', auto_now=False)
-    citv = models.DateField(verbose_name='Emisión CITV', auto_now=False)
+    soat = models.DateField(verbose_name='Emisión SOAT', auto_now=False, null=True, blank=True)
+    citv = models.DateField(verbose_name='Emisión CITV', auto_now=False, null=True, blank=True)
     available = models.BooleanField(default=True, verbose_name='Disponible')
     justify = models.TextField(verbose_name='Justificación',null=True, blank=True)
     maintenance = models.BooleanField(default=False)
@@ -190,13 +190,13 @@ order_validator = RegexValidator(
 
 class BuyOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    order =  models.CharField(max_length=9, verbose_name='N° Orden', unique=True,  null=False, blank=False, validators=[order_validator])
+    order =  models.CharField(max_length=9, verbose_name='N° O/C', unique=True,  null=False, blank=False, validators=[order_validator])
     user_area = models.TextField(verbose_name='Área Usuaria',null=False, blank=False)
     fueltap = models.ForeignKey(FuelTap, on_delete=models.PROTECT, verbose_name='Proveedor')
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
-    stock = models.PositiveIntegerField(verbose_name='Cantidad',default=0, null=False, blank=False)
+    stock = models.PositiveIntegerField(verbose_name='Cantidad Comprada',default=0, null=False, blank=False)
     residue = models.PositiveIntegerField(default=0)
-    date = models.DateField(verbose_name='Fecha', auto_now=False)
+    date = models.DateField(verbose_name='Fecha O/C', auto_now=False)
     detail = models.TextField(verbose_name='Detalle',null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -221,30 +221,31 @@ class BuyOrder(models.Model):
 # FUEL ORDER MODEL --------------------------------------------------------------------
 
 voucher_validator = RegexValidator(
-    regex=r'^[0-9]{7}$', 
-    message="El vale debe ser numérico de 7 dígitos"
+    regex=r'^[0-9]{1,7}$', 
+    message="El vale debe ser numérico"
 )
 
 class FuelOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=10, unique=True, editable=False) 
     fueltap = models.CharField(max_length=70, verbose_name='Proveedor', null=False, blank=False)
-    order = models.ForeignKey(BuyOrder, on_delete=models.PROTECT, verbose_name='N° Orden')
+    order = models.ForeignKey(BuyOrder, on_delete=models.PROTECT, verbose_name='N° O/C')
     user_area = models.TextField(verbose_name='Área Usuaria', blank=True)
-    driver = models.ForeignKey(Driver, on_delete=models.PROTECT, verbose_name='Conductor')
-    plate = models.ForeignKey(Vehicle, on_delete=models.PROTECT, verbose_name='Placa')
-    brand = models.CharField(max_length=50, null=False, blank=False, verbose_name='Marca')
-    vehicle = models.CharField(max_length=50, null=False, blank=False, verbose_name='Vehículo')
-    place = models.CharField(max_length=70, verbose_name='Destino', null=False, blank=False)
-    reason = models.TextField(verbose_name='Motivo', null=False, blank=False)
-    quantity = models.PositiveIntegerField(verbose_name='Cantidad',default=0, null=False, blank=False)
+    driver = models.ForeignKey(Driver, on_delete=models.PROTECT, verbose_name='Conductor', null=True, blank=True)
+    plate = models.ForeignKey(Vehicle, on_delete=models.PROTECT, verbose_name='Placa', null=True, blank=True)
+    brand = models.CharField(max_length=50, null=True, blank=True, verbose_name='Marca')
+    vehicle = models.CharField(max_length=50, null=True, blank=True, verbose_name='Tipo')
+    place = models.CharField(max_length=70, verbose_name='Destino', null=True, blank=True)
+    reason = models.TextField(verbose_name='Motivo', null=True, blank=True)
+    quantity = models.PositiveIntegerField(verbose_name='Cantidad Solicitada',default=0, null=False, blank=False)
+    residue_buy_order = models.PositiveIntegerField(verbose_name='Saldo')
     residue = models.PositiveIntegerField(default=0)
     fuel = models.CharField(max_length=10, verbose_name='Combustible', null=False, blank=False)
     voucher = models.CharField(max_length=7, verbose_name='N° Vale', null=False, blank=False, validators=[voucher_validator])
     date = models.DateField(verbose_name='Fecha', auto_now=False)
     canceled = models.BooleanField(default=False)
-    fuel_loan = models.BooleanField(default=False, verbose_name='Préstamo')
-    fuel_return = models.BooleanField(default=False, verbose_name='Devolución')
+    fuel_loan = models.BooleanField(default=False, verbose_name='Lluqsin')
+    fuel_return = models.BooleanField(default=False, verbose_name='Kutimun')
     detail = models.TextField(verbose_name='Detalle', null=True, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -286,9 +287,9 @@ class Ballot(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.PROTECT, verbose_name='Conductor')
     driver_license = models.CharField(max_length=9, verbose_name='N° Licencia')
     driver_category = models.CharField(max_length=6, verbose_name='Categoría')
-    drive_to = models.CharField(max_length=70, verbose_name='Sírvase conducir', null=False, blank=False)
+    drive_to = models.CharField(max_length=70, verbose_name='Sírvase conducir', null=True, blank=True)
     plate = models.ForeignKey(Vehicle, on_delete=models.PROTECT, verbose_name='Placa')
-    vehicle_name = models.CharField(max_length=30, verbose_name='Vehículo')
+    vehicle_name = models.CharField(max_length=30, verbose_name='Tipo')
     vehicle_brand = models.CharField(max_length=20, verbose_name='Marca')
     place = models.CharField(max_length=70, verbose_name='Destino', null=False, blank=False)
     reason = models.TextField(verbose_name='Motivo', null=False, blank=False)
@@ -345,7 +346,7 @@ class Notification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.created
+        return f'{self.license or self.plate}'
     
     def get_formatted_expiration(self):
         return self.format_date(self.expiration)
@@ -355,14 +356,16 @@ class Notification(models.Model):
 
     def get_formatted_citv(self):
         return self.format_date(self.citv)
-
+    
     def format_date(self, date_str):
+        if not date_str:
+            return date_str
         try:
             date = datetime.strptime(date_str, '%Y-%m-%d')
             return date.strftime('%d-%m-%Y')
         except ValueError:
             return date_str
-    
+
     class Meta:
         db_table = "Notification"
         verbose_name = "Notificación"

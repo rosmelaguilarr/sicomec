@@ -65,6 +65,8 @@ setFieldReadonly("id_type");
     const typeField = document.getElementById('id_type');
     const mileageField = document.getElementById('id_mileage');
     const hourometerField = document.getElementById('id_hourometer');
+    const soatField = document.getElementById('id_soat');
+    const citvField = document.getElementById('id_citv');
 
     function toggleFields() {
         const selectedOption = typeField.options[typeField.selectedIndex];
@@ -72,15 +74,23 @@ setFieldReadonly("id_type");
 
         if (selectedText === 'VEHICULO') {  
             mileageField.disabled = false;
+            soatField.disabled = false;
+            citvField.disabled = false;
             hourometerField.disabled = true;
             hourometerField.value = '';
         } else if (selectedText === 'MAQUINARIA') {  
             mileageField.disabled = true;
+            soatField.disabled = true;
+            citvField.disabled = true;
             hourometerField.disabled = false;
             mileageField.value = '';
+            soatField.value = '';
+            citvField.value = '';
         } else {
             mileageField.disabled = false;
             hourometerField.disabled = false;
+            soatField.disabled = false;
+            citvField.disabled = false;
         }
     }
 

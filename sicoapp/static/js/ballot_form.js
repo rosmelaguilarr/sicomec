@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const licenseField = document.getElementById('id_driver_license');
     const categoryField = document.getElementById('id_driver_category');
 
+    const driveToField = document.getElementById('id_drive_to');
+
     plateSelect.addEventListener('change', function() {
         const selectedValue = plateSelect.value;
         if (selectedValue) {
@@ -17,6 +19,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(data => {
                     brandField.value = data.brand;
                     vehicleField.value = data.vehicle;
+
+                    if(data.type === 'MAQUINARIA'){
+                        driveToField.disabled = true;
+                        driveToField.value = '';
+                    } else {
+                        driveToField.disabled = false;
+                    }
+
                 });
         } else {
             brandField.value = '';

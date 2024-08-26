@@ -20,21 +20,24 @@ def check_expirations():
 
     vehicles = Vehicle.objects.all()
     for vehicle in vehicles:
-        soat_expiration = vehicle.soat + timedelta(days=365)
-        citv_expiration = vehicle.citv + timedelta(days=365)
-        
-        if soat_expiration <= limit_date and soat_expiration >= today:
-            Notification.objects.get_or_create(
-                plate=vehicle.plate,
-                name=vehicle.name,
-                brand=vehicle.brand,
-                soat=vehicle.soat,
-            )
-        
-        if citv_expiration <= limit_date and citv_expiration >= today:
-            Notification.objects.get_or_create(
-                plate=vehicle.plate,
-                name=vehicle.name,
-                brand=vehicle.brand,
-                citv=vehicle.citv,
-            )
+        if vehicle.soat: 
+            soat_expiration = vehicle.soat + timedelta(days=365) 
+            if today <= soat_expiration <= limit_date: 
+                Notification.objects.get_or_create(
+                    plate=vehicle.plate,
+                    name=vehicle.name,
+                    brand=vehicle.brand,
+                    soat=vehicle.soat,
+                )
+
+        if vehicle.citv:  
+            citv_expiration = vehicle.citv + timedelta(days=365)  
+            if today <= citv_expiration <= limit_date:  
+                
+                Notification.objects.get_or_create(
+                    plate=vehicle.plate,
+                    name=vehicle.name,
+                    brand=vehicle.brand,
+                    citv=vehicle.citv,
+                )
+

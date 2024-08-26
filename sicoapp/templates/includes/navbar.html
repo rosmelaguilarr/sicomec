@@ -15,144 +15,170 @@
                         Inicio
                     </a>
                 </li>
-                <li class="nav-item dropdown fw-semibold">
+                    <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Conductor
                     </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:driver_create' %}">
-                                <i class="bi bi-plus-lg"></i>
-                                Nuevo Registro
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:driver_list' %}">
-                                <i class="bi bi-search"></i>
-                                Buscar
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown fw-semibold">
+                        <ul class="dropdown-menu">
+                            <li>
+                                {% if not is_pregistrator and not is_poperator %}
+                                <a class="dropdown-item" href="{% url 'sicomec:driver_create' %}">
+                                    <i class="bi bi-plus-lg"></i>
+                                    Nuevo Registro
+                                </a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:driver_list' %}">
+                                    <i class="bi bi-search"></i>
+                                    Buscar
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown fw-semibold">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-car-front-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                         Vehículo
                     </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:vehicle_create' %}">
-                                <i class="bi bi-plus-lg"></i>
-                                Nuevo Registro
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:vehicle_list' %}">
-                                <i class="bi bi-search"></i>
-                                Buscar
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown fw-semibold">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-fuel-pump-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                        Grifo
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:fueltap_create' %}">
-                                <i class="bi bi-plus-lg"></i>
-                                Nuevo Registro
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:fueltap_list' %}">
-                                <i class="bi bi-search"></i>
-                                Buscar
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown fw-semibold">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-file-check-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                        Orden Compra
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:buy_order_create' %}">
-                                <i class="bi bi-plus-lg"></i>
-                                Nuevo Registro
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:buy_order_list' %}">
-                                <i class="bi bi-search"></i>
-                                Buscar
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown fw-semibold">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-file-check-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                        Cumbustible
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:fuel_order_create' %}">
-                                <i class="bi bi-plus-lg"></i>
-                                Nuevo Pedido
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:control_card' %}">
-                                <i class="bi bi-fuel-pump"></i>
-                                Tarjeta de Control
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:fuel_order_list' %}">
-                                <i class="bi bi-search"></i>
-                                Buscar
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown fw-semibold">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                        Papeleta
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:ballot_create' %}">
-                                <i class="bi bi-plus-lg"></i>
-                                Nuevo Registro
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:ballot_list_scheduled' %}">
-                                <i class="bi bi-clock"></i>
-                                Programadas
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:ballot_list_complete' %}">
-                                <i class="bi bi-check-lg"></i>
-                                Completadas
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'sicomec:ballot_mark_return' %}">
-                                <i class="bi bi-clock"></i>
-                                Marcar Retorno
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                        <ul class="dropdown-menu">
+                            <li>
+                                {% if not is_pregistrator and not is_poperator %}
+                                <a class="dropdown-item" href="{% url 'sicomec:vehicle_create' %}">
+                                    <i class="bi bi-plus-lg"></i>
+                                    Nuevo Registro
+                                </a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:vehicle_list' %}">
+                                    <i class="bi bi-search"></i>
+                                    Buscar
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                {% if is_super_admin or is_cadmin or is_coperator %}
+                    <li class="nav-item dropdown fw-semibold">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-fuel-pump-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                            Grifo
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if not is_coperator  %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:fueltap_create' %}">
+                                        <i class="bi bi-plus-lg"></i>
+                                        Nuevo Registro
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:fueltap_list' %}">
+                                    <i class="bi bi-search"></i>
+                                    Buscar
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown fw-semibold">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-check-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                            Orden Compra
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if not is_coperator  %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:buy_order_create' %}">
+                                        <i class="bi bi-plus-lg"></i>
+                                        Nuevo Registro
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:buy_order_list' %}">
+                                    <i class="bi bi-search"></i>
+                                    Buscar
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown fw-semibold">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-check-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                            Combustible
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:fuel_order_create' %}">
+                                    <i class="bi bi-plus-lg"></i>
+                                    Nuevo Pedido
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:control_card' %}">
+                                    <i class="bi bi-fuel-pump"></i>
+                                    Tarjeta de Control
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:fuel_order_list' %}">
+                                    <i class="bi bi-search"></i>
+                                    Buscar
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
+                
+                
+                {% if is_super_admin or is_padmin or is_poperator or is_pregistrator %}
+                    <li class="nav-item dropdown fw-semibold">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                            Papeleta
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if not is_pregistrator  %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_create' %}">
+                                        <i class="bi bi-plus-lg"></i>
+                                        Nuevo Registro
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:ballot_list_scheduled' %}">
+                                    <i class="bi bi-clock"></i>
+                                    Programadas
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:ballot_list_complete' %}">
+                                    <i class="bi bi-check-lg"></i>
+                                    Completadas
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:ballot_mark_return' %}">
+                                    <i class="bi bi-clock"></i>
+                                    Marcar Retorno
+                                </a>
+                            </li>
+                            {% if not is_pregistrator  %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_report' %}">
+                                        <i class="bi bi-printer"></i>
+                                        Reporte
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <i class="bi bi-info-circle-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>

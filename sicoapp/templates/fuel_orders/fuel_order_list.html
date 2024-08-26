@@ -46,7 +46,7 @@
                     </thead>
                     <tbody>
                         {% for fuel_order in fuel_orders %}
-                            <tr class="{% if fuel_order.fuel_return %}table-success{% elif fuel_order.fuel_loan %}table-warning{% elif fuel_order.canceled %}table-danger{% endif %}">
+                            <tr class="">
                                 <td>
                                     <div class="btn-group">
                                         {% if fuel_order.show_buttons %}
@@ -75,9 +75,11 @@
                                 </td>
                                 <td class="align-middle">{{ fuel_order.fueltap }}</td>
                                 <td class="align-middle">{{ fuel_order.order }}</td>
-                                <td class="align-middle">{{ fuel_order.driver }}</td>
-                                <td class="align-middle">{{ fuel_order.plate }}</td>
-                                <td class="align-middle">{{ fuel_order.quantity }}</td>
+                                <td class="align-middle">{{ fuel_order.driver|default_if_none:"" }}</td>
+                                <td class="align-middle">{{ fuel_order.plate|default_if_none:"" }}</td>
+                                <td class="align-middle {% if fuel_order.fuel_return %}border-bottom border-success{% elif fuel_order.fuel_loan %}border-bottom border-warning{% elif fuel_order.canceled %}border-bottom border-danger{% endif %}">
+                                    {{ fuel_order.quantity }}
+                                </td>
                                 <td class="align-middle">{{ fuel_order.fuel }}</td>
                                 <td class="align-middle">{{ fuel_order.code }}</td>
                             </tr>   

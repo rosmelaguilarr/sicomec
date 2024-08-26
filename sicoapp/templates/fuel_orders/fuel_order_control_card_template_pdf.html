@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos de Combustible</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 10px; 
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: 16px;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+        .table-container {
+            width: 100%;
+            position: relative;
+        }
+        .opacity{
+            font-weight: bold;
+            opacity: .5; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead tr:nth-child(3) > th {
+            font-weight: normal;
+        } 
+        td {
+            text-align: left;
+        }
+        .title {
+            background-color: #f0f0f0;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+        p{
+            padding: 0;
+            margin: 0;
+        }
+        
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .header-text{
+            text-align: center;
+            font-weight: bold;
+        }
+        img{
+            height: 50px;
+        }
+        .border{
+            border: 1px solid #707070;
+            background-color: #f0f0f0;
+        }
+        .text-truncate {
+            display: inline-block;
+            width: 350px;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        .date{
+            position: absolute;
+            top: 65px;
+            font-size: 10px;
+            right: 0;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <span class="date">{{ date }}</span>
+                    <div class="header">
+                        <img src="{{ base_url }}/sicoapp/static/images/drta.png" />
+                        <div class="header-text">
+                            <p>Dirección Regional de Transportes y Comunicaciones de Apurímac</p>
+                            <p>Oficina de Almacén Central</p>
+                        </div>
+                        <img src="{{ base_url }}/sicoapp/static/images/logo_sicomec_lg.png" />
+                    </div>
+                    <tr>
+                        <th colspan="10" class="title">
+                            <h1>Pedidos de Combustible</h1>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            <span class="opacity">o/c</span>
+                        </th>
+                        <th colspan="4">
+                            <span class="opacity">Área Usuaria</span>
+                        </th>
+                        <th colspan="2">
+                            <span class="opacity">Proveedor</span>
+                        </th>
+                        <th>
+                            <span class="opacity">Entrada</span>
+                        </th>
+                        <th class="opacity">
+                            <span>Saldo</span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            <span>{{ buy_order.order }}</span>
+                        </th>
+                        <th colspan="4">
+                            <span class="text-truncate">{{ buy_order.user_area }}</span>
+                        </th>
+                        <th colspan="2">
+                            <span>{{ buy_order.fueltap }}</span>
+                        </th>
+                        <th>
+                            <span>{{ stock }}</span>
+                        </th>
+                        <th>
+                            <span>{{ residue }}</span>
+                        </th>
+                    </tr>
+                   
+                    <tr class="title">
+                        <th>Fecha</th>
+                        <th>Movim.</th>
+                        <th>Saldo</th>
+                        <th>Placa</th>
+                        <th>Vehículo</th>
+                        <th>Marca</th>
+                        <th>Conductor</th>
+                        <th>N° Vale</th>
+                        <th>Estado</th>
+                        <th>Código</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.date|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if order.fuel_return %}
+                                +{{ order.quantity }}
+                            {% else %}
+                                -{{ order.quantity }} 
+                            {% endif %}
+                        </td>
+                        <td>{{ order.residue }}</td>
+                        <td>
+                            {% if order.plate.plate %}
+                                {{ order.plate.plate }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ order.vehicle|default_if_none:"-" }}</td>
+                        <td>{{ order.brand|default_if_none:"-" }}</td>
+                        <td>
+                            {% if order.driver.name %}
+                            {{ order.driver.name }} {{ order.driver.last_name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ order.voucher }}</td>
+                        <td>
+                            {% if order.canceled %}
+                                Anulado
+                            {% elif order.fuel_loan %}
+                                Lluqsin
+                            {% elif order.fuel_return %}
+                                Kutimun
+                            {% else %}
+                                Ok
+                            {% endif %}
+                        </td>
+                        <td>{{ order.code }}</td>
+                    </tr>
+                    {% endfor %}
+                </body>
+                </html>

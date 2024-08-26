@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const userAreaField = document.getElementById('id_user_area');
     const fuelTapField = document.getElementById('id_fueltap');
     const fuelField = document.getElementById('id_fuel');
+    const residueBuyOrderField = document.getElementById('id_residue_buy_order');
 
     plateSelect.addEventListener('change', function() {
         const selectedValue = plateSelect.value;
@@ -34,11 +35,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     userAreaField.value = data.user_area;
                     fuelTapField.value = data.fueltap;
                     fuelField.value = data.fuel;
+                    residueBuyOrderField.value = data.residue.replace(/,/g, '');
+                    
                 });
         } else {
             userAreaField.value = '';
             fuelTapField.value = '';
             fuelField.value = '';
+            residueBuyOrderField.value = '';
         }
     });
 // END AJAX 
@@ -110,5 +114,57 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 // END FIELD UPPERCASE AND HANDLE FOCUS
+
+// START TOOGLE FUEL_LOAN
+function toggleFuelLoan() {
+    var fuel_loan = document.getElementById('id_fuel_loan').checked;
+    var fuel_return = document.getElementById('id_fuel_return').checked;
+
+    var driverField = document.getElementById('id_driver');
+    var plateField = document.getElementById('id_plate');
+    var brandField = document.getElementById('id_brand');
+    var vehicleField = document.getElementById('id_vehicle');
+
+    const placeContainer = document.querySelector('.place-container');
+    const reasonContainer = document.querySelector('.reason-container');
+    const detailContainer = document.querySelector('.detail-container');
+
+    if (fuel_loan || fuel_return) {
+        driverField.disabled = true;
+        plateField.disabled = true;
+        brandField.disabled = true
+        vehicleField.disabled = true;
+        placeContainer.style.display = 'none';
+        reasonContainer.style.display = 'none';
+        detailContainer.style.display = 'block';
+
+        driverField.value = '';
+        plateField.value = ''
+        brandField.value = ''
+        vehicleField.value = '';
+        placeContainer.value = ''
+        reasonContainer.value = '';
+        detailContainer.value = '';
+    } else {
+        driverField.disabled = false;
+        plateField.disabled = false
+        brandField.disabled = false
+        vehicleField.disabled = false;
+        detailContainer.style.display = 'none';
+        placeContainer.style.display = 'block';
+        reasonContainer.style.display = 'block';
+    }
+}
+
+toggleFuelLoan();
+
+document.getElementById('id_fuel_loan').addEventListener('change', function() {
+    toggleFuelLoan();
+});
+document.getElementById('id_fuel_return').addEventListener('change', function() {
+    toggleFuelLoan();
+});
+
+// END TOOGLE FUEL_LOAN
 
 });

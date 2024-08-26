@@ -3,20 +3,33 @@
 
 
 {% block content %}
-<div class="row">
-    <section class="col-md-6 offset-md-3 mt-5">
-        <h3 class="text-center mb-3" >Expiración de Documentos</h3>
+<div class="row justify-content-center">
+    <section class="col-md-6 mt-5">
+        <h3 class="text-center mb-3" >Documentos por Expirar</h3>
+        <div class="text-center fs-6">
+            {{ date_print }}
+        </div>
     </section> 
 
-    <section class="col-md-12 my-3">
+    <section class="col-md-8 my-3">
             {% comment %} LICENSE {% endcomment %}
             {% if count_drivers > 0 %}
                 <div class="card card-body table-responsive mb-3">
                     <table class="table">
                         <thead>
-                            <tr><th colspan="5" class="text-center"><h6>LICENCIA</h6></th></tr>
                             <tr>
-                                <th>Acciones</th>
+                                <th colspan="3">
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 30px;">
+                                        <div class="btn-group mx-1">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_list' %}">
+                                                <i class="bi bi-eye-fill" title="Editar"></i>
+                                            </a>
+                                        </div>
+                                        <h6 style="margin-bottom: 0;">LICENCIA</h6>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
                                 <th>Licencia</th>
                                 <th>Conductor</th>
                                 <th>F. Expiración</th>
@@ -25,19 +38,13 @@
                         <tbody>
                             {% for driver in drivers %}
                                 <tr>
-                                    <td class="align-middle">
-                                        <div class="btn-group">
-                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_list' %}">
-                                                <i class="bi bi-pencil-fill" title="Editar"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-danger" href="{% url 'sicomec:notification_delete' driver.id %}" title="Eliminar">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
-                                        </div>
-                                    </td>
                                     <td class="align-middle">{{ driver.license }}</td>
                                     <td class="align-middle">{{ driver.driver }}</td>
-                                    <td class="align-middle">{{ driver.get_formatted_expiration }}</td>
+                                    <td class="align-middle">
+                                        <span class="border-bottom border-danger">
+                                            {{ driver.get_formatted_expiration }}
+                                        </span>
+                                    </td>
                                 </tr>   
                             {% endfor %}
                         </tbody>
@@ -50,9 +57,19 @@
                 <div class="card card-body table-responsive mb-3">
                     <table class="table">
                         <thead>
-                            <tr><th colspan="5" class="text-center"><h6>SOAT</h6></th></tr>
                             <tr>
-                                <th>Acciones</th>
+                                <th colspan="4" class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 30px;">
+                                        <div class="btn-group mx-1">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_list' %}">
+                                                <i class="bi bi-eye-fill" title="Editar"></i>
+                                            </a>
+                                        </div>
+                                        <h6 style="margin-bottom: 0;">SOAT</h6>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
                                 <th>Placa</th>
                                 <th>Vehículo</th>
                                 <th>Marca</th>
@@ -62,20 +79,14 @@
                         <tbody>
                             {% for vehicle_soat in vehicle_soats %}
                                 <tr>
-                                    <td class="align-middle">
-                                        <div class="btn-group">
-                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_list' %}">
-                                                <i class="bi bi-eye-fill" title="Editar"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-danger" href="{% url 'sicomec:notification_delete' vehicle_soat.id %}" title="Eliminar">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
-                                        </div>
-                                    </td>
                                     <td class="align-middle">{{ vehicle_soat.plate }}</td>
                                     <td class="align-middle">{{ vehicle_soat.name }}</td>
                                     <td class="align-middle">{{ vehicle_soat.brand }}</td>
-                                    <td class="align-middle">{{ vehicle_soat.get_formatted_soat }}</td>
+                                    <td class="align-middle">
+                                        <span class="border-bottom border-danger">
+                                            {{ vehicle_soat.get_formatted_soat }}
+                                        </span>
+                                    </td>
                                 </tr>   
                             {% endfor %}
                         </tbody>
@@ -88,9 +99,19 @@
                 <div class="card card-body table-responsive mb-3">
                     <table class="table">
                         <thead>
-                            <tr><th colspan="5" class="text-center"><h6>CITV</h6></th></tr>
                             <tr>
-                                <th>Acciones</th>
+                                <th colspan="5" class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 30px;">
+                                        <div class="btn-group mx-1">
+                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_list' %}">
+                                                <i class="bi bi-eye-fill" title="Editar"></i>
+                                            </a>
+                                        </div>
+                                        <h6 style="margin-bottom: 0;">CITV</h6>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
                                 <th>Placa</th>
                                 <th>Vehículo</th>
                                 <th>Marca</th>
@@ -100,27 +121,20 @@
                         <tbody>
                             {% for vehicle_citv in vehicle_citvs %}
                                 <tr>
-                                    <td class="align-middle">
-                                        <div class="btn-group">
-                                            <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_list' %}">
-                                                <i class="bi bi-eye-fill" title="Editar"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-danger" href="{% url 'sicomec:notification_delete' vehicle_citv.id %}" title="Eliminar">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
-                                        </div>
-                                    </td>
                                     <td class="align-middle">{{ vehicle_citv.plate }}</td>
                                     <td class="align-middle">{{ vehicle_citv.name }}</td>
                                     <td class="align-middle">{{ vehicle_citv.brand }}</td>
-                                    <td class="align-middle">{{ vehicle_citv.get_formatted_citv }}</td>
+                                    <td class="align-middle">
+                                        <span class="border-bottom border-danger">
+                                            {{ vehicle_citv.get_formatted_citv }}
+                                        </span>
+                                    </td>
                                 </tr>   
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             {% endif %}
-
     </section>
 </div>
 {% endblock %}

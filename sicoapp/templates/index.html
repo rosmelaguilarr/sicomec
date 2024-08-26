@@ -13,25 +13,38 @@
                 <h1 class=" text-center mt-4" style="color:#011224;">
                     Sistema Integral de Control de Unidades Motorizadas y Combustibles
                 </h1>
-                {% if user.is_authenticated %}
+                {% if is_super_admin or is_padmin or is_poperator or is_pregistrator or is_cadmin or is_coperator %}
                     <div class="d-flex justify-content-center my-5">
-                        <a class="btn btn-primary w-50 mx-2" href="{% url 'sicomec:fuel_order_create' %}">
-                            <i class="bi bi-plus-lg mx-1" style="font-size: 1.2rem; color: #fff;"></i>
-                            Nuevo Pedido
-                        </a>
-                        <a class="btn btn-primary w-50 mx-2" href="{% url 'sicomec:ballot_create' %}">
-                            <i class="bi bi-plus-lg mx-1" style="font-size: 1.2rem; color: #fff;"></i>
-                            Nueva Papeleta
-                        </a>
+                        {% if is_super_admin or is_cadmin or is_coperator %}
+                            <a class="btn btn-primary w-50 mx-1" href="{% url 'sicomec:fuel_order_create' %}">
+                                <i class="bi bi-plus-lg mx-1" style="font-size: 1.2rem; color: #fff;"></i>
+                                Pedido Combustible
+                            </a>
+                        {% endif %}
+                        {% if is_super_admin or is_padmin or is_poperator %}
+                            <a class="btn btn-primary w-50 mx-1" href="{% url 'sicomec:ballot_create' %}">
+                                <i class="bi bi-plus-lg mx-1" style="font-size: 1.2rem; color: #fff;"></i>
+                                Papeleta Salida
+                            </a>
+                        {% endif %}
+                        {% if is_pregistrator %}
+                            <a class="btn btn-primary w-50" href="{% url 'sicomec:ballot_mark_return' %}">
+                                <i class="bi bi-clock-fill" style="font-size: 1.2rem; color: #fff;"></i>
+                                Marcar Retorno
+                            </a>
+                        {% endif %}
                     </div>
-                {% else %}
+                {% endif %}    
+
+                {% if not user.is_authenticated %}
                     <div class="d-flex justify-content-center my-4">
                         <a class="btn btn-primary mx-2 px-5" href="{% url 'sicomec:login' %}">
                             Iniciar Sesión
                         </a>
                     </div>
                 {% endif %}
-            </section>
+
+                </section>
         </div>
 
     </div>
@@ -39,7 +52,9 @@
 
 {% block js %}
 <script>
+    /*
     document.addEventListener('DOMContentLoaded', function() {
+        
         var alertShow = "{{ request.session.alertShow|default:'False' }}";
         
         if (alertShow === 'True') {
@@ -68,6 +83,9 @@
                     .catch(error => console.error('Error fetching notification count:', error));
             }, 2000); // 2 seconds
         }
-        });
+        
+
+/*
+
 </script>
 {% endblock  %}

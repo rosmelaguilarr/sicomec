@@ -4,6 +4,7 @@ from .models import Vehicle, Driver, FuelTap, Ballot, BuyOrder, FuelOrder
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 # DRIVER FORM --------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ class VehicleForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['plate'].widget.attrs.update({'autofocus': 'autofocus'})
+        self.fields['type'].widget.attrs.update({'autofocus': 'autofocus'})
 
         current_year = timezone.now().year
         years = [(year, str(year)) for year in range(current_year, current_year - 15, -1)]
@@ -91,15 +92,15 @@ class VehicleForm(ModelForm):
         if self.instance.plate:  
             self.fields['plate'].widget.attrs['readonly'] = True
             self.fields['type'].widget.attrs['readonly'] = True
-            self.fields['plate'].widget.attrs.pop('autofocus', None)
+            self.fields['type'].widget.attrs.pop('autofocus', None)
 
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
         self.helper.form_class = 'card card-body mb-5'
         self.helper.layout = Layout(
             Row(
-                Column('plate', css_class='form-group col-md-4 mb-0'),
                 Column('type', css_class='form-group col-md-4 mb-0'),
+                Column('plate', css_class='form-group col-md-4 mb-0'),
                 Column('name', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
@@ -129,7 +130,7 @@ class VehicleForm(ModelForm):
             Submit('submit', 'Guardar', css_class='btn btn-primary')
         )
 
-        self.fields['type'].empty_label = 'Escoge tipo...'
+        self.fields['type'].empty_label = 'Escoge clase...'
         self.fields['fuel'].empty_label = 'Escoge combustible...'
 
 
@@ -234,15 +235,19 @@ class FuelOrderForm(ModelForm):
 
     driver = forms.ModelChoiceField(
     queryset=Driver.objects.filter(available=True),
+    label='Conductor',
+    required=False,
     )
 
     plate = forms.ModelChoiceField(
         queryset=Vehicle.objects.filter(available=True),
+        label='Placa',
+        required=False,
     )
 
     class Meta:     
         model = FuelOrder
-        fields = ['fueltap','order','user_area','driver','plate','brand','vehicle','place','reason','quantity','fuel','voucher','date','fuel_loan','fuel_return','detail']
+        fields = ['fueltap','order','user_area','driver','plate','brand','vehicle','place','reason','quantity','fuel','voucher','date','fuel_loan','fuel_return','detail','residue_buy_order']
 
         widgets = {
                 'date': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
@@ -275,7 +280,10 @@ class FuelOrderForm(ModelForm):
         'readonly': 'readonly',
         'style': 'background-color: #e9ecef; pointer-events: none;',
         })
-       
+        self.fields['residue_buy_order'].widget.attrs.update({
+        'readonly': 'readonly',
+        'style': 'background-color: #e9ecef; pointer-events: none;',
+        })
 
         # if self.instance.code:  
         #     self.fields['order'].widget.attrs.pop('autofocus', None)
@@ -293,38 +301,38 @@ class FuelOrderForm(ModelForm):
         self.helper.form_class = 'card card-body mb-5'
         self.helper.layout = Layout(
             Row(
-                Column('order', css_class='form-group col-md-4 mb-0'),
-                Column('fueltap', css_class='form-group col-md-4 mb-0'),
-                Column('user_area', css_class='form-group col-md-4 mb-0'),
+                Column('fuel_loan', css_class='form-group col-md-4 mb-0'),
+                Column('fuel_return', css_class='form-group col-md-4 mb-0'),
+                Column('residue_buy_order', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
+                Column('order', css_class='form-group col-md-4 mb-0'),
+                Column('user_area', css_class='form-group col-md-8 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('fueltap', css_class='form-group col-md-4 mb-0'),
                 Column('driver', css_class='form-group col-md-4 mb-0'),
                 Column('plate', css_class='form-group col-md-4 mb-0'),
-                Column('brand', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
+                Column('brand', css_class='form-group col-md-4 mb-0'),
                 Column('vehicle', css_class='form-group col-md-4 mb-0'),
-                Column('place', css_class='form-group col-md-4 mb-0'),
-                Column('reason', css_class='form-group col-md-4 mb-0'),
+                Column('fuel', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('quantity', css_class='form-group col-md-4 mb-0'),
-                Column('fuel', css_class='form-group col-md-4 mb-0'),
                 Column('voucher', css_class='form-group col-md-4 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
                 Column('date', css_class='form-group col-md-4 mb-0'),
-                Column('detail', css_class='form-group col-md-8 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('fuel_loan', css_class='form-group col-md-4 mb-0'),
-                Column('fuel_return', css_class='form-group col-md-4 mb-0'),
-                # Column('fuel_return', css_class='form-group col-md-4 mb-0'),
+                Column('place', css_class='form-group col-md-4 mb-0 place-container'),
+                Column('reason', css_class='form-group col-md-8 mb-0 reason-container'),
+                Column('detail', css_class='form-group col-md-12 mb-0 detail-container'),
                 css_class='form-row'
             ),
             Submit('submit', 'Guardar', css_class='btn btn-primary')
@@ -344,10 +352,12 @@ class BallotForm(ModelForm):
 
     driver = forms.ModelChoiceField(
         queryset=Driver.objects.filter(available=True),
+        label='Conductor',
     )
 
     plate = forms.ModelChoiceField(
         queryset=Vehicle.objects.filter(available=True),
+        label='Placa',
     )
 
     class Meta:     
@@ -385,9 +395,9 @@ class BallotForm(ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('drive_to', css_class='form-group col-md-4 mb-0'),
+                Column('drive_to', css_class='form-group col-md-8 mb-0'),
                 Column('place', css_class='form-group col-md-4 mb-0'),
-                Column('reason', css_class='form-group col-md-4 mb-0'),
+                Column('reason', css_class='form-group col-md-12 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -400,3 +410,20 @@ class BallotForm(ModelForm):
 
         self.fields['driver'].empty_label = 'Escoge conductor...'
         self.fields['plate'].empty_label = 'Escoge placa...'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        driver = cleaned_data.get('driver')
+        plate = cleaned_data.get('plate')
+        exit_date = cleaned_data.get('exit_date')
+        exit_time = cleaned_data.get('exit_time')
+
+        if driver and exit_date and exit_time:
+            if Ballot.objects.filter(driver=driver, exit_date=exit_date, exit_time=exit_time).exclude(id=self.instance.id).exists():
+                raise ValidationError('Conductor ya está registrado para esta fecha y hora')
+
+        if plate and exit_date and exit_time:
+            if Ballot.objects.filter(plate=plate, exit_date=exit_date, exit_time=exit_time).exclude(id=self.instance.id).exists():
+                raise ValidationError('Vehículo ya está registrado para esta fecha y hora')
+
+        return cleaned_data

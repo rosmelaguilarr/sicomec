@@ -35,12 +35,14 @@
                 <table class="table table-hover table_search">
                     <thead>
                         <tr>
-                            <th>Acciones</th>
-                            <th>N° Orden</th>
+                            {% if not is_coperator  %}
+                                <th>Acciones</th>
+                            {% endif %}
+                            <th>N° O/C</th>
                             <th>Área Usuaria</th>
                             <th>Proveedor</th>
                             <th>Combustible</th>
-                            <th>Cant.</th>
+                            <th>Entrada</th>
                             <th>Saldo</th>
                             <th>Fecha</th>
                         </tr>
@@ -48,16 +50,21 @@
                     <tbody>
                         {% for buy_order in buy_orders %}
                             <tr>
+                                {% if not is_coperator  %}
                                 <td class="align-middle">
                                     <div class="btn-group">
                                         <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:buy_order_update' buy_order.id %}?q={{ query }}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/buy_order/delete', '{{ buy_order.id }}', '', 'delete')" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </a>
+                                        {% if is_super_admin %}
+                                            <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/buy_order/delete', '{{ buy_order.id }}', '', 'delete')" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </td>
+                                {% endif %}
+
                                 <td class="align-middle">{{ buy_order.order }}</td>
                                 <td class="align-middle">
                                     <span class="d-inline-block text-truncate align-middle" style="max-width: 250px;">

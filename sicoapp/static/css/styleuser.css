@@ -36,3 +36,31 @@ body {
     padding: .3rem .5rem;
     font-size: 14px;
 }
+
+.notification-button-container {
+    position: fixed; 
+    bottom: 100px; 
+    right: 20px; 
+    z-index: 9999; 
+}
+
+
+/* Tamaño de letra para el contenido de la tabla */
+.datatable {
+    font-size: 14px; /* Ajusta el tamaño según tus necesidades */
+}
+
+/* Tamaño de letra para los encabezados de la tabla */
+.datatable thead th {
+    font-size: 14px; /* Ajusta el tamaño según tus necesidades */
+}
+
+/* Tamaño de letra para la paginación y otros controles */
+.dataTables_info, .paginate_button, .dataTables_length, /*.dataTables_filter,*/
+.dataTables_paginate {
+    font-size: 12px; /* Ajusta el tamaño según tus necesidades */
+}
+
+table.dataTable tbody, table.dataTable tbody td {
+    padding: 3px 5px;
+}
