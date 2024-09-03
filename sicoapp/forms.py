@@ -4,6 +4,7 @@ from .models import Vehicle, Driver, FuelTap, Ballot, BuyOrder, FuelOrder
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit
 from django.utils import timezone
+import datetime
 from django.core.exceptions import ValidationError
 
 # DRIVER FORM --------------------------------------------------------------------
@@ -197,7 +198,7 @@ class BuyOrderForm(ModelForm):
 
         self.fields['order'].widget.attrs.update({'autofocus': 'autofocus'})
 
-        if self.instance.order:  
+        if self.instance.user_area:  
             self.fields['order'].widget.attrs['readonly'] = True
             self.fields['stock'].widget.attrs['readonly'] = True
             self.fields['order'].widget.attrs.pop('autofocus', None)
@@ -418,12 +419,16 @@ class BallotForm(ModelForm):
         exit_date = cleaned_data.get('exit_date')
         exit_time = cleaned_data.get('exit_time')
 
-        if driver and exit_date and exit_time:
-            if Ballot.objects.filter(driver=driver, exit_date=exit_date, exit_time=exit_time).exclude(id=self.instance.id).exists():
-                raise ValidationError('Conductor ya está registrado para esta fecha y hora')
+        if exit_date and exit_time:
+            exit_datetime = timezone.make_aware(datetime.datetime.combine(exit_date, exit_time), timezone.get_current_timezone())
 
-        if plate and exit_date and exit_time:
-            if Ballot.objects.filter(plate=plate, exit_date=exit_date, exit_time=exit_time).exclude(id=self.instance.id).exists():
-                raise ValidationError('Vehículo ya está registrado para esta fecha y hora')
+            if exit_datetime < timezone.now():
+                raise ValidationError('Fecha y hora de salida no pueden ser anteriores a la fecha y hora actual.')
+
+            if driver and Ballot.objects.filter(driver=driver, exit_date=exit_date, exit_time=exit_time).exclude(id=self.instance.id).exists():
+                raise ValidationError('Ya existe un registro para el conductor en esta fecha y hora.')
+
+            if plate and Ballot.objects.filter(plate=plate, exit_date=exit_date, exit_time=exit_time).exclude(id=self.instance.id).exists():
+                raise ValidationError('Ya existe un registro para el vehículo en esta fecha y hora.')
 
         return cleaned_data

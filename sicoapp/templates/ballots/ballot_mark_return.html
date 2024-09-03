@@ -8,7 +8,7 @@
         <h3 class="text-center mb-3" >Marcar Retorno</h3>
         <form method="GET" action="">
             <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa o código de papeleta" aria-label="Buscar" autofocus id="ballot_code_Search">
+                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar placa o código de papeleta" aria-label="Buscar" autofocus id="ballot_code_Search">
                 <button class="btn btn-primary" type="submit" title="Buscar">
                     <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
                 </button>
@@ -41,7 +41,7 @@
                             <tr>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-primary " href="{% url 'sicomec:update_return_datetime' ballot.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-primary " href="{% url 'sicomec:update_return_datetime' ballot.id %}?q={{ query }}">
                                             <i class="bi bi-clock-fill" title="Marcar"></i>
                                             Marcar
                                         </a>
@@ -74,3 +74,29 @@
     </section>
 </div>
 {% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var fields = [
+            { id: "ballot_code_Search", transform: "toUpperCase" },
+        ];
+    
+        function transformInput(event, transform) {
+            if (transform === "toUpperCase") {
+                event.target.value = event.target.value.toUpperCase();
+            }
+        }
+    
+        fields.forEach(function(field) {
+            var element = document.getElementById(field.id);
+    
+            if (field.transform === "toUpperCase") {
+                element.addEventListener("input", function(event) {
+                    transformInput(event, field.transform);
+                });
+            }
+        });
+    });
+</script> 
+{% endblock  %}

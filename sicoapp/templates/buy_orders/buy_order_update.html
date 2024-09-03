@@ -8,16 +8,15 @@
     <div class="row">
         <section class="col-md-8 offset-md-2 my-5">
             <h3 class="text-center mb-3">
-                <a class="btn btn-sm" href="{% url 'sicomec:buy_order_list' %}?q={{ query }}" title="Regresar" style="background-color: #072e5e;">
+                <a class="btn btn-sm" href="{% url 'sicomec:buy_order_list' %}" title="Regresar" style="background-color: #072e5e;">
                     <i class="bi bi-arrow-left mx-1" style="font-size: 1rem; color: #fff;"></i>
                 </a>
                 Actualizar Orden de Compra
             </h3>
             <form method="POST" enctype="multipart/form-data" class="card card-body mb-5">
                 {% csrf_token %}
-                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.order }}">
+                <input type="hidden" id="form-instance-id" data-instance-id="{{ form.instance.user_area }}">
                 {% crispy form %}
-                <input type="hidden" name="q" value="{{ query }}">
             </form>
         </section>
     </div>

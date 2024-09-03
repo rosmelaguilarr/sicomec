@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Papeletas Programadas | SICOMEC{% endblock %}
 
@@ -6,35 +7,14 @@
 <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
         <h3 class="text-center mb-3">Papeletas Programadas</h3>
-        <form method="GET" action="">
-            <div class="input-group mb-3">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por código de papeleta o placa" aria-label="Buscar" autofocus>
-                <button class="btn btn-primary" type="submit" title="Buscar">
-                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                </button>
-                <a class="btn" href="{% url 'sicomec:ballot_list_scheduled' %}" title="Recargar" style="background-color: #072e5e;">
-                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
-                </a>
-            </div>
-        </form>
     </section> 
 
-    <section class="col-md-12 my-3">
-        {% if search_performed and ballot_count == 0 %}
-            <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-                <i class="bi bi-info-circle-fill"></i>
-                <div class="mx-auto">
-                    {{ message }}
-                </div>
-            </div>
-        {% endif %}
-
-        {% if ballot_count > 0 %}
+    <section class="col-md-12">
         <div class="card card-body table-responsive">
-            <table class="table table-hover table_search">
+            <table class="datatable display">
                 <thead>
                     <tr>
-                        {% if not is_pregistrator %}
+                        {% if not is_pregistrator and not is_uquery %}
                             <th>Acciones</th>
                         {% endif %}
                         <th>Código</th>
@@ -50,14 +30,14 @@
                 <tbody>
                     {% for ballot in ballots %}
                         <tr>
-                            {% if not is_pregistrator %}
+                            {% if not is_pregistrator and not is_uquery %}
                                 <td class="align-middle">
                                     <div class="btn-group">
                                         <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_ballot_pdf' ballot.id %}" target="_blank">
                                             <i class="bi bi-printer-fill" title="Imprimir"></i>
                                         </a>
                                         {% if is_padmin or is_super_admin %}
-                                        <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:ballot_update' ballot.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:ballot_update' ballot.id %}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
                                         <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/ballot/delete', '{{ ballot.id }}', 'redirect_to=scheduled', 'delete')" title="Eliminar">
@@ -80,7 +60,10 @@
                 </tbody>
             </table>
         </div>
-        {% endif %}
     </section>
 </div>
 {% endblock %}
+
+{% block js %}
+<script src="{% static 'js/datatables.js' %}"></script>
+{% endblock  %}

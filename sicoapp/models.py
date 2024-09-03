@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-import os
-from django.core.validators import MinValueValidator
 import uuid
 from django.core.validators import RegexValidator
 from django.utils import timezone
@@ -95,7 +93,7 @@ class Driver(models.Model):
 
 class Vehicle(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    plate = models.CharField(max_length=6, verbose_name='Placa', null=False, blank=False)
+    plate = models.CharField(max_length=6, verbose_name='Placa', unique=True, null=False, blank=False)
     type = models.ForeignKey(TypeVehicle, on_delete=models.PROTECT, verbose_name='Clase')
     name = models.CharField(max_length=30, verbose_name='Tipo', null=False, blank=False)
     brand = models.CharField(max_length=20, verbose_name='Marca', null=False, blank=False)
@@ -104,7 +102,7 @@ class Vehicle(models.Model):
     production = models.IntegerField(verbose_name='Fabricación',  null=False, blank=False)
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
     mileage = models.PositiveIntegerField(verbose_name='Kilometraje',default=0, null=True, blank=True)
-    hourometer = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Horómetro', default=0, null=True, blank=True)
+    hourometer = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Horómetro', null=True, blank=True)
     soat = models.DateField(verbose_name='Emisión SOAT', auto_now=False, null=True, blank=True)
     citv = models.DateField(verbose_name='Emisión CITV', auto_now=False, null=True, blank=True)
     available = models.BooleanField(default=True, verbose_name='Disponible')
@@ -181,21 +179,14 @@ class FuelTap(models.Model):
 
 # BUY ORDER MODEL --------------------------------------------------------------------
 
-seven_digit_with_optional_suffix_regex = r'^\d{7}(?:GR|GP|DS)?$'
-
-order_validator = RegexValidator(
-    regex=seven_digit_with_optional_suffix_regex, 
-    message="Orden de compra debe ser numérico de 7 dígitos, seguido opcionalmente por GR|GP|DS"
-)
-
 class BuyOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    order =  models.CharField(max_length=9, verbose_name='N° O/C', unique=True,  null=False, blank=False, validators=[order_validator])
+    order =  models.CharField(max_length=9, verbose_name='N° O/C', unique=True,  null=False, blank=False)
     user_area = models.TextField(verbose_name='Área Usuaria',null=False, blank=False)
     fueltap = models.ForeignKey(FuelTap, on_delete=models.PROTECT, verbose_name='Proveedor')
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
-    stock = models.PositiveIntegerField(verbose_name='Cantidad Comprada',default=0, null=False, blank=False)
-    residue = models.PositiveIntegerField(default=0)
+    stock = models.DecimalField(max_digits=10, decimal_places=2, default=0,verbose_name='Cantidad Comprada', null=False, blank=False)
+    residue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     date = models.DateField(verbose_name='Fecha O/C', auto_now=False)
     detail = models.TextField(verbose_name='Detalle',null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -206,14 +197,30 @@ class BuyOrder(models.Model):
     
     class Meta:
         db_table = "BuyOrder"
-        verbose_name = "Número de Orden"
-        verbose_name_plural = "Números de Órdenes"
+        verbose_name = "Orden de Compra"
+        verbose_name_plural = "Órdenes de compras"
+    
+    def get_fuel_code(self):
+        fuel_codes = {
+            'G. REGULAR': 'GR',
+            'G. PREMIUM': 'GP',
+            'DIESEL': 'DS',
+        }
+        return fuel_codes.get(self.fuel.name, '')
     
     def save(self, *args, **kwargs):
         if self.user_area:
             self.user_area = self.user_area.upper()
         if self.detail:
             self.detail = self.detail.upper()
+
+        if self.fuel and self.order:
+            fuel_code = self.get_fuel_code()
+            if self.order[-2:] in ['GP', 'GR', 'DS']:  
+                self.order = self.order[:-2]  
+
+            self.order = f"{self.order}{fuel_code}"
+
         super(BuyOrder, self).save(*args, **kwargs)
 
 
@@ -237,9 +244,9 @@ class FuelOrder(models.Model):
     vehicle = models.CharField(max_length=50, null=True, blank=True, verbose_name='Tipo')
     place = models.CharField(max_length=70, verbose_name='Destino', null=True, blank=True)
     reason = models.TextField(verbose_name='Motivo', null=True, blank=True)
-    quantity = models.PositiveIntegerField(verbose_name='Cantidad Solicitada',default=0, null=False, blank=False)
-    residue_buy_order = models.PositiveIntegerField(verbose_name='Saldo')
-    residue = models.PositiveIntegerField(default=0)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0,verbose_name='Cantidad Solicitada', null=False, blank=False)
+    residue_buy_order = models.DecimalField(max_digits=10, decimal_places=2,verbose_name='Saldo')
+    residue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fuel = models.CharField(max_length=10, verbose_name='Combustible', null=False, blank=False)
     voucher = models.CharField(max_length=7, verbose_name='N° Vale', null=False, blank=False, validators=[voucher_validator])
     date = models.DateField(verbose_name='Fecha', auto_now=False)

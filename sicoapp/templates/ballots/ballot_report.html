@@ -8,22 +8,22 @@
     <section class="col-md-6 my-3">
         <h3 class="text-center mt-5 mb-3">Reporte de Papeletas</h3>
         <form method="GET" action="" class="card card-body flex-row flex-wrap justify-content-between align-items-center">
-            <div>
-                <div id="div_ballot_scheduled" class="form-check"> 
-                    <input type="checkbox" name="ballot_scheduled" class="checkboxinput form-check-input" id="id_ballot_scheduled"> 
-                    <label for="id_ballot_scheduled" class="form-check-label">
-                        Programados
+            <div class="d-flex">
+                <div id="div_start_date" class="mb-3 me-5"> 
+                    <label for="id_date" class="form-label">
+                    Desde
                     </label> 
+                    <input type="date" name="start_date" class="dateinput form-control" required="" id="id_start_date"> 
                 </div>
-                <div id="div_ballot_complete" class="form-check"> 
-                    <input type="checkbox" name="ballot_complete" class="checkboxinput form-check-input" id="id_ballot_complete"> 
-                    <label for="id_ballot_complete" class="form-check-label">
-                        Completados
+                <div id="div_end_date" class="mb-3"> 
+                    <label for="id_date" class="form-label">
+                    Hasta
                     </label> 
+                    <input type="date" name="end_date" class="dateinput form-control" required="" id="id_end_date"> 
                 </div>
             </div>
             <div>
-                <a class="btn btn-outline-primary" data-base-url="/sicomec/ballot/report/" href="#" target="_blank" id="printButton">
+                <a class="btn btn-primary" data-base-url="/sicomec/ballot/report/" href="#" target="_blank" id="printButton">
                     <i class="bi bi-printer-fill" title="Imprimir"></i>
                     Imprimir
                 </a>

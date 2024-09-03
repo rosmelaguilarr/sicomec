@@ -1,46 +1,41 @@
 // START PRINT BUTTON
-const ballotScheduledCheckbox = document.getElementById('id_ballot_scheduled');
-const ballotCompleteCheckbox = document.getElementById('id_ballot_complete');
 const printButton = document.getElementById('printButton');
 const baseUrl = printButton.getAttribute('data-base-url');
 
 function updatePrintButtonHref() {
+    const startDate = document.getElementById('id_start_date').value;
+    const endDate = document.getElementById('id_end_date').value;
+
     let urlWithParams = baseUrl;
 
-    const ballotScheduled = ballotScheduledCheckbox.checked;
-    const ballotComplete = ballotCompleteCheckbox.checked;
-
-    if (ballotScheduled) {
-        urlWithParams += '?ballot_scheduled=on';
+    if (startDate) {
+        urlWithParams += `?start_date=${startDate}`;
     }
 
-    if (ballotComplete) {
+    if (endDate) {
         if (urlWithParams.includes('?')) {
-            urlWithParams += '&ballot_complete=on';
+            urlWithParams += `&end_date=${endDate}`;
         } else {
-            urlWithParams += '?ballot_complete=on';
+            urlWithParams += `?end_date=${endDate}`;
         }
     }
 
-    if (urlWithParams !== baseUrl) {
+    if (startDate || endDate) {
         if (urlWithParams.includes('?')) {
             urlWithParams += '&generate_pdf=1';
         } else {
             urlWithParams += '?generate_pdf=1';
         }
-    }
-
-    if (urlWithParams === baseUrl) {
-        printButton.href = '#';  
-        printButton.classList.add('disabled');  
+        printButton.href = urlWithParams;
+        printButton.classList.remove('disabled');
     } else {
-        printButton.href = urlWithParams;  
-        printButton.classList.remove('disabled');  
+        printButton.href = '#';
+        printButton.classList.add('disabled');
     }
 }
 
-ballotScheduledCheckbox.addEventListener('change', updatePrintButtonHref);
-ballotCompleteCheckbox.addEventListener('change', updatePrintButtonHref);
+document.getElementById('id_start_date').addEventListener('change', updatePrintButtonHref);
+document.getElementById('id_end_date').addEventListener('change', updatePrintButtonHref);
 
 updatePrintButtonHref();
 // END PRINT BUTTON

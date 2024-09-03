@@ -7,64 +7,48 @@
 <div class="row">
     <section class="col-md-12 mt-5">
         <h3 class="text-center mb-3" >Tarjeta de Control</h3>
-        <form method="GET" action="" class="d-flex flex-row flex-wrap justify-content-between align-items-center">
+        <form method="GET" action="" class="d-flex flex-row flex-wrap justify-content-between align-items-center" autocomplete="off">
             <div class="mb-3">
-                <label for="buy_order">N° O/C</label>
-                <select name="buy_order" class="select form-select" id="id_buy_order">
-                    <option value="">Escoge orden ...</option>
-                    {% for buy_order in buy_orders %}
-                        <option value="{{ buy_order.pk }}">
-                            {{ buy_order.order }}
-                        </option>
-                    {% endfor %}
-                </select>
+                <label for="orderInput"></label> 
+                <div class="input-group">
+                    <input type="search" name="orderInput" class="form-control" placeholder="Buscar O/C" aria-label="Buscar" autofocus id="id_orderInput" style="width: 150px;">
+                    <button class="btn btn-primary" type="submit" title="Buscar">
+                        <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
+                    </button>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="user_area">Área Usuaria</label> 
-                <textarea name="user_area" cols="60" rows="1" readonly="readonly" style="background-color: rgb(233, 236, 239); max-width: 250px;" class="textarea form-control" id="id_user_area"></textarea>
+                <textarea name="user_area" cols="60" rows="1" readonly="readonly" style="background-color: rgb(248 249 251); max-width: 250px;" class="textarea form-control" id="id_user_area"></textarea>
             </div>
             <div class="mb-3">
                 <label for="fueltap">Proveedor</label>
-                <input type="text" name="fueltap" id="id_fueltap" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none;" class="form-control" value="" >
+                <input type="text" name="fueltap" id="id_fueltap" readonly="readonly" style="background-color: rgb(248 249 251); pointer-events: none;" class="form-control" value="" >
             </div>
             <div class="mb-3">
                 <label for="fuel">Combustible</label>
-                <input type="text" name="fuel" id="id_fuel" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none; max-width: 130px;" class="form-control" value="" >
+                <input type="text" name="fuel" id="id_fuel" readonly="readonly" style="background-color: rgb(248 249 251); pointer-events: none; max-width: 130px;" class="form-control" value="" >
             </div>
             <div class="mb-3">
                 <label for="stock">Entrada</label>
-                <input type="text" name="stock" id="id_stock" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none; max-width: 130px;" class="form-control" value="" >
+                <input type="text" name="stock" id="id_stock" readonly="readonly" style="background-color: rgb(248 249 251); pointer-events: none; max-width: 130px;" class="form-control" value="" >
             </div>
             <div class="mb-3">
                 <label for="residue">Saldo</label>
-                <input type="text" name="residue" id="id_residue" readonly="readonly" style="background-color: rgb(233, 236, 239); pointer-events: none; max-width: 130px;" class="form-control" value="" >
+                <input type="text" name="residue" id="id_residue" readonly="readonly" style="background-color: rgb(248 249 251); pointer-events: none; max-width: 130px;" class="form-control" value="" >
             </div>
             <div class="mb-3" style="padding-top: 25px;">
-                <a class="btn btn-primary" data-base-url="/sicomec/fuel_order/generate_control_card_pdf/" href="#" target="_blank" id="printButton">
+                <a class="btn btn-primary {% if is_uquery %}d-none{% endif %}" data-base-url="/sicomec/fuel_order/generate_control_card_pdf/" href="#" target="_blank" id="printButton">
                     <i class="bi bi-printer-fill" title="Imprimir"></i>
                 </a>
             </div>
+            
         </form>
     </section> 
 
     <section class="col-md-12 my-3">
             <div class="card card-body table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th style="user-select: none;">Fecha</th>
-                            <th style="user-select: none;">Movim.</th>
-                            <th style="user-select: none;">Saldo</th>
-                            <th style="user-select: none;">Placa</th>
-                            <th style="user-select: none;">Tipo</th>
-                            <th style="user-select: none;">Marca</th>
-                            <th style="user-select: none;">Conductor</th>
-                            <th style="user-select: none;">N° Vale</th>
-                            <th style="user-select: none;">Código</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
+                <table class="datatable display">
                 </table>
             </div>
     </section>
@@ -72,5 +56,40 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'js/fuel_order_control_table.js' %}"></script>
+<script src="{% static 'js/fuel_order_control_table.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var fields = [
+            { id: "id_orderInput", transform: "toUpperCase" },
+        ];
+    
+        function transformInput(event, transform) {
+            if (transform === "toUpperCase") {
+                event.target.value = event.target.value.toUpperCase();
+            }
+        }
+    
+        fields.forEach(function(field) {
+            var element = document.getElementById(field.id);
+    
+            if (field.transform === "toUpperCase") {
+                element.addEventListener("input", function(event) {
+                    transformInput(event, field.transform);
+                });
+            }
+        });
+
+        // START MAXLENGTH 9 FOR BUY ORDER
+        var orderField = document.querySelector('input[name="orderInput"]');
+
+        if (orderField) {
+            orderField.addEventListener('input', function(e) {
+                if (e.target.value.length > 9) {
+                    e.target.value = e.target.value.slice(0, 9);
+                }
+            });
+        }
+        // END MAXLENGTH 9 FOR BUY ORDER
+    });
+</script> 
 {% endblock %}

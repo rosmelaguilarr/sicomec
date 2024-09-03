@@ -57,4 +57,20 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 // END FIELD UPPERCASE AND HANDLE FOCUS
 
+// START MAXLENGTH 7 FOR BUY ORDER
+var orderField = document.querySelector('input[name="order"]');
+
+if (orderField) {
+    orderField.addEventListener('input', function(e) {
+        if (e.target.value.length > 7) {
+            e.target.value = e.target.value.slice(0, 7);
+        }
+
+        // Eliminar cualquier valor que no sea un número
+        this.value = this.value.replace(/\D/g, '');
+    });
+}
+// END MAXLENGTH 7 FOR BUY ORDER
+
+
 });

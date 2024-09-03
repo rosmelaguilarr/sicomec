@@ -32,7 +32,7 @@ urlpatterns = [
     # path('fuel_order/update/<str:id>', views.fuel_order_update_view, name='fuel_order_update'),
     path('fuel_order/list', views.fuel_order_list_view, name='fuel_order_list'),
     path('fuel_order/generate_fuel_order_pdf/<str:id>', views.generate_fuel_order_pdf, name='generate_fuel_order_pdf'),
-    path('fuel_order/generate_control_card_pdf/<uuid:order_id>', views.generate_control_card_pdf, name='generate_control_card_pdf'),
+    path('fuel_order/generate_control_card_pdf/<uuid:order_id>/', views.generate_control_card_pdf, name='generate_control_card_pdf'),
     path('fuel_order/delete/<str:id>', views.fuel_order_delete_view, name='fuel_order_delete'),
     path('fuel_order/control_card', views.control_card_view, name='control_card'),
 
@@ -51,6 +51,7 @@ urlpatterns = [
 
     path('get_vehicle_details/<str:id>', views.get_vehicle_details_view, name='get_vehicle_details'),
     path('get_buy_order_details/<uuid:id_buy_order>', views.get_buy_order_details_view, name='get_buy_order_details'),
+    path('get_buy_order_uuid/<str:order_identifier>/', views.get_buy_order_uuid_view, name='get_buy_order_uuid'),
     path('get_fuel_orders/<uuid:id_buy_order>', views.get_fuel_orders_view, name='get_fuel_orders'),
     path('get_driver_details/<uuid:id>', views.get_driver_details_view, name='get_driver_details'),
 ]

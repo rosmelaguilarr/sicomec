@@ -7,32 +7,10 @@
 <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
         <h3 class="text-center mb-3" >Buscar Vehículo</h3>
-        <form method="GET" action="">
-            <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por placa o marca" aria-label="Buscar" autofocus id="inputSearchVehicle">
-                <button class="btn btn-primary" type="submit" title="Buscar">
-                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                </button>
-                <a class="btn" href="{% url 'sicomec:vehicle_list' %}" title="Recargar" style="background-color: #072e5e;">
-                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
-                </a>
-            </div>
-        </form>
     </section> 
 
-    <section class="col-md-12 my-3">
-        {% if search_performed and vehicle_count == 0 %}
-        <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-            <i class="bi bi-info-circle-fill"></i>
-            <div class="mx-auto">
-                {{ message }}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if vehicle_count > 0 %}
+    <section class="col-md-12">
             <div class="card card-body table-responsive">
-                {% comment %} <table class="table table-hover table_search"> {% endcomment %}
                 <table class="datatable display">
                     <thead>
                         <tr>
@@ -55,7 +33,7 @@
                                 {% if is_super_admin %}
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_update' vehicle.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:vehicle_update' vehicle.id %}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
                                         <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/vehicle/delete', '{{ vehicle.id }}', '', 'delete')" title="Eliminar">
@@ -65,14 +43,17 @@
                                 </td>
                                 {% endif %}
 
-
                                 <td class="align-middle">{{ vehicle.plate }}</td>
                                 <td class="align-middle">{{ vehicle.type }}</td>
                                 <td class="align-middle">{{ vehicle.brand }}</td>
                                 <td class="align-middle">{{ vehicle.production }}</td>
                                 <td class="align-middle">{{ vehicle.fuel }}</td>
-                                <td class="align-middle">{{ vehicle.soat|date:"d/m/Y" }}</td>
-                                <td class="align-middle">{{ vehicle.citv|date:"d/m/Y" }}</td>
+                                <td class="align-middle">
+                                    {{ vehicle.soat|date:"d/m/Y" }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ vehicle.citv|date:"d/m/Y" }}
+                                </td>
                                 <td class="align-middle">
                                     {% if vehicle.available %}
                                         <i class="bi bi-check-circle text-success"></i>
@@ -81,39 +62,12 @@
                                     {% endif %}
                                 </td>
                             </tr>   
-                        
-                            
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-        {% endif %}
     </section>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var fields = [
-            { id: "inputSearchVehicle", transform: "toUpperCase" },
-        ];
-    
-        function transformInput(event, transform) {
-            if (transform === "toUpperCase") {
-                event.target.value = event.target.value.toUpperCase();
-            }
-        }
-    
-        fields.forEach(function(field) {
-            var element = document.getElementById(field.id);
-    
-            if (field.transform === "toUpperCase") {
-                element.addEventListener("input", function(event) {
-                    transformInput(event, field.transform);
-                });
-            }
-        });
-    });
-</script> 
-
 {% endblock %}
 
 {% block js %}

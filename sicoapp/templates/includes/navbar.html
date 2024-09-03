@@ -22,7 +22,7 @@
                     </a>
                         <ul class="dropdown-menu">
                             <li>
-                                {% if not is_pregistrator and not is_poperator %}
+                                {% if is_super_admin %}
                                 <a class="dropdown-item" href="{% url 'sicomec:driver_create' %}">
                                     <i class="bi bi-plus-lg"></i>
                                     Nuevo Registro
@@ -45,7 +45,7 @@
                     </a>
                         <ul class="dropdown-menu">
                             <li>
-                                {% if not is_pregistrator and not is_poperator %}
+                                {% if is_super_admin %}
                                 <a class="dropdown-item" href="{% url 'sicomec:vehicle_create' %}">
                                     <i class="bi bi-plus-lg"></i>
                                     Nuevo Registro
@@ -60,15 +60,61 @@
                             </li>
                         </ul>
                     </li>
+                    {% if is_super_admin or is_padmin or is_poperator or is_pregistrator or is_uquery %}
+                    <li class="nav-item dropdown fw-semibold">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
+                            Papeleta
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if not is_pregistrator and not is_uquery %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_create' %}">
+                                        <i class="bi bi-plus-lg"></i>
+                                        Nuevo Registro
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:ballot_list_scheduled' %}">
+                                    <i class="bi bi-clock"></i>
+                                    Programadas
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'sicomec:ballot_list_complete' %}">
+                                    <i class="bi bi-check-lg"></i>
+                                    Completadas
+                                </a>
+                            </li>
+                            {% if not is_uquery %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_mark_return' %}">
+                                        <i class="bi bi-clock"></i>
+                                        Marcar Retorno
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if not is_pregistrator and not is_uquery %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_report' %}">
+                                        <i class="bi bi-printer"></i>
+                                        Reporte
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
 
-                {% if is_super_admin or is_cadmin or is_coperator %}
+                {% if is_super_admin or is_cadmin or is_coperator or is_uquery %}
                     <li class="nav-item dropdown fw-semibold">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-fuel-pump-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
                             Grifo
                         </a>
                         <ul class="dropdown-menu">
-                            {% if not is_coperator  %}
+                            {% if not is_coperator and not is_uquery %}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'sicomec:fueltap_create' %}">
                                         <i class="bi bi-plus-lg"></i>
@@ -90,7 +136,7 @@
                             Orden Compra
                         </a>
                         <ul class="dropdown-menu">
-                            {% if not is_coperator  %}
+                            {% if not is_coperator and not is_uquery %}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'sicomec:buy_order_create' %}">
                                         <i class="bi bi-plus-lg"></i>
@@ -112,12 +158,15 @@
                             Combustible
                         </a>
                         <ul class="dropdown-menu">
+                            {% if not is_uquery %}
                             <li>
                                 <a class="dropdown-item" href="{% url 'sicomec:fuel_order_create' %}">
                                     <i class="bi bi-plus-lg"></i>
                                     Nuevo Pedido
                                 </a>
                             </li>
+                            {% endif %}
+
                             <li>
                                 <a class="dropdown-item" href="{% url 'sicomec:control_card' %}">
                                     <i class="bi bi-fuel-pump"></i>
@@ -133,52 +182,6 @@
                         </ul>
                     </li>
                 {% endif %}
-                
-                
-                {% if is_super_admin or is_padmin or is_poperator or is_pregistrator %}
-                    <li class="nav-item dropdown fw-semibold">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-file-earmark-text-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                            Papeleta
-                        </a>
-                        <ul class="dropdown-menu">
-                            {% if not is_pregistrator  %}
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_create' %}">
-                                        <i class="bi bi-plus-lg"></i>
-                                        Nuevo Registro
-                                    </a>
-                                </li>
-                            {% endif %}
-                            <li>
-                                <a class="dropdown-item" href="{% url 'sicomec:ballot_list_scheduled' %}">
-                                    <i class="bi bi-clock"></i>
-                                    Programadas
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'sicomec:ballot_list_complete' %}">
-                                    <i class="bi bi-check-lg"></i>
-                                    Completadas
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'sicomec:ballot_mark_return' %}">
-                                    <i class="bi bi-clock"></i>
-                                    Marcar Retorno
-                                </a>
-                            </li>
-                            {% if not is_pregistrator  %}
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'sicomec:ballot_report' %}">
-                                        <i class="bi bi-printer"></i>
-                                        Reporte
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </li>
-                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <i class="bi bi-info-circle-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
@@ -189,8 +192,9 @@
         {% if user.is_authenticated %}
             <div class="d-flex pt-2">
                 <p class="fw-light mx-2">
-                    <i class="bi bi-person-fill" style="font-size: 1.2rem; color: #0a58ca;"></i>
-                    {{ user.first_name }}, {{ user.last_name }}
+                    <i class="bi bi-person-fill" style="font-size: 1.2rem; color: {% if is_super_admin %}#dd4e0a; {% else %}#0a58ca;{% endif %}"></i>
+                    {{ user.first_name }}
+                    {% comment %} , {{ user.last_name }} {% endcomment %}
                 </p>
                 <p>
                     <a href="{% url 'sicomec:logout' %}" class="link-offset-2 link-underline link-underline-opacity-0" style="color: #FF0000;">

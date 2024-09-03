@@ -7,53 +7,34 @@
 <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
         <h3 class="text-center mb-3" >Buscar Orden de Compra</h3>
-        <form method="GET" action="">
-            <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por orden de compra o área usuaria" aria-label="Buscar" autofocus>
-                <button class="btn btn-primary" type="submit" title="Buscar">
-                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                </button>
-                <a class="btn" href="{% url 'sicomec:buy_order_list' %}" title="Recargar" style="background-color: #072e5e;">
-                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
-                </a>
-            </div>
-        </form>
     </section> 
 
-    <section class="col-md-12 my-3">
-        {% if search_performed and buy_order_count == 0 %}
-        <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-            <i class="bi bi-info-circle-fill"></i>
-            <div class="mx-auto">
-                {{ message }}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if buy_order_count > 0 %}
+    <section class="col-md-12">
             <div class="card card-body table-responsive">
-                <table class="table table-hover table_search">
+                <table class="datatable display">
                     <thead>
                         <tr>
-                            {% if not is_coperator  %}
+                            {% if not is_coperator and not is_uquery %}
                                 <th>Acciones</th>
                             {% endif %}
                             <th>N° O/C</th>
                             <th>Área Usuaria</th>
                             <th>Proveedor</th>
                             <th>Combustible</th>
-                            <th>Entrada</th>
-                            <th>Saldo</th>
+                            {% if not is_uquery %}
+                                <th>Entrada</th>
+                                <th>Saldo</th>
+                            {% endif %}
                             <th>Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for buy_order in buy_orders %}
                             <tr>
-                                {% if not is_coperator  %}
+                                {% if not is_coperator and not is_uquery %}
                                 <td class="align-middle">
                                     <div class="btn-group">
-                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:buy_order_update' buy_order.id %}?q={{ query }}">
+                                        <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:buy_order_update' buy_order.id %}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
                                         {% if is_super_admin %}
@@ -73,19 +54,20 @@
                                 </td>
                                 <td class="align-middle">{{ buy_order.fueltap }}</td>
                                 <td class="align-middle">{{ buy_order.fuel }}</td>
-                                <td class="align-middle number" data-stock="{{ buy_order.stock }}">{{ buy_order.stock }}</td>
-                                <td class="align-middle number" data-residue="{{ buy_order.residue }}">{{ buy_order.residue }}</td>
+                                {% if not is_uquery %}
+                                    <td class="align-middle number">{{ buy_order.stock }}</td>
+                                    <td class="align-middle number">{{ buy_order.residue }}</td>
+                                {% endif %}
                                 <td class="align-middle">{{ buy_order.date|date:"d/m/Y" }}</td>
                             </tr>   
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-        {% endif %}
     </section>
 </div>
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'js/formatNumberWithCommas.js' %}"></script>
+<script src="{% static 'js/datatables.js' %}"></script>
 {% endblock %}

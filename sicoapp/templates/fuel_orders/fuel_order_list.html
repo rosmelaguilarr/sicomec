@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Buscar Pedido de Combustible | SICOMEC{% endblock %}
 
@@ -6,35 +7,17 @@
 <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
         <h3 class="text-center mb-3" >Buscar Pedido de Combustible</h3>
-        <form method="GET" action="">
-            <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar por proveedor o conductor" aria-label="Buscar" autofocus>
-                <button class="btn btn-primary" type="submit" title="Buscar">
-                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                </button>
-                <a class="btn" href="{% url 'sicomec:fuel_order_list' %}" title="Recargar" style="background-color: #072e5e;">
-                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
-                </a>
-            </div>
-        </form>
     </section> 
 
-    <section class="col-md-12 my-3">
-        {% if search_performed and fuel_order_count == 0 %}
-        <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-            <i class="bi bi-info-circle-fill"></i>
-            <div class="mx-auto">
-                {{ message }}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if fuel_order_count > 0 %}
+    <section class="col-md-12">
             <div class="card card-body table-responsive">
-                <table class="table table_search">
+                <table class="datatable display">
                     <thead>
                         <tr>
-                            <th>Acciones</th>
+                            {% if not is_uquery %}
+                                <th>Acciones</th>
+                            {% endif %}
+
                             <th>Proveedor</th>
                             <th>N° Orden</th>
                             <th>Conductor</th>
@@ -47,37 +30,39 @@
                     <tbody>
                         {% for fuel_order in fuel_orders %}
                             <tr class="">
-                                <td>
-                                    <div class="btn-group">
-                                        {% if fuel_order.show_buttons %}
-                                        <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_fuel_order_pdf' fuel_order.id %}" target="_blank">
-                                            <i class="bi bi-printer-fill" title="Imprimir"></i>
-                                        </a>
+                                {% if not is_uquery %}
+                                    <td>
+                                        <div class="btn-group">
+                                            {% if fuel_order.show_buttons %}
+                                            <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_fuel_order_pdf' fuel_order.id %}" target="_blank">
+                                                <i class="bi bi-printer-fill" title="Imprimir"></i>
+                                            </a>
                                         {% comment %} <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fuel_order_update' fuel_order.id %}?q={{ query }}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
-                                        </a> {% endcomment %}
-                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fuel_order/delete', '{{ fuel_order.id }}', '', 'canceled')" title="Anular">
-                                            <i class="bi bi-x-circle-fill"></i>
-                                        </a>
-                                        {% else %}
-                                        <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_fuel_order_pdf' fuel_order.id %}" target="_blank">
-                                            <i class="bi bi-printer-fill" title="Imprimir"></i>
-                                        </a>
-                                        {% comment %} <button class="btn btn-sm btn-outline-primary" disabled>
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button> {% endcomment %}
-                                        <button class="btn btn-sm btn-outline-danger" disabled>
-                                            <i class="bi bi-x-circle-fill"></i>
-                                        </button>
-
-                                        {% endif %}
-                                    </div>
-                                </td>
+                                            </a> {% endcomment %}
+                                            <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fuel_order/delete', '{{ fuel_order.id }}', '', 'canceled')" title="Anular">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                            </a>
+                                            {% else %}
+                                            <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_fuel_order_pdf' fuel_order.id %}" target="_blank">
+                                                <i class="bi bi-printer-fill" title="Imprimir"></i>
+                                            </a>
+                                            {% comment %} <button class="btn btn-sm btn-outline-primary" disabled>
+                                                <i class="bi bi-pencil-fill"></i>
+                                                </button> {% endcomment %}
+                                                <button class="btn btn-sm btn-outline-danger" disabled>
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                </button>
+                                                
+                                                {% endif %}
+                                            </div>
+                                    </td>
+                                {% endif %}
                                 <td class="align-middle">{{ fuel_order.fueltap }}</td>
                                 <td class="align-middle">{{ fuel_order.order }}</td>
                                 <td class="align-middle">{{ fuel_order.driver|default_if_none:"" }}</td>
                                 <td class="align-middle">{{ fuel_order.plate|default_if_none:"" }}</td>
-                                <td class="align-middle {% if fuel_order.fuel_return %}border-bottom border-success{% elif fuel_order.fuel_loan %}border-bottom border-warning{% elif fuel_order.canceled %}border-bottom border-danger{% endif %}">
+                                <td class="align-middle">
                                     {{ fuel_order.quantity }}
                                 </td>
                                 <td class="align-middle">{{ fuel_order.fuel }}</td>
@@ -87,7 +72,10 @@
                     </tbody>
                 </table>
             </div>
-        {% endif %}
     </section>
 </div>
 {% endblock %}
+
+{% block js %}
+<script src="{% static 'js/datatables.js' %}"></script>
+{% endblock  %}

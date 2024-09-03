@@ -6,4 +6,5 @@ def user_groups_processor(request):
         'is_pregistrator': request.user.groups.filter(name='pRegistrator').exists(),
         'is_cadmin': request.user.groups.filter(name='cAdministrator').exists(),
         'is_coperator': request.user.groups.filter(name='cOperator').exists(),
+        'is_uquery': request.user.groups.filter(name='uQuery').exists(),
     }

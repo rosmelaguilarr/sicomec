@@ -6,4 +6,3 @@
     $current_year.innerText = current_year;
 }
 )();
-
