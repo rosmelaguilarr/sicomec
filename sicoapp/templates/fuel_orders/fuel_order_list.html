@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load format_filters %}
 
 {% block title %}Buscar Pedido de Combustible | SICOMEC{% endblock %}
 
@@ -63,7 +64,7 @@
                                 <td class="align-middle">{{ fuel_order.driver|default_if_none:"" }}</td>
                                 <td class="align-middle">{{ fuel_order.plate|default_if_none:"" }}</td>
                                 <td class="align-middle">
-                                    {{ fuel_order.quantity }}
+                                    {{ fuel_order.quantity|format_number }}
                                 </td>
                                 <td class="align-middle">{{ fuel_order.fuel }}</td>
                                 <td class="align-middle">{{ fuel_order.code }}</td>

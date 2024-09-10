@@ -404,15 +404,19 @@ def fuel_order_list_view(request):
 def generate_fuel_order_pdf(request, id):
     fuel_order = get_object_or_404(FuelOrder, pk=id)
 
-    base_url = 'file:///C:/sicomec/'
+    base_url = request.build_absolute_uri('/')
+    img_drta = base_url + static('/images/drta.png')
+    img_sicomec = base_url + static('/images/logo_sicomec_lg.png')
+
     current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
     date_print = format_datetime(current_date, format="d'/'MM'/'yyyy HH:mm", locale='es')
 
     data = {
         'date': date_print,
-        'base_url':base_url,
         'fuel_order': fuel_order,
         'current_date': current_date,
+        'img_drta':img_drta,
+        'img_sicomec':img_sicomec,
     }
 
     html_string = render_to_string('fuel_orders/fuel_order_template_pdf.html', data)
@@ -611,17 +615,20 @@ def generate_ballot_pdf(request, id):
     vehicle = get_object_or_404(Vehicle, plate=ballot.plate)
     typeVehicle = vehicle.type.name
 
+    base_url = request.build_absolute_uri('/')
+    img_drta = base_url + static('/images/drta.png')
+    img_sicomec = base_url + static('/images/logo_sicomec_lg.png')
 
-    base_url = 'file:///C:/sicomec/'
     current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
     date_print = format_datetime(current_date, format="d'/'MM'/'yyyy HH:mm", locale='es')
 
     data = {
         'date': date_print,
-        'base_url':base_url,
         'ballot': ballot,
         'current_date': current_date,
         'typeVehicle': typeVehicle,
+        'img_drta':img_drta,
+        'img_sicomec':img_sicomec,
     }
 
     html_string = render_to_string('ballots/ballot_template_pdf.html', data)
@@ -671,14 +678,18 @@ def ballot_report_view(request):
 
     # Si se solicita la generación de PDF
     if 'generate_pdf' in request.GET:
-        base_url = 'file:///C:/sicomec/'
+        base_url = request.build_absolute_uri('/')
+        img_drta = base_url + static('/images/drta.png')
+        img_sicomec = base_url + static('/images/logo_sicomec_lg.png')
+
         current_date = timezone.localtime(timezone.now(), timezone=pytz.timezone('America/Lima'))
         date_print = format_datetime(current_date, format="d'/'MM'/'yyyy HH:mm", locale='es')
 
         data = {
             'date': date_print,
-            'base_url': base_url,
             'ballots': filtered_ballots,
+            'img_drta': img_drta,
+            'img_sicomec': img_sicomec,
         }
 
         html_string = render_to_string('ballots/ballot_report_template_pdf.html', data)

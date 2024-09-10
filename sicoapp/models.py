@@ -4,7 +4,7 @@ import uuid
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from datetime import datetime
-
+from django.core.exceptions import ValidationError
 
 # STATIC MODELS --------------------------------------------------------------------
 
@@ -91,6 +91,11 @@ class Driver(models.Model):
 
 # VEHICLE MODEL --------------------------------------------------------------------
 
+def validate_year(value):
+    current_year = datetime.now().year
+    if value < 1995 or value > current_year:  
+        raise ValidationError(f'{value} año no válido')
+
 class Vehicle(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plate = models.CharField(max_length=6, verbose_name='Placa', unique=True, null=False, blank=False)
@@ -99,7 +104,7 @@ class Vehicle(models.Model):
     brand = models.CharField(max_length=20, verbose_name='Marca', null=False, blank=False)
     chassis = models.CharField(max_length=17, verbose_name='Chasis', null=False, blank=False)
     model = models.CharField(max_length=20, verbose_name='Modelo', null=False, blank=False)
-    production = models.IntegerField(verbose_name='Fabricación',  null=False, blank=False)
+    production = models.IntegerField(verbose_name='Año Fabricación',  null=False, blank=False, validators=[validate_year])
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
     mileage = models.PositiveIntegerField(verbose_name='Kilometraje',default=0, null=True, blank=True)
     hourometer = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Horómetro', null=True, blank=True)
@@ -143,18 +148,13 @@ ruc_validator = RegexValidator(
     message="El RUC debe ser numérico de 11 dígitos"
 )
 
-email_validator = RegexValidator(
-    regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    message="Correo electrónico incorrecto"
-)
-
 class FuelTap(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ruc = models.CharField(max_length=11, verbose_name='RUC', unique=True,  null=False, blank=False, validators=[ruc_validator])
-    business_name = models.CharField(max_length=70, verbose_name='Razón Social', null=False, blank=False)
-    address = models.CharField(max_length=50, verbose_name='Dirección', null=False, blank=False)
-    email =  models.CharField(max_length=50, verbose_name='Email',  null=True, blank=True, validators=[email_validator])
-    phone = models.CharField(max_length=30, verbose_name='Celular',  null=True, blank=True)
+    business_name = models.TextField(verbose_name='Razón Social', null=False, blank=False)
+    address = models.TextField(verbose_name='Dirección', null=False, blank=False)
+    email =  models.EmailField(max_length=254, verbose_name='Email',  null=True, blank=True)
+    phone = models.CharField(max_length=30, verbose_name='Teléfono',  null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
@@ -235,14 +235,14 @@ voucher_validator = RegexValidator(
 class FuelOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=10, unique=True, editable=False) 
-    fueltap = models.CharField(max_length=70, verbose_name='Proveedor', null=False, blank=False)
+    fueltap = models.TextField(verbose_name='Proveedor', null=False, blank=False)
     order = models.ForeignKey(BuyOrder, on_delete=models.PROTECT, verbose_name='N° O/C')
     user_area = models.TextField(verbose_name='Área Usuaria', blank=True)
     driver = models.ForeignKey(Driver, on_delete=models.PROTECT, verbose_name='Conductor', null=True, blank=True)
     plate = models.ForeignKey(Vehicle, on_delete=models.PROTECT, verbose_name='Placa', null=True, blank=True)
     brand = models.CharField(max_length=50, null=True, blank=True, verbose_name='Marca')
     vehicle = models.CharField(max_length=50, null=True, blank=True, verbose_name='Tipo')
-    place = models.CharField(max_length=70, verbose_name='Destino', null=True, blank=True)
+    place = models.TextField(verbose_name='Destino', null=True, blank=True)
     reason = models.TextField(verbose_name='Motivo', null=True, blank=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0,verbose_name='Cantidad Solicitada', null=False, blank=False)
     residue_buy_order = models.DecimalField(max_digits=10, decimal_places=2,verbose_name='Saldo')
@@ -294,11 +294,11 @@ class Ballot(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.PROTECT, verbose_name='Conductor')
     driver_license = models.CharField(max_length=9, verbose_name='N° Licencia')
     driver_category = models.CharField(max_length=6, verbose_name='Categoría')
-    drive_to = models.CharField(max_length=70, verbose_name='Sírvase conducir', null=True, blank=True)
+    drive_to = models.TextField(verbose_name='Sírvase conducir', null=True, blank=True)
     plate = models.ForeignKey(Vehicle, on_delete=models.PROTECT, verbose_name='Placa')
     vehicle_name = models.CharField(max_length=30, verbose_name='Tipo')
     vehicle_brand = models.CharField(max_length=20, verbose_name='Marca')
-    place = models.CharField(max_length=70, verbose_name='Destino', null=False, blank=False)
+    place = models.TextField(verbose_name='Destino', null=False, blank=False)
     reason = models.TextField(verbose_name='Motivo', null=False, blank=False)
     exit_date = models.DateField(verbose_name='Fecha Salida', auto_now=False)
     exit_time = models.TimeField(verbose_name='Hora Salida')

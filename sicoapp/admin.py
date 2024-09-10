@@ -25,7 +25,7 @@ class NotificationAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
     
 class BuyOrderAdmin(admin.ModelAdmin):
-    list_display = ["id","order","user_area","fueltap","fuel","stock","date","user","created"]
+    list_display = ["order","user_area","fueltap","fuel","stock","date","user","created"]
     readonly_fields = ('created',)
 
 

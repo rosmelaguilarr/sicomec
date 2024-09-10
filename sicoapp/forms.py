@@ -75,20 +75,13 @@ class VehicleForm(ModelForm):
             'soat': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'citv': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'justify': forms.Textarea(attrs={'rows': 1}),
+            'production': forms.NumberInput(attrs={'min': 1995, 'max': datetime.datetime.now().year}),
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['type'].widget.attrs.update({'autofocus': 'autofocus'})
-
-        current_year = timezone.now().year
-        years = [(year, str(year)) for year in range(current_year, current_year - 15, -1)]
-        self.fields['production'] = forms.ChoiceField(
-            choices=years,
-            widget=forms.Select(attrs={'class': 'form-control'}),
-            label='Fabricación',
-        )
 
         if self.instance.plate:  
             self.fields['plate'].widget.attrs['readonly'] = True
@@ -143,6 +136,11 @@ class FuelTapForm(ModelForm):
     class Meta:     
         model = FuelTap
         fields = ['ruc','business_name','address','email','phone']
+
+        widgets = {
+                'business_name': forms.Textarea(attrs={'rows': 1}),
+                'address': forms.Textarea(attrs={'rows': 1}),
+            }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -255,6 +253,8 @@ class FuelOrderForm(ModelForm):
                 'user_area': forms.Textarea(attrs={'rows': 1}),
                 'detail': forms.Textarea(attrs={'rows': 1}),
                 'reason': forms.Textarea(attrs={'rows': 1}),
+                'fueltap': forms.Textarea(attrs={'rows': 1}),
+                'place': forms.Textarea(attrs={'rows': 1}),
             }
 
     def __init__(self, *args, **kwargs):
@@ -267,7 +267,7 @@ class FuelOrderForm(ModelForm):
         })
         self.fields['fueltap'].widget.attrs.update({
         'readonly': 'readonly',
-        'style': 'background-color: #e9ecef; pointer-events: none;',
+        'style': 'background-color: #e9ecef;',
         })
         self.fields['brand'].widget.attrs.update({
         'readonly': 'readonly',
@@ -371,6 +371,8 @@ class BallotForm(ModelForm):
             'vehicle_name': forms.TextInput(attrs={'readonly': 'readonly'}),
             'vehicle_brand': forms.TextInput(attrs={'readonly': 'readonly'}),
             'reason': forms.Textarea(attrs={'rows': 1}),
+            'drive_to': forms.Textarea(attrs={'rows': 1}),
+            'place': forms.Textarea(attrs={'rows': 1}),
             'exit_date': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'exit_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
         }

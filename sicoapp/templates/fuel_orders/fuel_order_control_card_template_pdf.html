@@ -1,3 +1,5 @@
+{% load format_filters %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -140,10 +142,10 @@
                             <span>{{ buy_order.fueltap }}</span>
                         </th>
                         <th>
-                            <span>{{ stock }}</span>
+                            <span>{{ stock|format_number }}</span>
                         </th>
                         <th>
-                            <span>{{ residue }}</span>
+                            <span>{{ residue|format_number }}</span>
                         </th>
                     </tr>
                    

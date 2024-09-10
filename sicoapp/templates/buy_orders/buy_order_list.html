@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load format_filters %}
 
 {% block title %}Buscar Orden de Compra | SICOMEC{% endblock %}
 
@@ -55,8 +56,8 @@
                                 <td class="align-middle">{{ buy_order.fueltap }}</td>
                                 <td class="align-middle">{{ buy_order.fuel }}</td>
                                 {% if not is_uquery %}
-                                    <td class="align-middle number">{{ buy_order.stock }}</td>
-                                    <td class="align-middle number">{{ buy_order.residue }}</td>
+                                    <td class="align-middle number">{{ buy_order.stock|format_number }}</td>
+                                    <td class="align-middle number">{{ buy_order.residue|format_number }}</td>
                                 {% endif %}
                                 <td class="align-middle">{{ buy_order.date|date:"d/m/Y" }}</td>
                             </tr>   

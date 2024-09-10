@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <section class="col-md-6 my-3">
+    <section class="col-md-8 my-3">
         <h3 class="text-center mt-5 mb-3">Reporte de Papeletas</h3>
         <form method="GET" action="" class="card card-body flex-row flex-wrap justify-content-between align-items-center">
             <div class="d-flex">
@@ -22,8 +22,8 @@
                     <input type="date" name="end_date" class="dateinput form-control" required="" id="id_end_date"> 
                 </div>
             </div>
-            <div>
-                <a class="btn btn-primary" data-base-url="/sicomec/ballot/report/" href="#" target="_blank" id="printButton">
+            <div style="padding-top: 15px;">
+                <a class="btn btn-primary" data-base-url="/sicomec/ballot/report/" href="#" target="_blank" id="printButton" >
                     <i class="bi bi-printer-fill" title="Imprimir"></i>
                     Imprimir
                 </a>
