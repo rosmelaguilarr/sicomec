@@ -193,7 +193,27 @@
             <div class="d-flex pt-2">
                 <p class="fw-light mx-2">
                     <i class="bi bi-person-fill" style="font-size: 1.2rem; color: {% if is_super_admin %}#dd4e0a; {% else %}#0a58ca;{% endif %}"></i>
-                    {{ user.first_name }}
+                    {% if not user.first_name %}
+                        {{ user.username }}
+                    {% else %}
+                        {{ user.first_name }}
+                    {% endif %}
+
+                    {% for group in user.groups.all %}
+                        <span style="font-size: 9px; display: block; text-align: right; color: rgb(195 196 196); position: absolute; top: 40px; right: 73px;">
+                        {% if group.name == 'superAdmin' %}
+                            {{ group.name }}
+                        {% elif group.name == 'pAdministrator' or group.name == 'cAdministrator' %}
+                            Administrador
+                        {% elif group.name == 'pOperator' or group.name == 'cOperator' %}
+                            Operador
+                        {% elif group.name == 'pRegistrator' %}
+                            Registrador
+                        {% else %}
+                            Consulta
+                        {% endif %}
+                        </span>
+                    {% endfor %}
                     {% comment %} , {{ user.last_name }} {% endcomment %}
                 </p>
                 <p>

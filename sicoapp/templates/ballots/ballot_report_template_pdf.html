@@ -120,32 +120,34 @@
                         <th>Destino</th>
                         <th>Motivo</th>
                         <th>F. Salida</th>
-                        <th>H. Salida</th>
                         <th>F. Retorno</th>
-                        <th>H. Retorno</th>
+                        <th>Ocurrencia</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for ballot in ballots %}
                     <tr>
                         <td>{{ ballot.code }}</td>
-                        <td>{{ ballot.driver.name }} {{ ballot.driver.last_name }}</td>
+                        <td>
+                            <span class="d-inline-block text-truncate align-middle" style="max-width: 130px;">
+                                {{ ballot.driver.name }} {{ ballot.driver.last_name }}
+                            </span>
+                        </td>
                         <td>{{ ballot.plate.plate }}</td>
                         <td>{{ ballot.vehicle_name }}</td>
                         <td>{{ ballot.place }}</td>
                         <td>{{ ballot.reason }}</td>
-                        <td>{{ ballot.exit_date|date:"d/m/Y" }}</td>
-                        <td>{{ ballot.exit_time }}</td>
+                        <td>{{ ballot.exit_date|date:"d/m/Y" }} {{ ballot.exit_time }}</td>
                         <td>
-                            {% if ballot.return_date %}
-                                {{ ballot.return_date|date:"d/m/Y" }}
+                            {% if ballot.return_date and ballot.return_time %}
+                                {{ ballot.return_date|date:"d/m/Y" }} {{ ballot.return_time }}
                             {% else %}
                                 -
                             {% endif %}
                         </td>
                         <td>
-                            {% if ballot.return_time %}
-                            {{ ballot.return_time }}
+                            {% if ballot.occurrence %}
+                                {{ ballot.occurrence }}
                             {% else %}
                                 -
                             {% endif %}

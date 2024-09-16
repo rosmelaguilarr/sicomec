@@ -81,7 +81,7 @@
             height: 50px;
         }
         .space-vertical{
-            padding-top: 10px;
+            padding-top: 33px;
         }
         .bold{
             font-weight: bold;
@@ -98,19 +98,25 @@
         .code{
             left: 0;
             font-size: 12px;
-        }
-        .code_name{
-            left: 0;
+            top: 100px;
         }
         .watermark{
             position: absolute;
-            top: 108px;
+            top: 128px;
             right: 0px;
             font-size: 10px;
             font-weight: bold;
             opacity: .5;
         }
+        .code_name{
+            left: 0;
+            top: 90px;
+        }
+        .tag{
+            top: 48px
+        }
         .plate_name{
+            top: 90px;
             left: 0;
             width: 50%;
             margin-left: auto;
@@ -118,10 +124,16 @@
             text-align: center;
         }
         .plate{
+            position: absolute;
             font-size: 16px;
-            text-align: center;
-            padding-top: 2px;
             font-weight: bold;
+            top: 100px;
+            left: 0;
+            right: 0px;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
         }
         .border{
             border: 1px solid #707070;
@@ -134,7 +146,8 @@
         <div class="table-container">
             <span class="code">{{ ballot.code }}</span>
             <span class="date">{{ date }}</span>
-            <span class="watermark">Conductor</span>
+            <span class="watermark tag">Conductor</span>
+            <span class="plate">{{ ballot.plate }}</span>
             <span class="watermark plate_name">
                 {% if typeVehicle == "MAQUINARIA" %}
                     Registro
@@ -162,9 +175,6 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="plate" colspan="3"><span>{{ ballot.plate }}</span></td>
-                    </tr>
-                    <tr>
                         <td class="space-vertical bold" colspan="3">Conductor:</td>
                     </tr>
                     <tr>
@@ -188,7 +198,7 @@
                     </tr>
                     {% if ballot.drive_to %}
                         <tr>
-                            <td class="bold" colspan="3">Sírvase conducir al:</td>
+                            <td class="bold" colspan="3">Sírvase conducir a:</td>
                         </tr>
                         <tr>
                             <td colspan="3" class="border">{{ ballot.drive_to }}</td>
@@ -206,9 +216,17 @@
                     <tr>
                         <td class="border" colspan="3">{{ ballot.reason }}</td>
                     </tr>
+                    {% if ballot.occurrence %}
                     <tr>
-                        <td class="bold">F. Salida:</td>
-                        <td class="bold">F. Retorno:</td>
+                        <td class="bold">Ocurrencia:</td>
+                    </tr>
+                    <tr>
+                        <td class="border" colspan="3">{{ ballot.occurrence }}</td>
+                    </tr>
+                {% endif %}
+                    <tr>
+                        <td class="bold">Fecha Salida:</td>
+                        <td class="bold">Fecha Retorno:</td>
                     </tr>
                     <tr>
                         <td>{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
@@ -248,7 +266,8 @@
         <div class="table-container">
             <span class="code">{{ ballot.code }}</span>
             <span class="date">{{ date }}</span>
-            <span class="watermark">SDEM</span>
+            <span class="watermark tag">SDEM</span>
+            <span class="plate">{{ ballot.plate }}</span>
             <span class="watermark plate_name">
                 {% if typeVehicle == "MAQUINARIA" %}
                     Registro
@@ -275,9 +294,9 @@
                    </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    {% comment %} <tr>
                         <td class="plate" colspan="3"><span>{{ ballot.plate }}</span></td>
-                    </tr>
+                    </tr> {% endcomment %}
                     <tr>
                         <td class="space-vertical bold" colspan="3">Conductor:</td>
                     </tr>
@@ -302,7 +321,7 @@
                     </tr>
                     {% if ballot.drive_to %}
                         <tr>
-                            <td class="bold" colspan="3">Sírvase conducir al:</td>
+                            <td class="bold" colspan="3">Sírvase conducir a:</td>
                         </tr>
                         <tr>
                             <td colspan="3" class="border">{{ ballot.drive_to }}</td>
@@ -320,9 +339,17 @@
                     <tr>
                         <td class="border" colspan="3">{{ ballot.reason }}</td>
                     </tr>
+                    {% if ballot.occurrence %}
+                        <tr>
+                            <td class="bold">Ocurrencia:</td>
+                        </tr>
+                        <tr>
+                            <td class="border" colspan="3">{{ ballot.occurrence }}</td>
+                        </tr>
+                    {% endif %}
                     <tr>
-                        <td class="bold">F. Salida:</td>
-                        <td class="bold">F. Retorno:</td>
+                        <td class="bold">Fecha Salida:</td>
+                        <td class="bold">Fecha Retorno:</td>
                     </tr>
                     <tr>
                         <td>{{ ballot.exit_date }} {{ ballot.exit_time }}</td>

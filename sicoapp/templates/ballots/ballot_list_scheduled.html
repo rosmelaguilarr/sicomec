@@ -9,7 +9,7 @@
         <h3 class="text-center mb-3">Papeletas Programadas</h3>
     </section> 
 
-    <section class="col-md-12">
+    <section class="col-md-12" style="margin-bottom: 80px;">
         <div class="card card-body table-responsive">
             <table class="datatable display">
                 <thead>
@@ -21,10 +21,8 @@
                         <th>Conductor</th>
                         <th>Placa</th>
                         <th>Destino</th>
+                        <th>Motivo</th>
                         <th>F. Salida</th>
-                        <th>H. Salida</th>
-                        <th>F. Retorno</th>
-                        <th>H. Retorno</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,13 +46,19 @@
                                 </td>
                             {% endif %}
                             <td class="align-middle">{{ ballot.code }}</td>
-                            <td class="align-middle">{{ ballot.driver }}</td>
+                            <td class="align-middle">
+                                <span class="d-inline-block text-truncate align-middle" style="max-width: 150px;">
+                                    {{ ballot.driver }}
+                                </span>
+                            </td>
                             <td class="align-middle">{{ ballot.plate }}</td>
                             <td class="align-middle">{{ ballot.place }}</td>
-                            <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
-                            <td class="align-middle">{{ ballot.exit_time }}</td>
-                            <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }}</td>
-                            <td class="align-middle">{{ ballot.return_time|default_if_none:"" }}</td>
+                            <td class="align-middle">
+                                <span class="d-inline-block text-truncate align-middle" style="max-width: 250px;">
+                                    {{ ballot.reason }}
+                                </span>
+                            </td>
+                            <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }} {{ ballot.exit_time }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

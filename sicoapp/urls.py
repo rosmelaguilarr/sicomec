@@ -41,7 +41,7 @@ urlpatterns = [
     path('ballot/list_scheduled', views.ballot_list_scheduled_view, name='ballot_list_scheduled'),
     path('ballot/list_complete', views.ballot_list_complete_view, name='ballot_list_complete'),
     path('ballot/mark_return', views.ballot_mark_return_view, name='ballot_mark_return'),
-    path('ballot/mark_return/update/<str:id>', views.update_return_datetime, name='update_return_datetime'),
+    path('ballot/mark_return/update', views.update_return_datetime, name='update_return_datetime'),
     path('ballot/generate_ballot_pdf/<str:id>', views.generate_ballot_pdf, name='generate_ballot_pdf'),
     path('ballot/delete/<uuid:id>/', views.ballot_delete_view, name='ballot_delete'),
     path('ballot/report/', views.ballot_report_view, name='ballot_report'),
@@ -54,4 +54,5 @@ urlpatterns = [
     path('get_buy_order_uuid/<str:order_identifier>/', views.get_buy_order_uuid_view, name='get_buy_order_uuid'),
     path('get_fuel_orders/<uuid:id_buy_order>', views.get_fuel_orders_view, name='get_fuel_orders'),
     path('get_driver_details/<uuid:id>', views.get_driver_details_view, name='get_driver_details'),
+
 ]

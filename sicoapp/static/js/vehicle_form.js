@@ -23,8 +23,8 @@ setFieldReadonly("id_type");
         { id: "id_model", defaultValue: "", transform: "toUpperCase" },
         { id: "id_chassis", defaultValue: "", transform: "toUpperCase" },
         { id: "id_justify", defaultValue: "", transform: "toUpperCase" },
-        { id: "id_mileage", defaultValue: "0", transform: "toUpperCase" },
-        { id: "id_hourometer", defaultValue: "0", transform: "toUpperCase" },
+        { id: "id_mileage", defaultValue: "0", transform: null },
+        { id: "id_hourometer", defaultValue: "0", transform: null },
     ];
 
     function handleFocus(event, defaultValue) {

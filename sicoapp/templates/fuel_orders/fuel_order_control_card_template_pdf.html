@@ -148,7 +148,6 @@
                             <span>{{ residue|format_number }}</span>
                         </th>
                     </tr>
-                   
                     <tr class="title">
                         <th>Fecha</th>
                         <th>Movim.</th>
@@ -173,7 +172,7 @@
                                 -{{ order.quantity }} 
                             {% endif %}
                         </td>
-                        <td>{{ order.residue }}</td>
+                        <td>{{ order.residue|format_number }}</td>
                         <td>
                             {% if order.plate.plate %}
                                 {{ order.plate.plate }}

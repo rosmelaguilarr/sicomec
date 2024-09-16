@@ -5,6 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit
 from django.utils import timezone
 import datetime
+import pytz
 from django.core.exceptions import ValidationError
 
 # DRIVER FORM --------------------------------------------------------------------
@@ -75,7 +76,7 @@ class VehicleForm(ModelForm):
             'soat': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'citv': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
             'justify': forms.Textarea(attrs={'rows': 1}),
-            'production': forms.NumberInput(attrs={'min': 1995, 'max': datetime.datetime.now().year}),
+            'production': forms.NumberInput(attrs={'min': 1975, 'max': datetime.datetime.now().year}),
         }
     
     def __init__(self, *args, **kwargs):
@@ -422,7 +423,8 @@ class BallotForm(ModelForm):
         exit_time = cleaned_data.get('exit_time')
 
         if exit_date and exit_time:
-            exit_datetime = timezone.make_aware(datetime.datetime.combine(exit_date, exit_time), timezone.get_current_timezone())
+            # exit_datetime = timezone.make_aware(datetime.datetime.combine(exit_date, exit_time), timezone.get_current_timezone())
+            exit_datetime = timezone.make_aware(datetime.datetime.combine(exit_date, exit_time), timezone=pytz.timezone('America/Lima'))
 
             if exit_datetime < timezone.now():
                 raise ValidationError('Fecha y hora de salida no pueden ser anteriores a la fecha y hora actual.')

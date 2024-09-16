@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.71.100']
@@ -156,5 +156,5 @@ LOGIN_URL= '/sicomec/login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# SESSION_COOKIE_AGE=1800 #30 min.
+SESSION_COOKIE_AGE=3600 #60 min.
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True

@@ -93,7 +93,7 @@ class Driver(models.Model):
 
 def validate_year(value):
     current_year = datetime.now().year
-    if value < 1995 or value > current_year:  
+    if value < 1975 or value > current_year:  
         raise ValidationError(f'{value} año no válido')
 
 class Vehicle(models.Model):
@@ -102,7 +102,7 @@ class Vehicle(models.Model):
     type = models.ForeignKey(TypeVehicle, on_delete=models.PROTECT, verbose_name='Clase')
     name = models.CharField(max_length=30, verbose_name='Tipo', null=False, blank=False)
     brand = models.CharField(max_length=20, verbose_name='Marca', null=False, blank=False)
-    chassis = models.CharField(max_length=17, verbose_name='Chasis', null=False, blank=False)
+    chassis = models.CharField(max_length=17, verbose_name='Chasis', null=True, blank=True)
     model = models.CharField(max_length=20, verbose_name='Modelo', null=False, blank=False)
     production = models.IntegerField(verbose_name='Año Fabricación',  null=False, blank=False, validators=[validate_year])
     fuel = models.ForeignKey(Fuel, on_delete=models.PROTECT, verbose_name='Combustible')
@@ -300,6 +300,7 @@ class Ballot(models.Model):
     vehicle_brand = models.CharField(max_length=20, verbose_name='Marca')
     place = models.TextField(verbose_name='Destino', null=False, blank=False)
     reason = models.TextField(verbose_name='Motivo', null=False, blank=False)
+    occurrence = models.TextField(verbose_name='Ocurrencia', default="NINGUNO", null=True, blank=True)
     exit_date = models.DateField(verbose_name='Fecha Salida', auto_now=False)
     exit_time = models.TimeField(verbose_name='Hora Salida')
     return_date = models.DateField(verbose_name='Fecha Retorno', default=None, auto_now=False, null=True, blank=True)

@@ -555,58 +555,59 @@ def ballot_list_complete_view(request):
 def ballot_mark_return_view(request):
     query = request.GET.get('q', '').strip()
     search_performed = False
-    results = []
+    ballot = None
     message = ""
-    ballot_count = 0
 
     if query:
         search_performed = True
-        results = Ballot.objects.filter(
+        ballot = Ballot.objects.filter(
             (Q(code__iexact=query) | Q(plate__plate__iexact=query)) &
             Q(return_date__isnull=True) &
             Q(return_time__isnull=True)
-        )
+        ).first()  # Obtener solo el primer registro
         
-        if results.exists():
-            ballot_count = results.count()
-        else:
+        if ballot is None:
             message = "No se encontraron resultados"
 
     return render(request, 'ballots/ballot_mark_return.html', 
                 {
-                    'ballots': results,
+                    'ballot': ballot,
                     'query': query,
                     'search_performed': search_performed,
-                    'ballot_count': ballot_count,
                     'message': message,
                 })
-
 
 # UPDATE RETURN_DATE AND RETURN_TIME------------------------------------------------------------------->
 @login_required
 @permission_required('sicoapp.change_ballot', raise_exception=True)
-def update_return_datetime(request, id):
-    ballot = get_object_or_404(Ballot, pk=id)
+def update_return_datetime(request):
+    if request.method == 'POST':
+        ballot_id = request.POST.get('ballot_id')  
+        ballot = get_object_or_404(Ballot, pk=ballot_id)  
+    
+        occurrence = request.POST.get('occurrence', '') 
+        
+        lima_tz = pytz.timezone('America/Lima')
+        current_time = timezone.now().astimezone(lima_tz)
 
-    lima_tz = pytz.timezone('America/Lima')
-    current_time = timezone.now().astimezone(lima_tz)
+        exit_datetime = timezone.make_aware(
+            datetime.combine(ballot.exit_date, ballot.exit_time), 
+            lima_tz
+        )
 
-    exit_datetime = timezone.make_aware(
-        datetime.combine(ballot.exit_date, ballot.exit_time), 
-        lima_tz
-    )
+        if current_time < exit_datetime:
+            messages.warning(request, 'No se puede retornar antes de la salida')
+            return redirect('sicomec:ballot_mark_return')
 
-    if current_time < exit_datetime:
-        messages.warning(request, 'No se puede retornar antes de la salida')
-        return redirect('sicomec:ballot_mark_return')
+        else:
+            
+            ballot.return_date = current_time.date()
+            ballot.return_time = current_time.time()
+            ballot.occurrence = occurrence  
+            ballot.save()
 
-    else:
-        ballot.return_date = current_time.date()
-        ballot.return_time = current_time.time()
-        ballot.save()
-        messages.success(request, '¡Retorno marcado!')
-
-    return redirect('sicomec:ballot_list_complete')
+            messages.success(request, '¡Retorno marcado!')
+            return redirect('sicomec:ballot_list_complete')
 
 # GENEREATE PDF ------------------------------------------------------------------>
 @login_required
@@ -885,3 +886,32 @@ def error_404(request, exception):
 @login_required
 def error_403(request, exception):
     return render(request, '403.html', status=403)
+
+def dashboard(request):
+    # Obtener todas las órdenes de compra para el formulario de selección
+    buy_orders = BuyOrder.objects.all()
+
+    # Obtener los últimos pedidos de combustible (opcional)
+    recent_orders = FuelOrder.objects.order_by('-created')[:10]  # Últimos 10 pedidos
+
+    # Preparar datos iniciales para el gráfico (vacío por defecto)
+    initial_order_codes = []
+    initial_quantities = []
+
+    context = {
+        'buy_orders': buy_orders,
+        'recent_orders': recent_orders,
+        'order_codes': initial_order_codes,
+        'quantities': initial_quantities,
+    }
+    return render(request, 'dashboards/dashboard.html', context)
+
+def consumption_data(request, order_id):
+    # Obtener los pedidos de combustible relacionados con la orden de compra
+    fuel_orders = FuelOrder.objects.filter(order_id=order_id).values('fuel').annotate(total_quantity=Sum('quantity')).order_by('fuel')
+    
+    # Preparar los datos para el gráfico
+    labels = [fo['fuel'] for fo in fuel_orders]
+    values = [float(fo['total_quantity']) for fo in fuel_orders]
+    
+    return JsonResponse({'labels': labels, 'values': values})

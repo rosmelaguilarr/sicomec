@@ -9,7 +9,7 @@
         <h3 class="text-center mb-3" >Papeletas Completadas</h3>
     </section> 
 
-    <section class="col-md-12">
+    <section class="col-md-12" style="margin-bottom: 80px;">
             <div class="card card-body table-responsive">
                 <table class="datatable display">
                     <thead>
@@ -22,9 +22,8 @@
                             <th>Placa</th>
                             <th>Destino</th>
                             <th>F. Salida</th>
-                            <th>H. Salida</th>
                             <th>F. Retorno</th>
-                            <th>H. Retorno</th>
+                            <th>Ocurrencia</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,15 +42,23 @@
                                     </td>
                                 {% endif %}
                                 <td class="align-middle">{{ ballot.code }}</td>
-                                <td class="align-middle">{{ ballot.driver }}</td>
+                                <td class="align-middle">
+                                    <span class="d-inline-block text-truncate align-middle" style="max-width: 150px;">
+                                        {{ ballot.driver }}
+                                    </span>
+                                </td>
                                 <td class="align-middle">{{ ballot.plate }}</td>
                                 <td class="align-middle">{{ ballot.place }}</td>
-                                <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
-                                <td class="align-middle">{{ ballot.exit_time }}</td>
-                                <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }}</td>
-                                <td class="align-middle">{{ ballot.return_time|default_if_none:"" }}</td>
+                                <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }} {{ ballot.exit_time }}</td>
+                                <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }} {{ ballot.return_time|default_if_none:"" }}</td>
+                                <td class="align-middle">
+                                    {% if ballot.occurrence %}
+                                        {{ ballot.occurrence }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
                             </tr>   
-                        
                             
                         {% endfor %}
                     </tbody>

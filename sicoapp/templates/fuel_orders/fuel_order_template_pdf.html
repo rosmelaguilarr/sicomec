@@ -81,7 +81,7 @@
             height: 50px;
         }
         .space-vertical{
-            padding-top: 10px;
+            padding-top: 33px;
         }
         .bold{
             font-weight: bold;
@@ -98,9 +98,7 @@
         .code{
             left: 0;
             font-size: 12px;
-        }
-        .code_name{
-            left: 0;
+            top: 100px;
         }
         .watermark{
             position: absolute;
@@ -110,7 +108,12 @@
             font-weight: bold;
             opacity: .5;
         }
+        .code_name{
+            left: 0;
+            top: 90px;
+        }
         .plate_name{
+            top: 90px;
             left: 0;
             width: 50%;
             margin-left: auto;
@@ -118,10 +121,16 @@
             text-align: center;
         }
         .plate{
+            position: absolute;
             font-size: 16px;
-            text-align: center;
-            padding-top: 2px;
             font-weight: bold;
+            top: 100px;
+            left: 0;
+            right: 0px;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
         }
         .border{
             border: 1px solid #707070;
@@ -134,6 +143,9 @@
             text-overflow: ellipsis; 
             white-space: nowrap; 
         }
+        .tag{
+            top: 48px
+        }
     </style>
 </head>
 <body>
@@ -141,7 +153,8 @@
         <div class="table-container">
             <span class="code">{{ fuel_order.code }}</span>
             <span class="date">{{ date }}</span>
-            <span class="watermark"></span>
+            <span class="watermark tag"></span>
+            <span class="plate">{{ fuel_order.order }}</span>
             <span class="watermark plate_name">o/c</span>
             <span class="watermark code_name">Codigo</span>
             <div class="header">
@@ -162,9 +175,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="plate" colspan="3"><span>{{ fuel_order.order }}</span></td>
-                    </tr>
+                   
                     <tr>
                         <td class="space-vertical bold" colspan="3">Proveedor:</td>
                     </tr>
@@ -265,7 +276,8 @@
         <div class="table-container">
             <span class="code">{{ fuel_order.code }}</span>
             <span class="date">{{ date }}</span>
-            <span class="watermark">Almacén</span>
+            <span class="watermark tag">Almacén</span>
+            <span class="plate">{{ fuel_order.order }}</span>
             <span class="watermark plate_name">o/c</span>
             <span class="watermark code_name">Codigo</span>
             <div class="header">
@@ -286,9 +298,6 @@
                    </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="plate" colspan="3"><span>{{ fuel_order.order }}</span></td>
-                    </tr>
                     <tr>
                         <td class="space-vertical bold" colspan="3">Proveedor:</td>
                     </tr>

@@ -1,102 +1,128 @@
 {% extends 'base.html' %}
 
-{% block title %}Marcar Retorno | SICOMEC{% endblock %}
+{% block title %}
+  Marcar Retorno | SICOMEC
+{% endblock %}
 
 {% block content %}
-<div class="row">
+  <div class="row">
     <section class="col-md-6 offset-md-3 mt-5">
-        <h3 class="text-center mb-3" >Marcar Retorno</h3>
-        <form method="GET" action="" autocomplete="off">
-            <div class="input-group mb-3 ">
-                <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar placa o código de papeleta" aria-label="Buscar" autofocus id="ballot_code_Search">
-                <button class="btn btn-primary" type="submit" title="Buscar">
-                    <i class="bi bi-search mx-1" style="font-size: 1rem;"></i>
-                </button>
-                <a class="btn" href="{% url 'sicomec:ballot_mark_return' %}" title="Recargar" style="background-color: #072e5e;">
-                    <i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i>
-                </a>
-            </div>
-        </form>
-    </section> 
+      <h3 class="text-center mb-3">Marcar Retorno</h3>
+      <form method="GET" action="" autocomplete="off">
+        <div class="input-group mb-3">
+          <input type="search" name="q" value="{{ query }}" class="form-control" placeholder="Buscar placa o código de papeleta" aria-label="Buscar" autofocus id="ballot_code_Search" />
+          <button class="btn btn-primary" type="submit" title="Buscar"><i class="bi bi-search mx-1" style="font-size: 1rem;"></i></button>
+          <a class="btn" href="{% url 'sicomec:ballot_mark_return' %}" title="Recargar" style="background-color: #072e5e;"><i class="bi bi-arrow-clockwise mx-1" style="font-size: 1rem; color: #fff;"></i></a>
+        </div>
+      </form>
+    </section>
 
-    <section class="col-md-12 my-3">
-        {% if ballot_count > 0 %}
-            <div class="card card-body table-responsive">
-                <table class="table table_search">
-                    <thead>
-                        <tr>
-                            <th>Acciones</th>
-                            <th>Código</th>
-                            <th>Conductor</th>
-                            <th>Placa</th>
-                            <th>Destino</th>
-                            <th>F. Salida</th>
-                            <th>H. Salida</th>
-                            <th>F. Retorno</th>
-                            <th>H. Retorno</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ballot in ballots %}
-                            <tr>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-sm btn-primary " href="{% url 'sicomec:update_return_datetime' ballot.id %}?q={{ query }}">
-                                            <i class="bi bi-clock-fill" title="Marcar"></i>
-                                            Marcar
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle">{{ ballot.code }}</td>
-                                <td class="align-middle">{{ ballot.driver }}</td>
-                                <td class="align-middle">{{ ballot.plate }}</td>
-                                <td class="align-middle">{{ ballot.place }}</td>
-                                <td class="align-middle">{{ ballot.exit_date|date:"d/m/Y" }}</td>
-                                <td class="align-middle">{{ ballot.exit_time }}</td>
-                                <td class="align-middle">{{ ballot.return_date|date:"d/m/Y"|default_if_none:"" }}</td>
-                                <td class="align-middle">{{ ballot.return_time|default_if_none:"" }}</td>
-                            </tr>   
-                            
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
-
-        {% if search_performed and ballot_count == 0 %}
-            <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
-                <i class="bi bi-info-circle-fill"></i>
-                <div class="mx-auto">
-                    {{ message }}
+    {% if ballot %}
+    <section class="col-md-8 offset-md-2 my-3">
+      <form method="POST" action="{% url 'sicomec:update_return_datetime' %}" enctype="multipart/form-data" class="card card-body mb-5">
+          {% csrf_token %}
+            <input type="hidden" name="ballot_id" value="{{ ballot.id }}" />
+          <div class="row form-row">
+              <div class="form-group col-md-4 mb-0">
+                  <div id="div_code" class="mb-3">
+                      <label for="code" class="form-label">Código</label> 
+                      <input type="text" name="code" class="textinput form-control" readonly="readonly" style="background-color: #e9ecef; pointer-events: none;" id="id_code" value="{{ ballot.code }}" />
+                  </div>
+              </div> 
+              <div class="form-group col-md-8 mb-0">
+                  <div id="div_driver" class="mb-3">
+                      <label for="driver" class="form-label">Conductor</label> 
+                      <input type="text" name="driver" class="textinput form-control" readonly="readonly" style="background-color: #e9ecef; pointer-events: none;" id="id_driver" value="{{ ballot.driver }}" />
+                  </div>
+              </div> 
+          </div>
+          <div class="row form-row">
+              <div class="form-group col-md-4 mb-0">
+                  <div id="div_exit_date_time" class="mb-3">
+                      <label for="exit_date_time" class="form-label">Fecha Salida</label> 
+                      <input type="text" name="exit_date_time" class="textinput form-control" readonly="readonly" style="background-color: #e9ecef; pointer-events: none;" required="" id="id_exit_date_time" value="{{ ballot.exit_date|date:"d/m/Y" }} {{ ballot.exit_time }}" />
+                  </div>
+              </div> 
+              <div class="form-group col-md-8 mb-0">
+                <div id="div_occurrence" class="mb-3">
+                    <label for="occurrence" class="form-label">Ocurrencia</label>
+                    <textarea rows="1" name="occurrence" class="textarea form-control" id="id_occurrence"></textarea>
                 </div>
             </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-clock-fill" title="Marcar"></i>
+            Marcar
+          </button>
+        </form>
         {% endif %}
+
+        {% if search_performed and ballot == None %}
+        <div class="alert alert-danger text-center d-flex py-2 col-md-6 offset-md-3" role="alert">
+            <i class="bi bi-info-circle-fill"></i>
+            <div class="mx-auto">
+                {{ message }}
+            </div>
+        </div>
+    {% endif %}
     </section>
-</div>
+  </div>
 {% endblock %}
 
 {% block js %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var fields = [
-            { id: "ballot_code_Search", transform: "toUpperCase" },
-        ];
-    
-        function transformInput(event, transform) {
-            if (transform === "toUpperCase") {
-                event.target.value = event.target.value.toUpperCase();
-            }
-        }
-    
-        fields.forEach(function(field) {
-            var element = document.getElementById(field.id);
-    
-            if (field.transform === "toUpperCase") {
-                element.addEventListener("input", function(event) {
-                    transformInput(event, field.transform);
-                });
-            }
+  document.addEventListener('DOMContentLoaded', function () {
+    var fields = [
+      { id: 'ballot_code_Search', defaultValue: "", transform: 'toUpperCase' },
+      { id: 'id_occurrence', defaultValue: "NINGUNO", transform: 'toUpperCase' },
+    ];
+
+    function transformInput(event, transform) {
+      if (transform === 'toUpperCase') {
+        event.target.value = event.target.value.toUpperCase();
+      }
+    }
+
+    function handleFocus(event, defaultValue) {
+      var element = event.target;
+      // Solo vacía el valor si es igual al valor por defecto
+      if (element.value === defaultValue) {
+        element.value = "";
+      }
+    }
+
+    function handleBlur(event, defaultValue) {
+      var element = event.target;
+      // Si está vacío al perder el enfoque, restablece el valor por defecto
+      if (element.value.trim() === "") {
+        element.value = defaultValue;
+      }
+    }
+
+    fields.forEach(function (field) {
+      var element = document.getElementById(field.id);
+
+      if (field.transform === 'toUpperCase') {
+        element.addEventListener('input', function (event) {
+          transformInput(event, field.transform);
         });
+      }
+
+      element.addEventListener("focus", function (event) {
+        handleFocus(event, field.defaultValue);
+      });
+
+      element.addEventListener("blur", function (event) {
+        handleBlur(event, field.defaultValue);
+      });
+
+      // Establece el valor por defecto al cargar la página si está vacío
+      if (element.value.trim() === "") {
+        element.value = field.defaultValue;
+      }
     });
-</script> 
-{% endblock  %}
+  });
+</script>
+
+{% endblock %}
