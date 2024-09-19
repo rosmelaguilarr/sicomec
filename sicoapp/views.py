@@ -886,32 +886,3 @@ def error_404(request, exception):
 @login_required
 def error_403(request, exception):
     return render(request, '403.html', status=403)
-
-def dashboard(request):
-    # Obtener todas las órdenes de compra para el formulario de selección
-    buy_orders = BuyOrder.objects.all()
-
-    # Obtener los últimos pedidos de combustible (opcional)
-    recent_orders = FuelOrder.objects.order_by('-created')[:10]  # Últimos 10 pedidos
-
-    # Preparar datos iniciales para el gráfico (vacío por defecto)
-    initial_order_codes = []
-    initial_quantities = []
-
-    context = {
-        'buy_orders': buy_orders,
-        'recent_orders': recent_orders,
-        'order_codes': initial_order_codes,
-        'quantities': initial_quantities,
-    }
-    return render(request, 'dashboards/dashboard.html', context)
-
-def consumption_data(request, order_id):
-    # Obtener los pedidos de combustible relacionados con la orden de compra
-    fuel_orders = FuelOrder.objects.filter(order_id=order_id).values('fuel').annotate(total_quantity=Sum('quantity')).order_by('fuel')
-    
-    # Preparar los datos para el gráfico
-    labels = [fo['fuel'] for fo in fuel_orders]
-    values = [float(fo['total_quantity']) for fo in fuel_orders]
-    
-    return JsonResponse({'labels': labels, 'values': values})

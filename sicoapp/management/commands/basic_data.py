@@ -6,11 +6,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        licensecategory1 = LicenseCategory.objects.create(name='A-IIA')
-        licensecategory2 = LicenseCategory.objects.create(name='A-IIB')
-        licensecategory3 = LicenseCategory.objects.create(name='A-IIIA')
-        licensecategory4 = LicenseCategory.objects.create(name='A-IIIB')
-        licensecategory5 = LicenseCategory.objects.create(name='A-IIIC')
+        licensecategory1 = LicenseCategory.objects.create(name='A-IA')
+        licensecategory2 = LicenseCategory.objects.create(name='A-IIA')
+        licensecategory3 = LicenseCategory.objects.create(name='A-IIB')
+        licensecategory4 = LicenseCategory.objects.create(name='A-IIIA')
+        licensecategory5 = LicenseCategory.objects.create(name='A-IIIB')
+        licensecategory6 = LicenseCategory.objects.create(name='A-IIIC')
 
         fuel1 = Fuel.objects.create(name='G. REGULAR')
         fuel2 = Fuel.objects.create(name='G. PREMIUM')
