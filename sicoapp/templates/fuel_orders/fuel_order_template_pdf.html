@@ -146,6 +146,16 @@
         .tag{
             top: 48px
         }
+        .canceled{
+            position: absolute;
+            top: 250px;
+            left: 120px;
+            font-size: 50px;
+            display: inline-block;  
+            transform: rotate(-45deg);  
+            transform-origin: left bottom;  
+            opacity: .3;
+        }
     </style>
 </head>
 <body>
@@ -157,6 +167,10 @@
             <span class="plate">{{ fuel_order.order }}</span>
             <span class="watermark plate_name">o/c</span>
             <span class="watermark code_name">Codigo</span>
+            {% if fuel_order.canceled %}
+                <span class="canceled">Anulado</span>
+            {% endif %}
+
             <div class="header">
                 <img src="{{ img_drta }}" />
                 <div class="header-text">
@@ -280,12 +294,15 @@
             <span class="plate">{{ fuel_order.order }}</span>
             <span class="watermark plate_name">o/c</span>
             <span class="watermark code_name">Codigo</span>
+            {% if fuel_order.canceled %}
+                <span class="canceled">Anulado</span>
+            {% endif %}
             <div class="header">
                 <img src="{{ img_drta }}" />
                 <div class="header-text">
                     <p>Dirección Regional de Transportes</p>
                     <p> y Comunicaciones</p>
-                    <p>Sub Dirección de Equipo Mecánico</p>
+                    <p>Oficina de Almacén Central</p>
                 </div>
                 <img src="{{ img_sicomec }}" />
             </div>

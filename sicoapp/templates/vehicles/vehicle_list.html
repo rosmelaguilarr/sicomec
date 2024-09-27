@@ -24,6 +24,7 @@
                             <th>Combustible</th>
                             <th>Emi. SOAT</th>
                             <th>Emi. CITV</th>
+                            <th>Origen</th>
                             <th>Disp.</th>
                         </tr>
                     </thead>
@@ -53,6 +54,9 @@
                                 </td>
                                 <td class="align-middle">
                                     {{ vehicle.citv|date:"d/m/Y" }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ vehicle.origin }}
                                 </td>
                                 <td class="align-middle">
                                     {% if vehicle.available %}

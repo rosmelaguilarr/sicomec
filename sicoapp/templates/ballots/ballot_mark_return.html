@@ -18,8 +18,8 @@
     </section>
 
     {% if ballot %}
-    <section class="col-md-8 offset-md-2 my-3">
-      <form method="POST" action="{% url 'sicomec:update_return_datetime' %}" enctype="multipart/form-data" class="card card-body mb-5">
+    <section class="col-md-8 offset-md-2 mt-3">
+      <form method="POST" action="{% url 'sicomec:update_return_datetime' %}" enctype="multipart/form-data" class="card card-body mb-3">
           {% csrf_token %}
             <input type="hidden" name="ballot_id" value="{{ ballot.id }}" />
           <div class="row form-row">
@@ -66,6 +66,13 @@
             </div>
         </div>
     {% endif %}
+
+    {% if ballot_count > 1 %}
+      <div class="alert alert-danger py-1 text-center" role="alert">
+        Vehículo tiene pendiente marcar <span class="badge text-bg-danger text-wrap">{{ ballot_count|add:"-1" }}</span> retorno(s) más.
+      </div>
+    {% endif %}
+
     </section>
   </div>
 {% endblock %}
@@ -86,7 +93,6 @@
 
     function handleFocus(event, defaultValue) {
       var element = event.target;
-      // Solo vacía el valor si es igual al valor por defecto
       if (element.value === defaultValue) {
         element.value = "";
       }
@@ -94,7 +100,6 @@
 
     function handleBlur(event, defaultValue) {
       var element = event.target;
-      // Si está vacío al perder el enfoque, restablece el valor por defecto
       if (element.value.trim() === "") {
         element.value = defaultValue;
       }
@@ -117,7 +122,6 @@
         handleBlur(event, field.defaultValue);
       });
 
-      // Establece el valor por defecto al cargar la página si está vacío
       if (element.value.trim() === "") {
         element.value = field.defaultValue;
       }

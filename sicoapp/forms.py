@@ -14,7 +14,7 @@ class DriverForm(ModelForm):
 
     class Meta:     
         model = Driver
-        fields = ['dni', 'name','last_name', 'license', 'category', 'expiration', 'available', 'justify']
+        fields = ['dni', 'name','last_name', 'license', 'category', 'expiration', 'available', 'origin', 'justify']
 
         widgets = {
             'expiration': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
@@ -53,8 +53,12 @@ class DriverForm(ModelForm):
             ),
             Row(
                 
+                Column('origin', css_class='form-group col-md-6 mb-0'),
                 Column('available', css_class='form-group col-md-6 mb-0'),
-                Column('justify', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('justify', css_class='form-group col-md-12 mb-0'),
                 css_class='form-row'
             ),
             Submit('submit', 'Guardar', css_class='btn btn-primary')
@@ -70,7 +74,7 @@ class VehicleForm(ModelForm):
 
     class Meta:     
         model = Vehicle
-        fields = ['plate','type','name','brand','chassis','model','production','fuel','mileage','hourometer','soat','citv', 'available', 'justify']
+        fields = ['plate','type','name','brand','chassis','model','production','fuel','mileage','hourometer','soat','citv', 'available', 'origin', 'justify']
 
         widgets = {
             'soat': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
@@ -118,6 +122,7 @@ class VehicleForm(ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('origin', css_class='form-group col-md-4 mb-0'),
                 Column('available', css_class='form-group col-md-4 mb-0'),
                 Column('justify', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
@@ -247,7 +252,7 @@ class FuelOrderForm(ModelForm):
 
     class Meta:     
         model = FuelOrder
-        fields = ['fueltap','order','user_area','driver','plate','brand','vehicle','place','reason','quantity','fuel','voucher','date','fuel_loan','fuel_return','detail','residue_buy_order']
+        fields = ['fueltap','order','user_area','driver','plate','brand','vehicle','place','reason','quantity','fuel','voucher','date','fuel_loan','fuel_return','regularize','detail','residue_buy_order']
 
         widgets = {
                 'date': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date'}),
@@ -305,12 +310,13 @@ class FuelOrderForm(ModelForm):
             Row(
                 Column('fuel_loan', css_class='form-group col-md-4 mb-0'),
                 Column('fuel_return', css_class='form-group col-md-4 mb-0'),
-                Column('residue_buy_order', css_class='form-group col-md-4 mb-0'),
+                Column('regularize', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('order', css_class='form-group col-md-4 mb-0'),
-                Column('user_area', css_class='form-group col-md-8 mb-0'),
+                Column('residue_buy_order', css_class='form-group col-md-4 mb-0'),
+                Column('user_area', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(

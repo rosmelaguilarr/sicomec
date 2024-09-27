@@ -100,10 +100,10 @@
                 const fuelOrdersData = await fuelOrdersResponse.json();
     
                 dataTable.clear();
-    
-                if (fuelOrdersData.fuel_orders) {
+
+                if (fuelOrdersData.fuel_orders) { 
                     fuelOrdersData.fuel_orders.forEach(fuel_order => {
-                        dataTable.row.add([
+                        let rowNode = dataTable.row.add([
                             fuel_order.date,
                             `<span>${fuel_order.fuel_return ? "+" : "-"}${fuel_order.quantity}</span>`,
                             fuel_order.residue,
@@ -113,9 +113,16 @@
                             `${fuel_order.driver__name || ""} ${fuel_order.driver__last_name || ""}`,
                             fuel_order.voucher,
                             fuel_order.code
-                        ]).draw();
+                        ]).draw().node();  
+                
+                        if (fuel_order.canceled) {
+                            $(rowNode).css('color', 'rgb(220, 53, 69)');  
+                        }
                     });
                 }
+
+
+
             } catch (error) {
                 showError('Error al procesar los detalles de la orden');
                 printButton.href = '#';

@@ -167,4 +167,27 @@ document.getElementById('id_fuel_return').addEventListener('change', function() 
 
 // END TOOGLE FUEL_LOAN
 
+// START TOOGLE VOUCHER
+function toggleVoucher() {
+    var regularize = document.getElementById('id_regularize').checked;
+    var voucherField = document.getElementById('id_voucher');
+
+    if (!regularize) {
+        voucherField.readOnly = true;
+        voucherField.style.backgroundColor = '#f0f0f0';
+        voucherField.style.cursor = 'not-allowed';
+        // voucherField.value = '';
+    } else {
+        voucherField.readOnly = false;
+        voucherField.style.backgroundColor = '';
+        voucherField.style.cursor = '';
+    }
+}
+
+toggleVoucher();
+document.getElementById('id_regularize').addEventListener('change', function() {
+    toggleVoucher();
+});
+// END TOOGLE VOUCHER
+
 });

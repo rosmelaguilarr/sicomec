@@ -55,4 +55,5 @@ urlpatterns = [
     path('get_fuel_orders/<uuid:id_buy_order>', views.get_fuel_orders_view, name='get_fuel_orders'),
     path('get_driver_details/<uuid:id>', views.get_driver_details_view, name='get_driver_details'),
 
+    
 ]

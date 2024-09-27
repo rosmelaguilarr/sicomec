@@ -23,6 +23,7 @@
                             <th>N° Lic.</th>
                             <th>Categoría</th>
                             <th>Venc. Lic.</th>
+                            <th>Origen</th>
                             <th>Disp.</th>
                         </tr>
                     </thead>
@@ -47,6 +48,7 @@
                                 <td class="align-middle">{{ driver.license }}</td>
                                 <td class="align-middle">{{ driver.category }}</td>
                                 <td class="align-middle">{{ driver.expiration|date:"d/m/Y" }}</td>
+                                <td class="align-middle">{{ driver.origin }}</td>
                                 <td class="align-middle">
                                     {% if driver.available %}
                                         <i class="bi bi-check-circle text-success"></i>

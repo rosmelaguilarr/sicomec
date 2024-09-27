@@ -495,9 +495,17 @@ def generate_control_card_pdf(request, order_id):
 def ballot_create_view(request):
     if request.method == 'POST':
         form = BallotForm(request.POST)
+
         if form.is_valid():
+            plate = form.cleaned_data['plate']
+
+            open_ballots = Ballot.objects.filter(return_time__isnull=True, plate=plate).count()
+            if open_ballots == 2:
+                messages.error(request, f'Vehículo tiene pendiente marcar {open_ballots} retornos .')
+                return render(request, 'ballots/ballot_create.html', {'form': form})
+
             form.instance.user = request.user
-            ballot = form.save() 
+            ballot = form.save()
             messages.success(request, '¡Registro exitoso!')
             return redirect(f"{request.path}?success=true&ballot_id={ballot.id}")
     else:
@@ -557,9 +565,16 @@ def ballot_mark_return_view(request):
     search_performed = False
     ballot = None
     message = ""
+    ballot_count = 0
 
     if query:
         search_performed = True
+        ballot_count = Ballot.objects.filter(
+            (Q(code__iexact=query) | Q(plate__plate__iexact=query)) &
+            Q(return_date__isnull=True) &
+            Q(return_time__isnull=True)
+        ).count()
+
         ballot = Ballot.objects.filter(
             (Q(code__iexact=query) | Q(plate__plate__iexact=query)) &
             Q(return_date__isnull=True) &
@@ -575,6 +590,7 @@ def ballot_mark_return_view(request):
                     'query': query,
                     'search_performed': search_performed,
                     'message': message,
+                    'ballot_count': ballot_count,
                 })
 
 # UPDATE RETURN_DATE AND RETURN_TIME------------------------------------------------------------------->

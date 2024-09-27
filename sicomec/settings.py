@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,10 +30,10 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.71.100']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.71.244']
 
 CSRF_COOKIE_HTTPONLY = True  # En producción debería ser True
-CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1', 'http://127.0.0.1:8000', 'http://localhost:8000', 'http://192.168.71.100:8000', 'http://192.168.71.100']
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1', 'http://127.0.0.1:8000', 'http://localhost:8000', 'http://192.168.71.244:8000', 'http://192.168.71.244']
 
 
 # Application definition
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'sicoapp',
     "crispy_forms",
     "crispy_bootstrap5",
+    'axes',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'sicoapp.middleware.COOPMiddleware',
@@ -106,6 +109,10 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',  # Backend de autenticación de django-axes
+    'django.contrib.auth.backends.ModelBackend',  # Backend de Django
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -158,3 +165,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_COOKIE_AGE=3600 #60 min.
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+
+# Configuraciones de django-axes
+AXES_FAILURE_LIMIT = 3  
+AXES_COOLOFF_TIME = timedelta(minutes=5)  
+AXES_RESET_ON_SUCCESS = True 
+AXES_LOCKOUT_TEMPLATE = 'lockout.html'
+
+

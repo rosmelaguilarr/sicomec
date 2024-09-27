@@ -55,6 +55,11 @@ license_validator = RegexValidator(
 )
 
 class Driver(models.Model):
+    ORIGIN_CHOICES = [
+        ('DRTC', 'DRTC'),
+        ('EXTERNO', 'EXTERNO'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     dni = models.CharField(max_length=8, verbose_name='DNI', unique=True, validators=[dni_validator])
     name = models.CharField(max_length=20, verbose_name='Nombres', null=False, blank=False)
@@ -65,6 +70,7 @@ class Driver(models.Model):
     validity = models.BooleanField(default=True)
     available = models.BooleanField(default=True, verbose_name='Disponible')
     justify = models.TextField(verbose_name='Justificación',null=True, blank=True)
+    origin = models.CharField(max_length=10, choices=ORIGIN_CHOICES, verbose_name='Origen', default='DRTC')
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
@@ -97,6 +103,11 @@ def validate_year(value):
         raise ValidationError(f'{value} año no válido')
 
 class Vehicle(models.Model):
+    ORIGIN_CHOICES = [
+        ('DRTC', 'DRTC'),
+        ('EXTERNO', 'EXTERNO'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plate = models.CharField(max_length=6, verbose_name='Placa', unique=True, null=False, blank=False)
     type = models.ForeignKey(TypeVehicle, on_delete=models.PROTECT, verbose_name='Clase')
@@ -112,6 +123,7 @@ class Vehicle(models.Model):
     citv = models.DateField(verbose_name='Emisión CITV', auto_now=False, null=True, blank=True)
     available = models.BooleanField(default=True, verbose_name='Disponible')
     justify = models.TextField(verbose_name='Justificación',null=True, blank=True)
+    origin = models.CharField(max_length=10, choices=ORIGIN_CHOICES, verbose_name='Origen', default='DRTC')
     maintenance = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -248,11 +260,12 @@ class FuelOrder(models.Model):
     residue_buy_order = models.DecimalField(max_digits=10, decimal_places=2,verbose_name='Saldo')
     residue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fuel = models.CharField(max_length=10, verbose_name='Combustible', null=False, blank=False)
-    voucher = models.CharField(max_length=7, verbose_name='N° Vale', null=False, blank=False, validators=[voucher_validator])
+    voucher = models.CharField(max_length=7, verbose_name='N° Vale', default=0, null=False, blank=False, validators=[voucher_validator])
     date = models.DateField(verbose_name='Fecha', auto_now=False)
     canceled = models.BooleanField(default=False)
     fuel_loan = models.BooleanField(default=False, verbose_name='Lluqsin')
     fuel_return = models.BooleanField(default=False, verbose_name='Kutimun')
+    regularize = models.BooleanField(default=False, verbose_name='Regularizar')
     detail = models.TextField(verbose_name='Detalle', null=True, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)

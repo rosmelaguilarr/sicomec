@@ -6,7 +6,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        licensecategory1 = LicenseCategory.objects.create(name='A-IA')
+        licensecategory1 = LicenseCategory.objects.create(name='A-I')
         licensecategory2 = LicenseCategory.objects.create(name='A-IIA')
         licensecategory3 = LicenseCategory.objects.create(name='A-IIB')
         licensecategory4 = LicenseCategory.objects.create(name='A-IIIA')

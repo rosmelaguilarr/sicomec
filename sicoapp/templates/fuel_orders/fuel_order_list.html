@@ -25,12 +25,13 @@
                             <th>Placa</th>
                             <th>Cant.</th>
                             <th>Combustible</th>
+                            <th>N° Vale</th>
                             <th>Código</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for fuel_order in fuel_orders %}
-                            <tr class="">
+                            <tr class="" data-canceled="{% if fuel_order.canceled %}true{% else %}false{% endif %}">
                                 {% if not is_uquery %}
                                     <td>
                                         <div class="btn-group">
@@ -59,7 +60,11 @@
                                             </div>
                                     </td>
                                 {% endif %}
-                                <td class="align-middle">{{ fuel_order.fueltap }}</td>
+                                <td class="align-middle">
+                                    <span class="d-inline-block text-truncate align-middle" style="max-width: 200px;">
+                                        {{ fuel_order.fueltap }}
+                                    </span>
+                                </td>
                                 <td class="align-middle">{{ fuel_order.order }}</td>
                                 <td class="align-middle">{{ fuel_order.driver|default_if_none:"" }}</td>
                                 <td class="align-middle">{{ fuel_order.plate|default_if_none:"" }}</td>
@@ -67,6 +72,7 @@
                                     {{ fuel_order.quantity|format_number }}
                                 </td>
                                 <td class="align-middle">{{ fuel_order.fuel }}</td>
+                                <td class="align-middle">{{ fuel_order.voucher }}</td>
                                 <td class="align-middle">{{ fuel_order.code }}</td>
                             </tr>   
                         {% endfor %}
