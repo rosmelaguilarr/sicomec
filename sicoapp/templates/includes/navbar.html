@@ -191,16 +191,17 @@
 
         {% if user.is_authenticated %}
             <div class="d-flex pt-2">
-                <p class="fw-light mx-2">
+                <p class="mx-2">
                     <i class="bi bi-person-fill" style="font-size: 1.2rem; color: {% if is_super_admin %}#dd4e0a; {% else %}#0a58ca;{% endif %}"></i>
-                    {% if not user.first_name %}
-                        {{ user.username|upper }}
-                    {% else %}
-                        {{ user.first_name|upper }}
-                    {% endif %}
-
+                    <span style="font-size: .8rem;" class="fw-semibold">
+                        {% if not user.first_name %}
+                            {{ user.username|upper }}
+                        {% else %}
+                            {{ user.first_name|upper }}
+                        {% endif %}
+                    </span>
                     {% for group in user.groups.all %}
-                        <span style="font-size: 9px; display: block; text-align: right; color: rgb(195 196 196); position: absolute; top: 40px; right: 73px;">
+                        <span style="font-size: 9px; display: block; text-align: right; color: rgb(195 196 196); position: absolute; top: 38px; right: 76px;">
                         {% if group.name == 'superAdmin' %}
                             {{ group.name }}
                         {% elif group.name == 'pAdministrator' or group.name == 'cAdministrator' %}
@@ -219,7 +220,9 @@
                 <p>
                     <a href="{% url 'sicomec:logout' %}" class="link-offset-2 link-underline link-underline-opacity-0" style="color: #FF0000;">
                         <i class="bi bi-power" style="font-size: 1.2rem; color: #FF0000;"></i>
+                        <span style="font-size: .8rem;" class="fw-semibold text-uppercase">
                         Salir
+                        </span>
                     </a>
                 </p>
             </div>
