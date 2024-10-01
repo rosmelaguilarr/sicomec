@@ -193,11 +193,11 @@
             <div class="d-flex pt-2">
                 <p class="mx-2">
                     <i class="bi bi-person-fill" style="font-size: 1.2rem; color: {% if is_super_admin %}#dd4e0a; {% else %}#0a58ca;{% endif %}"></i>
-                    <span style="font-size: .8rem;" class="fw-semibold">
+                    <span style="font-size: .7rem; " class="fw-semibold">
                         {% if not user.first_name %}
                             {{ user.username|upper }}
                         {% else %}
-                            {{ user.first_name|upper }}
+                            {{ user.first_name|upper }} {{ user.last_name|upper }}
                         {% endif %}
                     </span>
                     {% for group in user.groups.all %}

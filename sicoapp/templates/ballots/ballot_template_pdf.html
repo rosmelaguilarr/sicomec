@@ -225,12 +225,19 @@
                     </tr>
                 {% endif %}
                     <tr>
-                        <td class="bold">Fecha Salida:</td>
-                        <td class="bold">Fecha Retorno:</td>
+                        <td class="bold">Fecha y Hora Salida:</td>
+                        <td class="bold">Fecha y Hora Retorno:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
-                        <td>{{ ballot.return_date|default_if_none:"" }} {{ ballot.return_time|default_if_none:"" }}</td>
+                        <td>{{ ballot.exit_date|date:"d M Y" }} - {{ ballot.exit_time }}</td>
+                        <td>
+                            {% if ballot.return_date and ballot.return_time %}
+                                {{ ballot.return_date|date:"d M Y" }} - {{ ballot.return_time }}
+                            {% else %}
+                                Pendiente
+                            {% endif %}
+                            
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -348,12 +355,19 @@
                         </tr>
                     {% endif %}
                     <tr>
-                        <td class="bold">Fecha Salida:</td>
-                        <td class="bold">Fecha Retorno:</td>
+                        <td class="bold">Fecha y Hora Salida:</td>
+                        <td class="bold">Fecha y Hora Retorno:</td>
                     </tr>
                     <tr>
-                        <td>{{ ballot.exit_date }} {{ ballot.exit_time }}</td>
-                        <td>{{ ballot.return_date|default_if_none:"" }} {{ ballot.return_time|default_if_none:"" }}</td>
+                        <td>{{ ballot.exit_date|date:"d M Y" }} - {{ ballot.exit_time }}</td>
+                        <td>
+                            {% if ballot.return_date and ballot.return_time %}
+                                {{ ballot.return_date|date:"d M Y" }} - {{ ballot.return_time }}
+                            {% else %}
+                                Pendiente
+                            {% endif %}
+                            
+                        </td>
                     </tr>
                 </tbody>
             </table>
