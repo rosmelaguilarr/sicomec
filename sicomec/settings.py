@@ -173,3 +173,10 @@ AXES_RESET_ON_SUCCESS = True
 AXES_LOCKOUT_TEMPLATE = 'lockout.html'
 
 
+# Configuraciones para Django Axes
+AXES_BEHIND_REVERSE_PROXY = True  # Indica que Axes está detrás de un proxy inverso
+AXES_PROXY_COUNT = 1  # Número de proxies entre el cliente y el servidor (generalmente 1)
+AXES_META_PRECEDENCE_ORDER = ['HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR']  # Orden para determinar la IP real
+
+# Configuraciones para Django (proxy inverso)
+USE_X_FORWARDED_HOST = True  # Permite que Django use el encabezado X-Forwarded-Host
