@@ -22,7 +22,7 @@
                     </a>
                         <ul class="dropdown-menu">
                             <li>
-                                {% if is_super_admin %}
+                                {% if is_super_admin or is_coperator %}
                                 <a class="dropdown-item" href="{% url 'sicomec:driver_create' %}">
                                     <i class="bi bi-plus-lg"></i>
                                     Nuevo Registro
@@ -45,7 +45,7 @@
                     </a>
                         <ul class="dropdown-menu">
                             <li>
-                                {% if is_super_admin %}
+                                {% if is_super_admin or is_coperator %}
                                 <a class="dropdown-item" href="{% url 'sicomec:vehicle_create' %}">
                                     <i class="bi bi-plus-lg"></i>
                                     Nuevo Registro
@@ -114,7 +114,7 @@
                             Grifo
                         </a>
                         <ul class="dropdown-menu">
-                            {% if not is_coperator and not is_uquery %}
+                            {% if not is_uquery %}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'sicomec:fueltap_create' %}">
                                         <i class="bi bi-plus-lg"></i>
@@ -136,7 +136,7 @@
                             Orden Compra
                         </a>
                         <ul class="dropdown-menu">
-                            {% if not is_coperator and not is_uquery %}
+                            {% if not is_uquery %}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'sicomec:buy_order_create' %}">
                                         <i class="bi bi-plus-lg"></i>
