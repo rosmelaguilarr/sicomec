@@ -14,7 +14,7 @@
                 <table class="datatable display">
                     <thead>
                         <tr>
-                            {% if is_super_admin %}
+                            {% if is_super_admin or is_cadmin or is_padmin %}
                                 <th>Acciones</th>
                             {% endif %}
                             <th>DNI</th>
@@ -30,7 +30,7 @@
                     <tbody>
                         {% for driver in drivers %}
                             <tr>
-                                {% if is_super_admin %}
+                                {% if is_super_admin or is_cadmin or is_padmin %}
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:driver_update' driver.id %}">

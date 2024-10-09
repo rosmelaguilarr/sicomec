@@ -15,7 +15,7 @@
                 <table class="datatable display">
                     <thead>
                         <tr>
-                            {% if not is_coperator and not is_uquery %}
+                            {% if is_super_admin or is_cadmin %}
                                 <th>Acciones</th>
                             {% endif %}
                             <th>N° O/C</th>
@@ -32,17 +32,17 @@
                     <tbody>
                         {% for buy_order in buy_orders %}
                             <tr>
-                                {% if not is_coperator and not is_uquery %}
+                                {% if is_super_admin or is_cadmin %}
                                 <td class="align-middle">
                                     <div class="btn-group">
                                         <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:buy_order_update' buy_order.id %}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                         </a>
-                                        {% if is_super_admin %}
-                                            <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/buy_order/delete', '{{ buy_order.id }}', '', 'delete')" title="Eliminar">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
-                                        {% endif %}
+                                        
+                                        <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/buy_order/delete', '{{ buy_order.id }}', '', 'delete')" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    
                                     </div>
                                 </td>
                                 {% endif %}

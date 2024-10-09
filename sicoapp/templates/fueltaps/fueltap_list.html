@@ -14,7 +14,7 @@
                 <table class="datatable display">
                     <thead>
                         <tr>
-                            {% if not is_coperator and not is_uquery %}
+                            {% if is_super_admin or is_cadmin %}
                                 <th>Acciones</th>
                             {% endif %}
                             <th>RUC</th>
@@ -27,7 +27,7 @@
                     <tbody>
                         {% for fueltap in fueltaps %}
                             <tr>
-                                {% if not is_coperator and not is_uquery %}
+                                {% if is_super_admin or is_cadmin %}
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fueltap_update' fueltap.id %}">

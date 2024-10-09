@@ -15,7 +15,7 @@
                 <table class="datatable display">
                     <thead>
                         <tr>
-                            {% if not is_uquery %}
+                            {% if is_super_admin or is_cadmin or is_coperator %}
                                 <th>Acciones</th>
                             {% endif %}
 
@@ -32,7 +32,7 @@
                     <tbody>
                         {% for fuel_order in fuel_orders %}
                             <tr class="" data-canceled="{% if fuel_order.canceled %}true{% else %}false{% endif %}">
-                                {% if not is_uquery %}
+                                {% if is_super_admin or is_cadmin or is_coperator %}
                                     <td>
                                         <div class="btn-group">
                                             {% if fuel_order.show_buttons %}
@@ -42,9 +42,12 @@
                                         {% comment %} <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fuel_order_update' fuel_order.id %}?q={{ query }}">
                                             <i class="bi bi-pencil-fill" title="Editar"></i>
                                             </a> {% endcomment %}
-                                            <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fuel_order/delete', '{{ fuel_order.id }}', '', 'canceled')" title="Anular">
-                                                <i class="bi bi-x-circle-fill"></i>
-                                            </a>
+                                            {% if is_super_admin or is_cadmin %}
+                                                <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fuel_order/delete', '{{ fuel_order.id }}', '', 'canceled')" title="Anular">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                </a>
+                                            {% endif %}
+                                            
                                             {% else %}
                                             <a class="btn btn-sm btn-outline-primary" href="{% url 'sicomec:generate_fuel_order_pdf' fuel_order.id %}" target="_blank">
                                                 <i class="bi bi-printer-fill" title="Imprimir"></i>
@@ -56,7 +59,7 @@
                                                     <i class="bi bi-x-circle-fill"></i>
                                                 </button>
                                                 
-                                                {% endif %}
+                                            {% endif %}
                                             </div>
                                     </td>
                                 {% endif %}

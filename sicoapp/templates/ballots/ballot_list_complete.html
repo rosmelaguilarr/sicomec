@@ -14,7 +14,7 @@
                 <table class="datatable display">
                     <thead>
                         <tr>
-                            {% if not is_pregistrator and not is_uquery %}
+                            {% if is_super_admin or is_padmin or is_poperator %}
                             <th>Acciones</th>
                             {% endif %}
                             <th>Código</th>
@@ -29,7 +29,7 @@
                     <tbody>
                         {% for ballot in ballots %}
                             <tr>
-                                {% if not is_pregistrator and not is_uquery %}
+                                {% if is_super_admin or is_padmin or is_poperator %}
                                 <td class="align-middle">
                                     <div class="btn-group">
                                         <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:generate_ballot_pdf' ballot.id %}" target="_blank">
