@@ -33,11 +33,11 @@
                                             <a class="btn btn-sm btn-outline-primary " href="{% url 'sicomec:fueltap_update' fueltap.id %}">
                                                 <i class="bi bi-pencil-fill" title="Editar"></i>
                                             </a>
-                                            {% if is_super_admin  %}
+                                            
                                                 <a class="btn btn-sm btn-outline-danger" href="#" onclick="deleteRecord('/sicomec/fueltap/delete', '{{ fueltap.id }}', '', 'delete')" title="Eliminar">
                                                     <i class="bi bi-trash-fill"></i>
                                                 </a>
-                                            {% endif %}
+                                            
                                         </div>
                                     </td>
                                 {% endif %}
