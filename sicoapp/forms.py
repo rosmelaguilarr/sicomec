@@ -238,6 +238,11 @@ class BuyOrderForm(ModelForm):
 
 class FuelOrderForm(ModelForm):
 
+    order = forms.ModelChoiceField( 
+    queryset=BuyOrder.objects.filter(residue__gt=0),  
+    label='N° O/C', 
+    )
+
     driver = forms.ModelChoiceField(
     queryset=Driver.objects.filter(available=True),
     label='Conductor',
